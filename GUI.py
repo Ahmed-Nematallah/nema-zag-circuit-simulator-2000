@@ -26,9 +26,9 @@ def donothing():
 
 #Toolbar
 toolbar = Frame(root,bd =2,relief = RAISED)
-saveicon = PhotoImage(file="save.png")
-newicon = PhotoImage(file="new.png")
-resicon = PhotoImage(file="Res(2).png")
+saveicon = PhotoImage(file="Resources/Icons/save.png")
+newicon = PhotoImage(file="Resources/Icons/new.png")
+resicon = PhotoImage(file="Resources/Icons/Res(2).png")
 new = Button(toolbar,command = donothing,compound=CENTER,image=newicon)
 save = Button(toolbar,command = donothing,compound=CENTER,image=saveicon)
 #resistor = Button(toolbar,command = donothing,compound=CENTER,image=resicon)
