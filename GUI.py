@@ -10,11 +10,16 @@ funclist=[[ Open , Save , Saveas , Print ,  Close ]
 ,[ Preferences ]
 ,[ About]]
 '''
+
 root = Tk()
 # minimum window size
 root.minsize(width=500, height=500)
 #Canvas
 c = Canvas(root,height = 400,width = 500)
+saveicon = PhotoImage(file="Resources/Icons/save.png")
+newicon = PhotoImage(file="Resources/Icons/new.png")
+resicon = PhotoImage(file="Resources/Icons/Res(2).png")
+ressym = PhotoImage(file = "Resources/Icons/Res.png")
 #command functions
 def Close():
     print("Close")
@@ -22,14 +27,19 @@ def Close():
 def About():
     print("help yourself")
 def donothing():
-    line = c.create_rectangle(0,0,500,400, fill = "blue")
+    rect1 = c.create_rectangle(0,0,500,400, fill = "blue")
     print("nothing")
-
+def resistor():
+    res= c.create_image(50,50,50,50, image = ressym,tag = "com")
+    
+def motion(event):
+    global status
+    x, y = event.x, event.y
+    print('{}, {}'.format(x, y))
+    #status = ('{}, {}'.format(x, y))
+    
 #Toolbar
 toolbar = Frame(root,bd =2,relief = RAISED)
-saveicon = PhotoImage(file="Resources/Icons/save.png")
-newicon = PhotoImage(file="Resources/Icons/new.png")
-resicon = PhotoImage(file="Resources/Icons/Res(2).png")
 new = Button(toolbar,command = donothing,compound=CENTER,image=newicon)
 save = Button(toolbar,command = donothing,compound=CENTER,image=saveicon)
 resistor = Button(toolbar,command = donothing,compound=CENTER,image=resicon)
@@ -39,14 +49,14 @@ resistor.pack(side = LEFT,padx = 2,pady =2)
 toolbar.pack(side=TOP,fill = X)
 c.pack(fill = X)
 #Status bar
-statusbar = Label (root , text ="status .......",bd = 1, relief = SUNKEN,anchor = W)
+statusbar = Label (root , text =("status"),bd = 1, relief = SUNKEN,anchor = W)
 statusbar.pack(side = BOTTOM,fill = X)
 #command functions list
 funclist=[[ donothing , donothing , donothing , donothing , Close ]
 ,[ donothing , donothing , donothing , donothing , donothing , donothing , donothing , donothing , donothing ] 
 ,[ donothing , donothing , donothing , donothing ]
 ,[ donothing , donothing , donothing , donothing , donothing , donothing ]
-,[ donothing , donothing , donothing , donothing , donothing , donothing , donothing , donothing ]
+,[ donothing , resistor , donothing , donothing , donothing , donothing , donothing , donothing ]
 ,[ donothing ]
 ,[ About]]
 
@@ -76,5 +86,5 @@ for i in l:
         i.add_command(label=n,command = funclist[g][m] )
         m+=1
     g+=1
-
+root.bind('<Motion>', motion)
 root.mainloop()
