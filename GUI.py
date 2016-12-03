@@ -48,7 +48,8 @@ def donothing():
     print("nothing")
 def newcom():
     global itemlist
-    newitem = c.create_image(50,50, image = ressym)
+    #newitem = c.create_image(50,50, image = ressym)
+    newitem = c.create_rectangle(0,0,50,50, fill = "blue")
     itemlist.append(newitem)
 
 def motion(event):
