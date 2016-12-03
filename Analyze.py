@@ -1,28 +1,29 @@
 import re
 import numpy as np
+import math
 import random
 
 def getComponentValue(componentValue):
 	if(componentValue.lower().endswith('k')):
-		val = float(componentValue[:-1]) * 1000
+		val = complex(componentValue[:-1]) * 1000
 	elif(componentValue.lower().endswith('meg')):
-		val = float(componentValue[:-3]) * 1000000
+		val = complex(componentValue[:-3]) * 1000000
 	elif(componentValue.lower().endswith('g')):
-		val = float(componentValue[:-1]) * 1000000000
+		val = complex(componentValue[:-1]) * 1000000000
 	elif(componentValue.lower().endswith('t')):
-		val = float(componentValue[:-1]) * 1000000000000
+		val = complex(componentValue[:-1]) * 1000000000000
 	elif(componentValue.lower().endswith('m')):
-		val = float(componentValue[:-1]) / 1000
+		val = complex(componentValue[:-1]) / 1000
 	elif(componentValue.lower().endswith('u')):
-		val = float(componentValue[:-1]) / 1000000
+		val = complex(componentValue[:-1]) / 1000000
 	elif(componentValue.lower().endswith('n')):
-		val = float(componentValue[:-1]) / 1000000000
+		val = complex(componentValue[:-1]) / 1000000000
 	elif(componentValue.lower().endswith('p')):
-		val = float(componentValue[:-1]) / 1000000000000
+		val = complex(componentValue[:-1]) / 1000000000000
 	elif(componentValue.lower().endswith('f')):
-		val = float(componentValue[:-1]) / 1000000000000000
+		val = complex(componentValue[:-1]) / 1000000000000000
 	else:
-		val = float(componentValue)
+		val = complex(componentValue)
 
 	return val
 
@@ -31,6 +32,12 @@ def getNodeValue(nodeValue):
 		return int(nodeValue[1:])
 	else:
 		return -1
+
+def getPhase(complexNumber):
+	return math.atan(complexNumber.imag / complexNumber.real) * 180 / math.pi
+
+def getMagnitude(complexNumber):
+	return abs(complexNumber)
 
 # netlist = """.DC
 # R R1 N1 N0 1k
@@ -45,12 +52,17 @@ def getNodeValue(nodeValue):
 # R R2 N3 N0 1k
 # L L1 N2 N3 1m
 # V V1 N1 N0 10"""
-netlist = """.DC
+# netlist = """.DC
+# V V1 N1 N0 10
+# R R1 N2 N1 10k
+# R R2 N2 N0 10k
+# R R3 N4 N3 10k
+# OPAMP3 A1 N2 N3 N4"""
+netlist = """.AC 1k
 V V1 N1 N0 10
-R R1 N2 N1 10k
-R R2 N2 N0 10k
-R R3 N4 N3 10k
-OPAMP3 A1 N2 N3 N4"""
+G G1 N1 N2 6.28m
+C C1 N2 N0 1u
+"""
 
 
 i = 0
@@ -66,6 +78,7 @@ for i in range(len(commands)):
 		simulationDomain = "DC"
 	elif (commandtext[0].lower() == ".ac"):
 		simulationDomain = "AC"
+		simulationFrequency = getComponentValue(commandtext[1])
 
 	for i in range(1, len(commandtext)):
 		currentNode = getNodeValue(commandtext[i])
@@ -88,25 +101,27 @@ def formAdmittanceMatrix():
 			componentValue = getComponentValue(commandtext[4])
 			node1 = getNodeValue(commandtext[2])
 			node2 = getNodeValue(commandtext[3])
+			componentAdmittance = 1/componentValue
 			if(node1 != 0):
-				admittanceMatrix[node1 - 1][node1 - 1] += 1/componentValue
+				admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
 			if((node1 != 0) & (node2 != 0)):
-				admittanceMatrix[node1 - 1][node2 - 1] -= 1/componentValue
-				admittanceMatrix[node2 - 1][node1 - 1] -= 1/componentValue
+				admittanceMatrix[node1 - 1][node2 - 1] -= componentAdmittance
+				admittanceMatrix[node2 - 1][node1 - 1] -= componentAdmittance
 			if(node2 != 0):
-				admittanceMatrix[node2 - 1][node2 - 1] += 1/componentValue
+				admittanceMatrix[node2 - 1][node2 - 1] += componentAdmittance
 
 		elif(commandtext[0].lower() == 'g'):
 			componentValue = getComponentValue(commandtext[4])
 			node1 = getNodeValue(commandtext[2])
 			node2 = getNodeValue(commandtext[3])
+			componentAdmittance = componentValue
 			if(node1 != 0):
-				admittanceMatrix[node1 - 1][node1 - 1] += componentValue
+				admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
 			if((node1 != 0) & (node2 != 0)):
-				admittanceMatrix[node1 - 1][node2 - 1] -= componentValue
-				admittanceMatrix[node2 - 1][node1 - 1] -= componentValue
+				admittanceMatrix[node1 - 1][node2 - 1] -= componentAdmittance
+				admittanceMatrix[node2 - 1][node1 - 1] -= componentAdmittance
 			if(node2 != 0):
-				admittanceMatrix[node2 - 1][node2 - 1] += componentValue
+				admittanceMatrix[node2 - 1][node2 - 1] += componentAdmittance
 			
 		elif(commandtext[0].lower() == 'l'):
 			componentValue = getComponentValue(commandtext[4])
@@ -127,7 +142,14 @@ def formAdmittanceMatrix():
 				knownMatrix.append(0)
 
 			elif(simulationDomain == "AC"):
-				pass
+				componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
+				if(node1 != 0):
+					admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
+				if((node1 != 0) & (node2 != 0)):
+					admittanceMatrix[node1 - 1][node2 - 1] -= componentAdmittance
+					admittanceMatrix[node2 - 1][node1 - 1] -= componentAdmittance
+				if(node2 != 0):
+					admittanceMatrix[node2 - 1][node2 - 1] += componentAdmittance
 
 		elif(commandtext[0].lower() == 'c'):
 			componentValue = getComponentValue(commandtext[4])
@@ -136,7 +158,14 @@ def formAdmittanceMatrix():
 			if(simulationDomain == "DC"):
 				pass
 			elif(simulationDomain == "AC"):
-				pass
+				componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
+				if(node1 != 0):
+					admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
+				if((node1 != 0) & (node2 != 0)):
+					admittanceMatrix[node1 - 1][node2 - 1] -= componentAdmittance
+					admittanceMatrix[node2 - 1][node1 - 1] -= componentAdmittance
+				if(node2 != 0):
+					admittanceMatrix[node2 - 1][node2 - 1] += componentAdmittance
 			
 		elif(commandtext[0].lower() == 'v'):
 			componentValue = getComponentValue(commandtext[4])
@@ -243,10 +272,15 @@ for i in range(len(commands)):
 		solutionMatrix.append(voltageAcross * componentValue)
 
 	elif(commandtext[0].lower() == 'l'):
-		pass
+		componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
+		unknownMatrix.append("I(" + commandtext[1] + ")")
+		solutionMatrix.append(voltageAcross * componentAdmittance)
 
 	elif(commandtext[0].lower() == 'c'):
-		pass
+		componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
+		unknownMatrix.append("I(" + commandtext[1] + ")")
+		solutionMatrix.append(voltageAcross * componentAdmittance)
 
 for i in range(len(solutionMatrix)):
-	print(unknownMatrix[i] + " = " + str(solutionMatrix[i]))
+	#print(unknownMatrix[i] + " = " + str(solutionMatrix[i]))
+	print(unknownMatrix[i] + " = " + str(getMagnitude(solutionMatrix[i])) + "[" + str(getPhase(solutionMatrix[i])) + "]")
