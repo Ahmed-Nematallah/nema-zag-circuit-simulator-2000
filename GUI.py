@@ -54,7 +54,7 @@ def newcom():
 
 def motion(event):
     x, y = event.x, event.y
-    print(itemlist)
+    print(itemlist[0])
     if cd != 0:
         w.coords(1,event.x, event.y,event.x+(w.coords(1)[2]-w.coords(1)[0]), event.y+(w.coords(1)[2]-w.coords(1)[0]))
     #print('{}, {}'.format(x, y))
@@ -111,8 +111,8 @@ for i in l:
 #
 #binding
 if (len(itemlist) > 1) :
-    c.tag_bind(itemlist[0],"<Button-1>", ddrag)
-    c.tag_bind(itemlist[0],"<ButtonRelease-1>", ddrop)
+    c.tag_bind(1,"<Button-1>", ddrag)
+    c.tag_bind(1,"<ButtonRelease-1>", ddrop)
 
 root.bind('<Motion>', motion)
 root.mainloop()
