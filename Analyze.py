@@ -76,41 +76,72 @@ admittanceMatrix = [[0 for j in range(maxNode)] for i in range(maxNode)]
 knownMatrix = [0 for i in range(maxNode)]
 unknownMatrix = ["V(N" + str(i + 1) + ")" for i in range(maxNode)]
 
-for i in range(len(commands)):
-	commandtext = commands[i].split(' ')
-	# nodesAndValues = re.findall(r"\(([A-Za-z0-9_,. ]*)\)", commands[i])
-	# if (nodesAndValues != []):
-	# 	nodes = nodesAndValues[0].split(', ')
+def formAdmittanceMatrix():
+	voltageSources = 0
+	for i in range(len(commands)):
+		commandtext = commands[i].split(' ')
+		# nodesAndValues = re.findall(r"\(([A-Za-z0-9_,. ]*)\)", commands[i])
+		# if (nodesAndValues != []):
+		# 	nodes = nodesAndValues[0].split(', ')
 
-	if(commandtext[0].lower() == 'r'):
-		componentValue = getComponentValue(commandtext[4])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		if(node1 != 0):
-			admittanceMatrix[node1 - 1][node1 - 1] += 1/componentValue
-		if((node1 != 0) & (node2 != 0)):
-			admittanceMatrix[node1 - 1][node2 - 1] -= 1/componentValue
-			admittanceMatrix[node2 - 1][node1 - 1] -= 1/componentValue
-		if(node2 != 0):
-			admittanceMatrix[node2 - 1][node2 - 1] += 1/componentValue
+		if(commandtext[0].lower() == 'r'):
+			componentValue = getComponentValue(commandtext[4])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			if(node1 != 0):
+				admittanceMatrix[node1 - 1][node1 - 1] += 1/componentValue
+			if((node1 != 0) & (node2 != 0)):
+				admittanceMatrix[node1 - 1][node2 - 1] -= 1/componentValue
+				admittanceMatrix[node2 - 1][node1 - 1] -= 1/componentValue
+			if(node2 != 0):
+				admittanceMatrix[node2 - 1][node2 - 1] += 1/componentValue
 
-	elif(commandtext[0].lower() == 'g'):
-		componentValue = getComponentValue(commandtext[4])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		if(node1 != 0):
-			admittanceMatrix[node1 - 1][node1 - 1] += componentValue
-		if((node1 != 0) & (node2 != 0)):
-			admittanceMatrix[node1 - 1][node2 - 1] -= componentValue
-			admittanceMatrix[node2 - 1][node1 - 1] -= componentValue
-		if(node2 != 0):
-			admittanceMatrix[node2 - 1][node2 - 1] += componentValue
-		
-	elif(commandtext[0].lower() == 'l'):
-		componentValue = getComponentValue(commandtext[4])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		if(simulationDomain == "DC"):		#Consider it a short circuit, or a 0V voltage source, neat, heh?
+		elif(commandtext[0].lower() == 'g'):
+			componentValue = getComponentValue(commandtext[4])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			if(node1 != 0):
+				admittanceMatrix[node1 - 1][node1 - 1] += componentValue
+			if((node1 != 0) & (node2 != 0)):
+				admittanceMatrix[node1 - 1][node2 - 1] -= componentValue
+				admittanceMatrix[node2 - 1][node1 - 1] -= componentValue
+			if(node2 != 0):
+				admittanceMatrix[node2 - 1][node2 - 1] += componentValue
+			
+		elif(commandtext[0].lower() == 'l'):
+			componentValue = getComponentValue(commandtext[4])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			if(simulationDomain == "DC"):		#Consider it a short circuit, or a 0V voltage source, neat, heh?
+				for i in range(len(admittanceMatrix)):
+					admittanceMatrix[i].append(0)
+					if (i == (node1 - 1)):
+						admittanceMatrix[i][maxNode + voltageSources] += 1
+					if (i == (node2 - 1)):
+						admittanceMatrix[i][maxNode + voltageSources] -= 1
+				columnSliceTranspose = [row[-1] for row in admittanceMatrix]
+				columnSliceTranspose.append(0)
+				admittanceMatrix.append(columnSliceTranspose)
+				voltageSources += 1
+				unknownMatrix.append("I(" + commandtext[1] + ")")
+				knownMatrix.append(0)
+
+			elif(simulationDomain == "AC"):
+				pass
+
+		elif(commandtext[0].lower() == 'c'):
+			componentValue = getComponentValue(commandtext[4])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			if(simulationDomain == "DC"):
+				pass
+			elif(simulationDomain == "AC"):
+				pass
+			
+		elif(commandtext[0].lower() == 'v'):
+			componentValue = getComponentValue(commandtext[4])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
 			for i in range(len(admittanceMatrix)):
 				admittanceMatrix[i].append(0)
 				if (i == (node1 - 1)):
@@ -122,88 +153,59 @@ for i in range(len(commands)):
 			admittanceMatrix.append(columnSliceTranspose)
 			voltageSources += 1
 			unknownMatrix.append("I(" + commandtext[1] + ")")
+			knownMatrix.append(componentValue)
+
+		elif(commandtext[0].lower() == 'i'):
+			componentValue = getComponentValue(commandtext[4])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			if(node1 > -1):
+				knownMatrix[node1 - 1] += componentValue
+			if(node2 > -1):
+				knownMatrix[node2 - 1] -= componentValue
+
+		elif(commandtext[0].lower() == 'diffamp3'):
+			componentValue = getComponentValue(commandtext[5])
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			node3 = getNodeValue(commandtext[4])
+			for i in range(len(admittanceMatrix)):
+				admittanceMatrix[i].append(0)
+				if (i == (node3 - 1)):
+					admittanceMatrix[i][maxNode + voltageSources] += 1
+			columnSliceTranspose = [row[-1] for row in admittanceMatrix]
+			columnSliceTranspose.append(0)
+			admittanceMatrix.append(columnSliceTranspose)
+			for i in range(len(admittanceMatrix)):
+				if (i == (node1 - 1)):
+					admittanceMatrix[maxNode + voltageSources][i] += componentValue
+				if (i == (node2 - 1)):
+					admittanceMatrix[maxNode + voltageSources][i] -= componentValue
+			voltageSources += 1
+			unknownMatrix.append("I(" + commandtext[1] + ")")
 			knownMatrix.append(0)
 
-		elif(simulationDomain == "AC"):
-			pass
+		elif(commandtext[0].lower() == 'opamp3'):
+			node1 = getNodeValue(commandtext[2])
+			node2 = getNodeValue(commandtext[3])
+			node3 = getNodeValue(commandtext[4])
+			for i in range(len(admittanceMatrix)):
+				admittanceMatrix[i].append(0)
+				if (i == (node3 - 1)):
+					admittanceMatrix[i][maxNode + voltageSources] += 1
+			columnSliceTranspose = [0 for row in admittanceMatrix] #No longer the transpose
+			columnSliceTranspose.append(0)
+			admittanceMatrix.append(columnSliceTranspose)
+			for i in range(len(admittanceMatrix)):
+				if (i == (node1 - 1)):
+					admittanceMatrix[maxNode + voltageSources][i] += 1
+				if (i == (node2 - 1)):
+					admittanceMatrix[maxNode + voltageSources][i] -= 1
+			voltageSources += 1
+			unknownMatrix.append("I(" + commandtext[1] + ")")
+			knownMatrix.append(0)
 
-	elif(commandtext[0].lower() == 'c'):
-		componentValue = getComponentValue(commandtext[4])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		if(simulationDomain == "DC"):
-			pass
-		elif(simulationDomain == "AC"):
-			pass
-		
-	elif(commandtext[0].lower() == 'v'):
-		componentValue = getComponentValue(commandtext[4])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		for i in range(len(admittanceMatrix)):
-			admittanceMatrix[i].append(0)
-			if (i == (node1 - 1)):
-				admittanceMatrix[i][maxNode + voltageSources] += 1
-			if (i == (node2 - 1)):
-				admittanceMatrix[i][maxNode + voltageSources] -= 1
-		columnSliceTranspose = [row[-1] for row in admittanceMatrix]
-		columnSliceTranspose.append(0)
-		admittanceMatrix.append(columnSliceTranspose)
-		voltageSources += 1
-		unknownMatrix.append("I(" + commandtext[1] + ")")
-		knownMatrix.append(componentValue)
-
-	elif(commandtext[0].lower() == 'i'):
-		componentValue = getComponentValue(commandtext[4])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		if(node1 > -1):
-			knownMatrix[node1 - 1] += componentValue
-		if(node2 > -1):
-			knownMatrix[node2 - 1] -= componentValue
-
-	elif(commandtext[0].lower() == 'diffamp3'):
-		componentValue = getComponentValue(commandtext[5])
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		node3 = getNodeValue(commandtext[4])
-		for i in range(len(admittanceMatrix)):
-			admittanceMatrix[i].append(0)
-			if (i == (node3 - 1)):
-				admittanceMatrix[i][maxNode + voltageSources] += 1
-		columnSliceTranspose = [row[-1] for row in admittanceMatrix]
-		columnSliceTranspose.append(0)
-		admittanceMatrix.append(columnSliceTranspose)
-		for i in range(len(admittanceMatrix)):
-			if (i == (node1 - 1)):
-				admittanceMatrix[maxNode + voltageSources][i] += componentValue
-			if (i == (node2 - 1)):
-				admittanceMatrix[maxNode + voltageSources][i] -= componentValue
-		voltageSources += 1
-		unknownMatrix.append("I(" + commandtext[1] + ")")
-		knownMatrix.append(0)
-
-	elif(commandtext[0].lower() == 'opamp3'):
-		node1 = getNodeValue(commandtext[2])
-		node2 = getNodeValue(commandtext[3])
-		node3 = getNodeValue(commandtext[4])
-		for i in range(len(admittanceMatrix)):
-			admittanceMatrix[i].append(0)
-			if (i == (node3 - 1)):
-				admittanceMatrix[i][maxNode + voltageSources] += 1
-		columnSliceTranspose = [0 for row in admittanceMatrix] #No longer the transpose
-		columnSliceTranspose.append(0)
-		admittanceMatrix.append(columnSliceTranspose)
-		for i in range(len(admittanceMatrix)):
-			if (i == (node1 - 1)):
-				admittanceMatrix[maxNode + voltageSources][i] += 1
-			if (i == (node2 - 1)):
-				admittanceMatrix[maxNode + voltageSources][i] -= 1
-		voltageSources += 1
-		unknownMatrix.append("I(" + commandtext[1] + ")")
-		knownMatrix.append(0)
-
-
+formAdmittanceMatrix()
 admittanceMatrix = np.array(admittanceMatrix)
 knownMatrix = np.array(knownMatrix)
 
