@@ -17,27 +17,44 @@ itemlist=[]
 root.minsize(width=500, height=500)
 #Canvas
 c = Canvas(root,height = 400,width = 500)
+
 saveicon = PhotoImage(file="Resources/Icons/save.png")
 newicon = PhotoImage(file="Resources/Icons/new.png")
 resicon = PhotoImage(file="Resources/Icons/Res(2).png")
 ressym = PhotoImage(file = "Resources/Icons/Res.png")
+#drag functions
+def ddrag(event):
+    print("catch")
+    #print(w.find_closest(event.x, event.y)[0])
+    #if (w.find_closest(event.x, event.y)[0] != cd) :
+    global cd
+    cd = w.find_closest(event.x, event.y)[0]
+def ddrop(event):
+    print("relase")
+    global cd
+    cd = None
 #command functions
+
 def Close():
     print("Close")
     root.destroy()
 def About():
     print("help yourself")
 def donothing():
+    
     #rect1 = c.create_rectangle(0,0,50,50, fill = "blue")
-    rect2 = c.create_image(50,50, image = ressym)
-    itemlist.append(rect2)
+    newitem = c.create_image(50,50, image = ressym)
+    
     print("nothing")
-def resistor():
-    c.create_image(50,50, image = ressym)
+def newcom():
+    global itemlist
+    newitem = c.create_image(50,50, image = ressym)
+    itemlist.append(newitem)
 
 def motion(event):
-    global status
     x, y = event.x, event.y
+    if cd != None:
+        w.coords(itemlist[cd],event.x, event.y,event.x+(w.coords(items[cd])[2]-w.coords(items[cd])[0]), event.y+(w.coords(items[cd])[2]-w.coords(items[cd])[0]))
     #print('{}, {}'.format(x, y))
     #status = ('{}, {}'.format(x, y))
     
@@ -59,7 +76,7 @@ funclist=[[ donothing , donothing , donothing , donothing , Close ]
 ,[ donothing , donothing , donothing , donothing , donothing , donothing , donothing , donothing , donothing ] 
 ,[ donothing , donothing , donothing , donothing ]
 ,[ donothing , donothing , donothing , donothing , donothing , donothing ]
-,[ donothing , resistor , donothing , donothing , donothing , donothing , donothing , donothing ]
+,[ donothing , newcom , donothing , donothing , donothing , donothing , donothing , donothing ]
 ,[ donothing ]
 ,[ About]]
 
@@ -90,4 +107,8 @@ for i in l:
         m+=1
     g+=1
 root.bind('<Motion>', motion)
+for i in itemlist:
+    w.tag_bind(i,'<Button-1>', ddrag)
+    w.tag_bind(i,"<ButtonRelease-1>", ddrop)
+
 root.mainloop()
