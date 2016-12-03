@@ -22,6 +22,7 @@ def Close():
 def About():
     print("help yourself")
 def donothing():
+    line = c.create_rectangle(0,0,500,400, fill = "blue")
     print("nothing")
 
 #Toolbar
@@ -31,13 +32,12 @@ newicon = PhotoImage(file="Resources/Icons/new.png")
 resicon = PhotoImage(file="Resources/Icons/Res(2).png")
 new = Button(toolbar,command = donothing,compound=CENTER,image=newicon)
 save = Button(toolbar,command = donothing,compound=CENTER,image=saveicon)
-#resistor = Button(toolbar,command = donothing,compound=CENTER,image=resicon)
+resistor = Button(toolbar,command = donothing,compound=CENTER,image=resicon)
 new.pack(side = LEFT,padx = 2,pady =2)
 save.pack(side = LEFT,padx = 2,pady =2)
-#resistor.pack(side = LEFT,padx = 2,pady =2)
+resistor.pack(side = LEFT,padx = 2,pady =2)
 toolbar.pack(side=TOP,fill = X)
 c.pack(fill = X)
-line = c.create_line(0,0,500,10)
 #Status bar
 statusbar = Label (root , text ="status .......",bd = 1, relief = SUNKEN,anchor = W)
 statusbar.pack(side = BOTTOM,fill = X)
