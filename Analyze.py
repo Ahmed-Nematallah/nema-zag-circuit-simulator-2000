@@ -34,6 +34,14 @@ def getNodeValue(nodeValue):
 		return -1
 
 def getPhase(complexNumber):
+	if (complexNumber.real == 0):
+		if (complexNumber.imag == 0):
+			return 0 * 180 / math.pi
+		elif (complexNumber.imag > 0):
+			return math.pi / 2 * 180 / math.pi
+		else:
+			return - math.pi / 2 * 180 / math.pi
+
 	return math.atan(complexNumber.imag / complexNumber.real) * 180 / math.pi
 
 def getMagnitude(complexNumber):
@@ -58,7 +66,7 @@ def getMagnitude(complexNumber):
 # R R2 N2 N0 10k
 # R R3 N4 N3 10k
 # OPAMP3 A1 N2 N3 N4"""
-netlist = """.AC 1k
+netlist = """.DC 1k
 V V1 N1 N0 10
 G G1 N1 N2 6.28318530718m
 C C1 N2 N0 1u
