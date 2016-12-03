@@ -12,6 +12,7 @@ funclist=[[ Open , Save , Saveas , Print ,  Close ]
 '''
 
 root = Tk()
+itemlist=[]
 # minimum window size
 root.minsize(width=500, height=500)
 #Canvas
@@ -27,15 +28,16 @@ def Close():
 def About():
     print("help yourself")
 def donothing():
-    rect1 = c.create_rectangle(0,0,500,400, fill = "blue")
+    rect1 = c.create_rectangle(0,0,50,50, fill = "blue")
+    itemlist.append(rect1)
     print("nothing")
 def resistor():
-    res= c.create_image(50,50,50,50, image = ressym,tag = "com")
+    rect2 = c.create_rectangle(0,0,500,400, fill = "blue")
     
 def motion(event):
     global status
     x, y = event.x, event.y
-    print('{}, {}'.format(x, y))
+    #print('{}, {}'.format(x, y))
     #status = ('{}, {}'.format(x, y))
     
 #Toolbar
