@@ -28,12 +28,13 @@ def Close():
 def About():
     print("help yourself")
 def donothing():
-    rect1 = c.create_rectangle(0,0,50,50, fill = "blue")
-    itemlist.append(rect1)
+    #rect1 = c.create_rectangle(0,0,50,50, fill = "blue")
+    rect2 = c.create_image(50,50, image = ressym)
+    itemlist.append(rect2)
     print("nothing")
 def resistor():
-    rect2 = c.create_rectangle(0,0,500,400, fill = "blue")
-    
+    c.create_image(50,50, image = ressym)
+
 def motion(event):
     global status
     x, y = event.x, event.y
