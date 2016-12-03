@@ -50,7 +50,7 @@ V V1 N1 N0 10
 R R1 N2 N1 10k
 R R2 N2 N0 10k
 R R3 N4 N3 10k
-DIFFAMP3 A1 N2 N3 N4 1meg"""
+DIFFAMP3 A1 N2 N3 N4 100k"""
 
 
 i = 0
@@ -186,9 +186,10 @@ for i in range(len(commands)):
 
 admittanceMatrix = np.array(admittanceMatrix)
 knownMatrix = np.array(knownMatrix)
-print(admittanceMatrix)
-print(knownMatrix)
-print(unknownMatrix)
+
+# print(admittanceMatrix)
+# print(knownMatrix)
+# print(unknownMatrix)
 
 admittanceMatrixInvert = np.linalg.inv(admittanceMatrix)
 solutionMatrix = np.dot(admittanceMatrixInvert, knownMatrix)
