@@ -60,7 +60,7 @@ def getMagnitude(complexNumber):
 # OPAMP3 A1 N2 N3 N4"""
 netlist = """.AC 1k
 V V1 N1 N0 10
-G G1 N1 N2 6.28m
+G G1 N1 N2 6.28318530718m
 C C1 N2 N0 1u
 """
 
@@ -90,7 +90,7 @@ knownMatrix = [0 for i in range(maxNode)]
 unknownMatrix = ["V(N" + str(i + 1) + ")" for i in range(maxNode)]
 
 def formAdmittanceMatrix():
-	voltageSources = 0
+	global voltageSources
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
 		# nodesAndValues = re.findall(r"\(([A-Za-z0-9_,. ]*)\)", commands[i])
