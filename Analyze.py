@@ -42,7 +42,14 @@ def getPhase(complexNumber):
 		else:
 			return - math.pi / 2 * 180 / math.pi
 
-	return math.atan(complexNumber.imag / complexNumber.real) * 180 / math.pi
+	elif (complexNumber.imag == 0):
+		if (complexNumber.real > 0):
+			return 0 * 180 / math.pi
+		else:
+			return - math.pi * 180 / math.pi
+	
+	else:
+		return math.atan(complexNumber.imag / complexNumber.real) * 180 / math.pi
 
 def getMagnitude(complexNumber):
 	return abs(complexNumber)
