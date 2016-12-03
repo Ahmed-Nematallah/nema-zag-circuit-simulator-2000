@@ -50,7 +50,7 @@ V V1 N1 N0 10
 R R1 N2 N1 10k
 R R2 N2 N0 10k
 R R3 N4 N3 10k
-DIFFAMP3 A1 N2 N3 N4 100k"""
+OPAMP3 A1 N2 N3 N4"""
 
 
 i = 0
@@ -183,6 +183,26 @@ for i in range(len(commands)):
 		unknownMatrix.append("I(" + commandtext[1] + ")")
 		knownMatrix.append(0)
 
+	elif(commandtext[0].lower() == 'opamp3'):
+		node1 = getNodeValue(commandtext[2])
+		node2 = getNodeValue(commandtext[3])
+		node3 = getNodeValue(commandtext[4])
+		for i in range(len(admittanceMatrix)):
+			admittanceMatrix[i].append(0)
+			if (i == (node3 - 1)):
+				admittanceMatrix[i][maxNode + voltageSources] += 1
+		columnSliceTranspose = [0 for row in admittanceMatrix] #No longer the transpose
+		columnSliceTranspose.append(0)
+		admittanceMatrix.append(columnSliceTranspose)
+		for i in range(len(admittanceMatrix)):
+			if (i == (node1 - 1)):
+				admittanceMatrix[maxNode + voltageSources][i] += 1
+			if (i == (node2 - 1)):
+				admittanceMatrix[maxNode + voltageSources][i] -= 1
+		voltageSources += 1
+		unknownMatrix.append("I(" + commandtext[1] + ")")
+		knownMatrix.append(0)
+
 
 admittanceMatrix = np.array(admittanceMatrix)
 knownMatrix = np.array(knownMatrix)
@@ -197,7 +217,8 @@ solutionMatrix = solutionMatrix.tolist()
 
 for i in range(len(commands)):
 	commandtext = commands[i].split(' ')
-	if (len(commandtext) == 5):           #Bad solution, should check type of component
+	if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') | (commandtext[0].lower() == 'l') | \
+	    (commandtext[0].lower() == 'c')):
 		componentValue = getComponentValue(commandtext[4])
 		node1 = getNodeValue(commandtext[2])
 		node2 = getNodeValue(commandtext[3])
