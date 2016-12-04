@@ -184,7 +184,7 @@ def formAdmittanceMatrix():
 			componentValue = getComponentValue(commandtext[4])
 			node1 = getNodeValue(commandtext[2])
 			node2 = getNodeValue(commandtext[3])
-			if((simulationDomain == "DC") | (simulationFrequency == 0)):	#Consider it a short circuit, or a 0V voltage source, neat, heh?
+			if((simulationDomain == "DC") | (simulationFrequency == 0)):	#Consider it a short circuit, or a 0V voltage source, neat, huh?
 				for i in range(len(admittanceMatrix)):
 					admittanceMatrix[i].append(0)
 					if (i == (node1 - 1)):
