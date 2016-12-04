@@ -93,21 +93,21 @@ def getMagnitude(complexNumber):
 # R R2 N1 N0 1k"""
 netlist = """.AC op
 .GND N0
-V V1 (N1;N0) 10 180
-R R1 (N1;N2) 4.7k
+V V1 (Input;N0) 10 180
+R R1 (Input;N2) 4.7k
 R R2 (N2;N3) 6.8k
 R R3 (N5;N4) 1.0k
 R R4 (N4;N0) 6.8k
 R R5 (N5;N6) 4.7k
 R R6 (N6;N7) 6.8k
-R R7 (N9;N8) 6.8k
+R R7 (Output;N8) 6.8k
 R R8 (N8;N0) 5.6k
 C C1 (N2;N5) 0.22u
 C C2 (N3;N0) 0.1u
-C C3 (N6;N9) 0.22u
+C C3 (N6;Output) 0.22u
 C C4 (N7;N0) 0.1u
 OPAMP3 A1 (N3;N4;N5)
-OPAMP3 A2 (N7;N8;N9)"""
+OPAMP3 A2 (N7;N8;Output)"""
 
 
 i = 0
@@ -150,12 +150,17 @@ nodeListNatural = [x for (y,x) in sorted(zip(nodeList,nodeListNatural), key=lamb
 nodeList.sort()
 admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 knownMatrix = [0 for i in range(nodeCount)]
-unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 
 groundNodeIndex = nodeList.index(groundNode)
 if (groundNodeIndex > 0):
-	nodeList[groundNodeIndex] = nodeList[0]
+	nodeList[groundNodeIndex] = copy.copy(nodeList[0])
 	nodeList[0] = groundNode
+
+	temp = copy.copy(nodeListNatural[groundNodeIndex])
+	nodeListNatural[groundNodeIndex] = copy.copy(nodeListNatural[0])
+	nodeListNatural[0] = temp
+
+unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 
 def formAdmittanceMatrix():
 	global voltageSources
