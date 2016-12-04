@@ -31,7 +31,7 @@ def getComponentValue(componentValue):
 def getNodes(nodeValue):
 	return nodeValue[1:-1].lower().split(';')
 
-def getPhase(complexNumber):
+def rect2pol(complexNumber):
 	if (complexNumber.real == 0):
 		if (complexNumber.imag == 0):
 			phase = 0
@@ -47,10 +47,11 @@ def getPhase(complexNumber):
 	if (complexNumber.real < 0):
 		phase = phase + math.pi * 180 / math.pi
 
-	return phase
+	return (abs(complexNumber), phase)
 
-def getMagnitude(complexNumber):
-	return abs(complexNumber)
+def pol2rect(magnitude, phase):
+	complexNumber = complex(magnitude * math.cos(phase), magnitude * math.sin(phase))
+	return complexNumber
 
 # netlist = """.DC OP
 # .GND N0
@@ -133,8 +134,8 @@ for i in range(len(commands)):
 
 	if ((commandtext[0].lower() == "v") | (commandtext[0].lower() == "i")):
 		if (len(commandtext) > 4):
-			if (getMagnitude(getComponentValue(commandtext[4])) not in simulationFrequencies):
-				simulationFrequencies.append(getMagnitude(getComponentValue(commandtext[4])))
+			if (rect2pol(getComponentValue(commandtext[4]))[0] not in simulationFrequencies):
+				simulationFrequencies.append(rect2pol(getComponentValue(commandtext[4]))[0])
 
 	if not(commands[i].startswith('.')):
 		localNodes = getNodes(commandtext[2])
@@ -443,10 +444,10 @@ def performAnalysis():
 
 	for i in range(len(solutionMatrix)):
 		#print(unknownMatrix[i] + " = " + str(solutionMatrix[i]))
-		if (getPhase(solutionMatrix[i]) < 180):
-			print(unknownMatrix[i] + " = " + str(getMagnitude(solutionMatrix[i])) + "[" + str(getPhase(solutionMatrix[i])) + "]")
+		if (rect2pol(solutionMatrix[i])[1] < 180):
+			print(unknownMatrix[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
 		else:
-			print(unknownMatrix[i] + " = -" + str(getMagnitude(solutionMatrix[i])) + "[" + str(getPhase(solutionMatrix[i]) - 180) + "]")
+			print(unknownMatrix[i] + " = -" + str(rect2pol(solutionMatrix[i])[0]) + "[" + str((rect2pol(solutionMatrix[i])[1]) - 180) + "]")
 
 
 if (simulationParameters[1].lower() == "op"):
