@@ -63,35 +63,35 @@ def pol2rect(magnitude, phase):
 # R R6 (N3;N0) 1k
 # V V1 (N2;N1) 10"""
 # netlist = """.DC OP
-# R R1 N1 N2 1k
-# R R2 N3 N0 1k
-# L L1 N2 N3 1m
-# V V1 N1 N0 10"""
+# R R1 (N1;N2) 1k
+# R R2 (N3;N0) 1k
+# L L1 (N2;N3) 1m
+# V V1 (N1;N0) 10"""
 # netlist = """.DC OP
-# V V1 N1 N0 10
-# R R1 N2 N1 10k
-# R R2 N2 N0 10k
-# R R3 N4 N3 10k
-# OPAMP3 A1 N2 N3 N4"""
+# V V1 (N1;N0) 10
+# R R1 (N2;N1) 10k
+# R R2 (N2;N0) 10k
+# R R3 (N4;N3) 10k
+# OPAMP3 A1 (N2;N3;N4)"""
 # netlist = """.AC OP
-# V V1 N1 N0 10 1k
-# G G1 N1 N2 6.28318530718m
-# C C1 N2 N0 1u
-# R R1 N1 N0 1k"""
+# V V1 (N1;N0) 10 1k
+# G G1 (N1;N2) 6.28318530718m
+# C C1 (N2;N0) 1u
+# R R1 (N1;N0) 1k"""
 # netlist = """.AC OP
-# V V1 N1 N0 10 500
-# V V2 N2 N0 5 200
-# R R1 N0 N2 1k
-# C C1 N2 N1 1u
-# OPAMP3 A1 N2 N3 N4
-# R R2 N3 N4 1k
-# R R3 N3 N0 1k"""
+# V V1 (N1;N0) 10 500
+# V V2 (N2;N0) 5 200
+# R R1 (N0;N2) 1k
+# C C1 (N2;N1) 1u
+# OPAMP3 A1 (N2;N3;N4)
+# R R2 (N3;N4) 1k
+# R R3 (N3;N0) 1k"""
 # netlist = """.AC op
-# V V1 N1 N0 10 500
-# V V2 N2 N0 10 0
-# C C1 N1 N2 1u
-# R R1 N1 N2 1k
-# R R2 N1 N0 1k"""
+# V V1 (N1;N0) 10 500
+# V V2 (N2;N0) 10 0
+# C C1 (N1;N2) 1u
+# R R1 (N1;N2) 1k
+# R R2 (N1;N0) 1k"""
 netlist = """.AC op
 .GND N0
 V V1 (Input;N0) 10 180
@@ -122,6 +122,8 @@ voltageSources = 0
 groundNode = "n0"
 for i in range(len(commands)):
 	commandtext = commands[i].split(' ')
+	if (commands[i].startswith('#')):
+		pass
 	if (commandtext[0].lower() == ".dc"):
 		simulationDomain = "DC"
 		simulationParameters = copy.copy(commandtext)
@@ -167,6 +169,8 @@ def formAdmittanceMatrix():
 	global voltageSources
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
+		if (commands[i].startswith('#')):
+			pass
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
 		# nodesAndValues = re.findall(r"\(([A-Za-z0-9_,. ]*)\)", commands[i])
@@ -203,8 +207,8 @@ def formAdmittanceMatrix():
 			componentValue = getComponentValue(commandtext[3])
 			node1 = nodeList.index(nodes[0])
 			node2 = nodeList.index(nodes[1])
-			if((simulationDomain == "DC") | (simulationFrequency == 0)):	#Consider it a short circuit, or a 0V voltage source, neat, heh?
-				for i in range(len(admittanceMatrix)):
+			if((simulationDomain == "DC") | (simulationFrequency == 0)):	#Consider it a short circuit, 
+				for i in range(len(admittanceMatrix)):                      #or a 0V voltage source, neat, heh?
 					admittanceMatrix[i].append(0)
 					if (i == (node1 - 1)):
 						admittanceMatrix[i][nodeCount + voltageSources] += 1
@@ -406,11 +410,13 @@ def performAnalysis():
 	solutionMatrix = solutionMatrix.tolist()
 
 	for i in range(len(commands)):
+		if (commands[i].startswith('#')):
+			pass
 		commandtext = commands[i].split(' ')
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
-		if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') | (commandtext[0].lower() == 'l') | \
-			(commandtext[0].lower() == 'c')):
+		if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') | 
+		    (commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c')):
 			componentValue = getComponentValue(commandtext[3])
 			node1 = nodeList.index(nodes[0])
 			node2 = nodeList.index(nodes[1])
@@ -433,25 +439,30 @@ def performAnalysis():
 			solutionMatrix.append(voltageAcross * componentValue)
 
 		elif(commandtext[0].lower() == 'l'):
-			componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
-			unknownMatrix.append("I(" + commandtext[1] + ")")
-			solutionMatrix.append(voltageAcross * componentAdmittance)
+			if (simulationDomain == "AC"):
+				componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
+				unknownMatrix.append("I(" + commandtext[1] + ")")
+				solutionMatrix.append(voltageAcross * componentAdmittance)
 
 		elif(commandtext[0].lower() == 'c'):
-			componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
-			unknownMatrix.append("I(" + commandtext[1] + ")")
-			solutionMatrix.append(voltageAcross * componentAdmittance)
+			if (simulationDomain == "AC"):
+				componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
+				unknownMatrix.append("I(" + commandtext[1] + ")")
+				solutionMatrix.append(voltageAcross * componentAdmittance)
 
 	for i in range(len(solutionMatrix)):
 		#print(unknownMatrix[i] + " = " + str(solutionMatrix[i]))
 		if (rect2pol(solutionMatrix[i])[1] < 180):
-			print(unknownMatrix[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
+			print(unknownMatrix[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + \
+			      str(rect2pol(solutionMatrix[i])[1]) + "]")
 		else:
-			print(unknownMatrix[i] + " = -" + str(rect2pol(solutionMatrix[i])[0]) + "[" + str((rect2pol(solutionMatrix[i])[1]) - 180) + "]")
+			print(unknownMatrix[i] + " = -" + str(rect2pol(solutionMatrix[i])[0]) + "[" + \
+			      str((rect2pol(solutionMatrix[i])[1]) - 180) + "]")
 
 
 if (simulationParameters[1].lower() == "op"):
 	if(simulationDomain == "DC"):
+		unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 		admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 		knownMatrix = [0 for i in range(nodeCount)]
 		voltageSources = 0
@@ -459,6 +470,7 @@ if (simulationParameters[1].lower() == "op"):
 		performAnalysis()
 	elif (simulationDomain == "AC"):
 		for i in simulationFrequencies:
+			unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 			admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 			knownMatrix = [0 for i in range(nodeCount)]
 			voltageSources = 0
