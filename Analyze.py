@@ -107,8 +107,9 @@ C C1 (N2;N5) 0.22u
 C C2 (N3;N0) 0.1u
 C C3 (N6;Output) 0.22u
 C C4 (N7;N0) 0.1u
+#First opamp
 OPAMP3 A1 (N3;N4;N5)
-OPAMP3 A2 (N7;N8;Output)"""
+OPAMP3 A2 (N7;N8;Output) #Second opamp"""
 
 
 i = 0
@@ -116,14 +117,23 @@ simulationDomain = ""
 simulationFrequencies = []
 simulationParameters = []
 commands = netlist.splitlines()
+commands = list(filter(None, commands))
 nodeList = []
 nodeListNatural = []
 voltageSources = 0
 groundNode = "n0"
 for i in range(len(commands)):
 	commandtext = commands[i].split(' ')
-	if (commands[i].startswith('#')):
-		pass
+	if ('#' in commands[i]):
+		temp = commands[i][0:commands[i].index('#')]
+		if not(temp is ''):
+			commands[i] = temp
+			commandtext = commands[i].split(' ')
+		else:
+			commands[i] = ''
+			continue
+	commandtext = list(filter(None, commandtext))
+
 	if (commandtext[0].lower() == ".dc"):
 		simulationDomain = "DC"
 		simulationParameters = copy.copy(commandtext)
@@ -146,6 +156,7 @@ for i in range(len(commands)):
 				nodeList.append(localNodes[i])
 				nodeListNatural.append(commandtext[2][1:-1].split(';')[i])
 
+commands = list(filter(None, commands))
 simulationFrequencies.sort()
 simulationFrequency = 0
 nodeCount = len(nodeList) - 1
@@ -169,8 +180,6 @@ def formAdmittanceMatrix():
 	global voltageSources
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
-		if (commands[i].startswith('#')):
-			pass
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
 		# nodesAndValues = re.findall(r"\(([A-Za-z0-9_,. ]*)\)", commands[i])
@@ -410,8 +419,6 @@ def performAnalysis():
 	solutionMatrix = solutionMatrix.tolist()
 
 	for i in range(len(commands)):
-		if (commands[i].startswith('#')):
-			pass
 		commandtext = commands[i].split(' ')
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
