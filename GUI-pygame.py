@@ -51,7 +51,7 @@ while not gameExit:
             if drawing == True:
                 drawing = False
     gameDisplay.fill((150,150,150))
-    pygame.draw.rect(gameDisplay, (0,255,255), [cursx-10,cursy-10,cursx+10,cursy+10])
+    pygame.draw.rect(gameDisplay, (0,255,255), [cursx-10,cursy-10,25,25])
     #pygame.draw.rect(gameDisplay, (0,255,255), [320,130,280,170])
     pygame.draw.line(gameDisplay, (0,255,255), [0,0], [cursx,cursy])
     pygame.display.update()
