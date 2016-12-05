@@ -21,8 +21,6 @@ drawcursx =0
 drawcursy = 0
 cursx = 0
 cursy = 0
-lines=[]
-
 while not gameExit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -31,26 +29,13 @@ while not gameExit:
             cursx,cursy = snapToGrid(event.pos[0],event.pos[1],30)
             print([cursx,cursy,cursx+10,cursy+10])
         if event.type == pygame.MOUSEBUTTONUP:
-            print("mouse down")
             if drawing == False:
-                drawcursx = cursx
-                drawcursy = cursy
                 drawing = True
-            elif drawing == True:
-                lines.append([drawcursx,drawcursy,cursx,cursy])
+            if drawing == True:
                 drawing = False
     gameDisplay.fill((150,150,150))
-    #draw current line
-    if drawing:
-        if drawcursx == cursx or drawcursy == cursy:
-            pygame.draw.line(gameDisplay, (0,255,255), [drawcursx,drawcursy], [cursx,cursy],3)
-    #render drawn lines
-    if len(lines)>0:
-        for l in lines :
-            pygame.draw.line(gameDisplay, (0,255,255), [l[0],l[1]],[l[2],l[3]],3)
-    #pygame.draw.rect(gameDisplay, (0,255,255), [cursx-10,cursy-10,25,25])
+    pygame.draw.rect(gameDisplay, (0,255,255), [cursx-10,cursy-10,25,25])
     #pygame.draw.rect(gameDisplay, (0,255,255), [320,130,280,170])
-
-    #pygame.draw.line(gameDisplay, (0,255,255), [0,0], [cursx,cursy])
+    pygame.draw.line(gameDisplay, (0,255,255), [0,0], [cursx,cursy])
     pygame.display.update()
 pygame.quit()
