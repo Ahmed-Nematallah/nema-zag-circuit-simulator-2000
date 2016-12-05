@@ -1,34 +1,17 @@
 import pygame
-'''
+
+
 def snapToGrid(x,y,gridspace):
-    #x = (x//50)*50
-    #y = (y//50)*50
-    #x = x +min(abs(x-(x//50)*50),abs(x-((x//50)*50+50)))
-    #y = y +min(abs(x-(y//50)*50),abs(y-((y//50)*50+50))
-    if abs(x-(x//gridspace)*gridspace) < abs(x-((x//gridspace)*gridspace+gridspace)):
-        x = x- abs(x-(x//gridspace)*gridspace)
-    if abs(x-(x//gridspace)*gridspace) > abs(x-((x//gridspace)*gridspace+gridspace)):
-        x = x+ abs(x-((x//gridspace)*gridspace+gridspace))
-    if abs(y-(y//gridspace)*gridspace) < abs(y-((y//gridspace)*gridspace+gridspace)):
-        y = y- abs(y-(y//gridspace)*gridspace)
-    if abs(y-(y//gridspace)*gridspace) > abs(y-((y//gridspace)*gridspace+gridspace)):
-        y = y+ abs(y-((y//gridspace)*gridspace+gridspace))
+    if (x % gridspace < gridspace / 2):
+        x = x - (x % gridspace)
+    else:
+        x = (x + gridspace)  - (x % gridspace)
+    if (y % gridspace < gridspace / 2):
+        y = y - (y % gridspace)
+    else:
+        y = (y + gridspace) - (y % gridspace)
     return x,y
-    '''
-def snapToGrid(x,y,gridspace):
-    #x = (x//50)*50
-    #y = (y//50)*50
-    #x = x +min(abs(x-(x//50)*50),abs(x-((x//50)*50+50)))
-    #y = y +min(abs(x-(y//50)*50),abs(y-((y//50)*50+50))
-    if abs(x-(x//gridspace)*gridspace) < abs(x-((x//gridspace)*gridspace+gridspace)):
-        x = x- abs(x-(x//gridspace)*gridspace)
-    if abs(x-(x//gridspace)*gridspace) > abs(x-((x//gridspace)*gridspace+gridspace)):
-        x = x+ abs(x-((x//gridspace)*gridspace+gridspace))
-    if abs(y-(y//gridspace)*gridspace) < abs(y-((y//gridspace)*gridspace+gridspace)):
-        y = y- abs(y-(y//gridspace)*gridspace)
-    if abs(y-(y//gridspace)*gridspace) > abs(y-((y//gridspace)*gridspace+gridspace)):
-        y = y+ abs(y-((y//gridspace)*gridspace+gridspace))
-    return x,y
+
 pygame.init ()
 gameDisplay = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("circuit sim")
