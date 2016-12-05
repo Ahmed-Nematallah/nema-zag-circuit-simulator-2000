@@ -1,5 +1,6 @@
 import pygame
 
+
 def snapToGrid(x,y,gridspace):
     if (x % gridspace < gridspace / 2):
         x = x - (x % gridspace)
@@ -21,6 +22,7 @@ drawcursy = 0
 cursx = 0
 cursy = 0
 lines=[]
+
 while not gameExit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
