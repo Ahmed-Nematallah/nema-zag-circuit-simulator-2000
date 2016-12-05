@@ -33,7 +33,7 @@ pygame.init ()
 gameDisplay = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("circuit sim")
 gameExit =False
-drawing = True
+drawing = False
 drawcursx =0
 drawcursy = 0
 cursx = 0
@@ -48,9 +48,9 @@ while not gameExit:
             print([cursx,cursy,cursx+10,cursy+10])
         if event.type == pygame.MOUSEBUTTONUP:
             print("mouse down")
-            drawcursx = cursx
-            drawcursy = cursy
             if drawing == False:
+                drawcursx = cursx
+                drawcursy = cursy
                 drawing = True
             elif drawing == True:
                 lines.append([drawcursx,drawcursy,cursx,cursy])
