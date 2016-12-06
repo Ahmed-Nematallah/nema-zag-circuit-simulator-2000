@@ -30,7 +30,7 @@ while not gameExit:
             gameExit = True
         if event.type == pygame.MOUSEMOTION:
             gridX,gridY = snapToGrid(event.pos[0],event.pos[1],30)
-            print([gridX,gridY)
+            print(gridX,gridY)
         if event.type == pygame.MOUSEBUTTONUP:
             print("mouse down")
             if drawing == False:
