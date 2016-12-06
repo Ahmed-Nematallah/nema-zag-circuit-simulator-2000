@@ -23,14 +23,14 @@ gridX = 0
 gridY = 0
 lines=[]
 verticalWire = False
-
+#main loop
 while not gameExit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameExit = True
         if event.type == pygame.MOUSEMOTION:
             gridX,gridY = snapToGrid(event.pos[0],event.pos[1],30)
-            print([gridX,gridY,gridX+10,gridY+10])
+            print([gridX,gridY)
         if event.type == pygame.MOUSEBUTTONUP:
             print("mouse down")
             if drawing == False:
@@ -56,9 +56,12 @@ while not gameExit:
     if len(lines)>0:
         for l in lines :
             pygame.draw.line(gameDisplay, (0,255,255), [l[0],l[1]],[l[2],l[3]],3)
+    # render drawn components
+    if len(components)>0:
+        for c in components:
+            pygame.draw.rect(gameDisplay, (0,255,255), [c[0],c[1],c[2],c[3]])
     #pygame.draw.rect(gameDisplay, (0,255,255), [gridX-10,gridY-10,25,25])
     #pygame.draw.rect(gameDisplay, (0,255,255), [320,130,280,170])
-
     #pygame.draw.line(gameDisplay, (0,255,255), [0,0], [gridX,gridY])
     pygame.display.update()
 pygame.quit()
