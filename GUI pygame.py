@@ -13,45 +13,72 @@ def snapToGrid(x,y,gridspace):
     return x,y
 
 pygame.init ()
+clock = pygame.time.Clock()
 gameDisplay = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("circuit sim")
 gameExit =False
-drawing = False
+drawingl = False
+drawingc = False
 drawgridX =0
 drawgridY = 0
+orientation = 0 #0->H 1->v
 gridX = 0
 gridY = 0
 lines=[]
+components = []
 verticalWire = False
+
 #main loop
 while not gameExit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameExit = True
         if event.type == pygame.MOUSEMOTION:
-            gridX,gridY = snapToGrid(event.pos[0],event.pos[1],30)
+            gridX,gridY = snapToGrid(event.pos[0],event.pos[1],50)
             print(gridX,gridY)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_c:
+                if drawingc == False:
+                    drawingc = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                if orientation ==0:
+                    orientation = 1
+                elif orientation ==1:
+                    orientation = 0
         if event.type == pygame.MOUSEBUTTONUP:
             print("mouse down")
-            if drawing == False:
+            if drawingl == False and drawingc == False :
                 drawgridX = gridX
                 drawgridY = gridY
-                drawing = True
-            elif drawing == True:
+                drawingl = True
+            elif drawingl == True:
                 if (verticalWire):
                     lines.append([drawgridX,drawgridY,drawgridX,gridY])
                 else:
                     lines.append([drawgridX,drawgridY,gridX,drawgridY])
-                drawing = False
+                drawingl = False
+            if drawingc == True:
+                drawingc = False
+                if orientation ==0:
+                    components.append([gridX,gridY-5,50,10])
+                if orientation ==1:
+                    components.append([gridX-5,gridY,10,50])
     gameDisplay.fill((150,150,150))
     #draw current line
-    if drawing:
+    if drawingl:
         if abs(drawgridX - gridX) >= abs(drawgridY - gridY):
             verticalWire = False
             pygame.draw.line(gameDisplay, (0,255,255), [drawgridX,drawgridY], [gridX,drawgridY],3)
         else:
             verticalWire = True
             pygame.draw.line(gameDisplay, (0,255,255), [drawgridX,drawgridY], [drawgridX,gridY],3)
+    #draw current component
+    if drawingc:
+        if orientation == 0:
+            pygame.draw.rect(gameDisplay, (0,150,255), [gridX,gridY-5,50,10])
+        if orientation == 1:
+            pygame.draw.rect(gameDisplay, (0,150,255), [gridX-5,gridY,10,50])
     #render drawn lines
     if len(lines)>0:
         for l in lines :
@@ -59,9 +86,10 @@ while not gameExit:
     # render drawn components
     if len(components)>0:
         for c in components:
-            pygame.draw.rect(gameDisplay, (0,255,255), [c[0],c[1],c[2],c[3]])
+            pygame.draw.rect(gameDisplay, (0,150,255), [c[0],c[1],c[2],c[3]])
     #pygame.draw.rect(gameDisplay, (0,255,255), [gridX-10,gridY-10,25,25])
     #pygame.draw.rect(gameDisplay, (0,255,255), [320,130,280,170])
     #pygame.draw.line(gameDisplay, (0,255,255), [0,0], [gridX,gridY])
     pygame.display.update()
+    clock.tick(60)
 pygame.quit()
