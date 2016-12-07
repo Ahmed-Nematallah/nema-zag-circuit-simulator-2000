@@ -1,5 +1,8 @@
 import pygame
 import copy
+import enum
+
+eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
 
 def snapToGrid(x, y, gridspace):
@@ -57,46 +60,22 @@ def render():
 	pygame.display.update()
 
 def checkEvents():
-	global killApp
-	global drawingLine
-	global drawingComponenet
-	global initialCoordinates
-	global componentOrientation
-	global gridCoordinates
-	global lines
-	global components
-	global verticalWire
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
-			killApp = True
-		if event.type == pygame.MOUSEMOTION:
-			gridCoordinates = snapToGrid(event.pos[0],event.pos[1],25)
-		if event.type == pygame.KEYDOWN:
+			return eventType.Quit, None
+		elif event.type == pygame.MOUSEMOTION:
+			return eventType.Mouse_Motion, event.pos
+		elif event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_c:
-				if drawingComponenet == False:
-					drawingComponenet = True
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_r:
-				if componentOrientation ==0:
-					componentOrientation = 1
-				elif componentOrientation ==1:
-					componentOrientation = 0
-		if event.type == pygame.MOUSEBUTTONUP:
-			if drawingLine == False and drawingComponenet == False :
-				initialCoordinates = copy.copy(gridCoordinates)
-				drawingLine = True
-			elif drawingLine == True:
-				if (componentOrientation):
-					lines.append([initialCoordinates, [initialCoordinates[0], gridCoordinates[1]]])
-				else:
-					lines.append([initialCoordinates, [gridCoordinates[0], initialCoordinates[1]]])
-				drawingLine = False
-			if drawingComponenet == True:
-				drawingComponenet = False
-				if componentOrientation ==0:
-					components.append([[gridCoordinates[0] - 25, gridCoordinates[1] - 5], [50, 10]])
-				if componentOrientation ==1:
-					components.append([[gridCoordinates[0] - 5, gridCoordinates[1] - 25], [10, 50]])
+				return eventType.Key_Down, "c"
+			elif event.key == pygame.K_r:
+				return eventType.Key_Down, "r"
+			else:
+				return eventType.Key_Down, 0
+		elif event.type == pygame.MOUSEBUTTONUP:
+			return eventType.Mouse_Up, None
+	
+	return 0, 0
 
 def kill():
 	pygame.quit()
@@ -117,7 +96,34 @@ initalize()
 
 #main loop
 while not killApp:
-	checkEvents()
+	returnedEvent, eventParameter = checkEvents()
+	if (returnedEvent == eventType.Quit):
+		killApp = True
+	elif (returnedEvent == eventType.Mouse_Motion):
+		gridCoordinates = snapToGrid(eventParameter[0], eventParameter[1],25)
+	elif (returnedEvent == eventType.Key_Down):
+		if (eventParameter == "c"):
+			drawingLine = False
+			componentOrientation = 0
+			drawingComponenet = not drawingComponenet
+		elif (eventParameter == "r"):
+			componentOrientation = not componentOrientation
+	elif (returnedEvent == eventType.Mouse_Up):
+		if ((drawingLine == False) & (drawingComponenet == False)):
+			initialCoordinates = copy.copy(gridCoordinates)
+			drawingLine = True
+		elif drawingLine == True:
+			if (componentOrientation):
+				lines.append([initialCoordinates, [initialCoordinates[0], gridCoordinates[1]]])
+			else:
+				lines.append([initialCoordinates, [gridCoordinates[0], initialCoordinates[1]]])
+			drawingLine = False
+		elif drawingComponenet == True:
+			drawingComponenet = False
+			if componentOrientation == 0:
+				components.append([[gridCoordinates[0] - 25, gridCoordinates[1] - 5], [50, 10]])
+			if componentOrientation == 1:
+				components.append([[gridCoordinates[0] - 5, gridCoordinates[1] - 25], [10, 50]])
 	render()
 	clock.tick(60)
 
