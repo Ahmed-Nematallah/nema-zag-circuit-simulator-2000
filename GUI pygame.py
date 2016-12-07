@@ -25,6 +25,7 @@ def initalize():
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
 	pygame.display.set_caption("nema-zag circuit simulator 2000 😎")
+    #res =pygame.image.load(fileobj, namehint="")
 
 def render():
 	global componentOrientation
