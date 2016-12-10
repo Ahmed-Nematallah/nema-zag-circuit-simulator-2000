@@ -29,7 +29,7 @@ def initalize():
 	global lineColor
 	global backgroundColor
 	global compdict
-	compdict = {"R":[0,-25,-5,50,10,-25,25],"C":[0,-25,-8,50,16,-25,25]}
+	compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60)],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200)]}
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
@@ -55,9 +55,9 @@ def render():
 
 	if drawingComponenet:
 		if componentOrientation == 0:
-			pygame.draw.rect(gameDisplay, (0,150,255), [gridCoordinates[0] + currentComponent[1], gridCoordinates[1]+ currentComponent[2], currentComponent[3], currentComponent[4]])
+			pygame.draw.rect(gameDisplay, currentComponent[9], [gridCoordinates[0] + currentComponent[1], gridCoordinates[1]+ currentComponent[2], currentComponent[3], currentComponent[4]])
 		if componentOrientation == 1:
-			pygame.draw.rect(gameDisplay, (0,150,255), [gridCoordinates[0] + currentComponent[2], gridCoordinates[1] + currentComponent[1], currentComponent[4], currentComponent[3]])
+			pygame.draw.rect(gameDisplay, currentComponent[9], [gridCoordinates[0] + currentComponent[2], gridCoordinates[1] + currentComponent[1], currentComponent[4], currentComponent[3]])
 
 #Render current components/wires
 	if len(lines) > 0:
@@ -66,7 +66,7 @@ def render():
 	
 	if len(components) > 0:
 		for i in components:
-			pygame.draw.rect(gameDisplay, (0,150,255), flatten(i)[0:4])
+			pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
 
 	pygame.display.update()
 
@@ -126,6 +126,7 @@ while not killApp:
 #update grid coordinates every time the mouse moves 
 	elif (returnedEvent == eventType.Mouse_Motion):
 		gridCoordinates = snapToGrid(eventParameter[0], eventParameter[1],25)
+		print(gridCoordinates)
 #if key pressed start drawing a component
 	elif (returnedEvent == eventType.Key_Down):
 		if (eventParameter == "s"):
@@ -157,9 +158,9 @@ while not killApp:
 		elif drawingComponenet == True:
 			drawingComponenet = False
 			if componentOrientation == 0:
-				components.append([[gridCoordinates[0] + currentComponent[1], gridCoordinates[1] + currentComponent[2]], [currentComponent[3], currentComponent[4]]])
+				components.append([[gridCoordinates[0] + currentComponent[1], gridCoordinates[1] + currentComponent[2]], [currentComponent[3], currentComponent[4]],[gridCoordinates[0] +currentComponent[5]*gridspace,gridCoordinates[1] +currentComponent[6]*gridspace],[gridCoordinates[0] +currentComponent[7]*gridspace,gridCoordinates[1] +currentComponent[8]*gridspace],currentComponent[9],currentComponent])
 			if componentOrientation == 1:
-				components.append([[gridCoordinates[0] + currentComponent[2], gridCoordinates[1] + currentComponent[1]], [currentComponent[4], currentComponent[3]],[currentComponent[5],currentComponent[6]]])
+				components.append([[gridCoordinates[0] + currentComponent[2], gridCoordinates[1] + currentComponent[1]], [currentComponent[4], currentComponent[3]],[gridCoordinates[0] +currentComponent[6]*gridspace,gridCoordinates[1] +currentComponent[5]*gridspace],[gridCoordinates[0] +currentComponent[8]*gridspace,gridCoordinates[1] +currentComponent[7]*gridspace],currentComponent[9],currentComponent])
 	render()
 	clock.tick(60)
 
