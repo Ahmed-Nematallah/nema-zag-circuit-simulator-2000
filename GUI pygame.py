@@ -148,6 +148,11 @@ while not killApp:
 			currentComponent = compdict["G"]
 			componentOrientation = 0
 			drawingComponenet = not drawingComponenet
+		if (eventParameter == "v"):
+			drawingLine = False
+			currentComponent = compdict["V"]
+			componentOrientation = 0
+			drawingComponenet = not drawingComponenet
 		elif (eventParameter == "r"):
 			componentOrientation = not componentOrientation
 #when mouse up
