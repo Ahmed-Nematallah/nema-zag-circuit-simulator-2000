@@ -29,6 +29,7 @@ def initalize():
 	global lineColor
 	global backgroundColor
 	global compdict
+	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
 	compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
 	pygame.init()
