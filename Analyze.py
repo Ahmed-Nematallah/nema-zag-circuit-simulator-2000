@@ -92,27 +92,37 @@ def pol2rect(magnitude, phase):
 # C C1 (N1;N2) 1u
 # R R1 (N1;N2) 1k
 # R R2 (N1;N0) 1k"""
-netlist = """.AC op
+# netlist = """.AC op
+# .GND N0
+# V V1 (Input;N0) 10 180
+# R R1 (Input;N2) 4.7k
+# R R2 (N2;N3) 6.8k
+# R R3 (N5;N4) 1.0k
+# R R4 (N4;N0) 6.8k
+# R R5 (N5;N6) 4.7k
+# R R6 (N6;N7) 6.8k
+# R R7 (Output;N8) 6.8k
+# R R8 (N8;N0) 5.6k
+# C C1 (N2;N5) 0.22u
+# C C2 (N3;N0) 0.1u
+# C C3 (N6;Output) 0.22u
+# C C4 (N7;N0) 0.1u
+# *First opamp
+# OPAMP3 A1 (N3;N4;N5)
+# OPAMP3 A2 (N7;N8;Output) *Second opamp"""
+netlist = """.DC op
 .GND N0
-V V1 (Input;N0) 10 180
-R R1 (Input;N2) 4.7k
-R R2 (N2;N3) 6.8k
-R R3 (N5;N4) 1.0k
-R R4 (N4;N0) 6.8k
-R R5 (N5;N6) 4.7k
-R R6 (N6;N7) 6.8k
-R R7 (Output;N8) 6.8k
-R R8 (N8;N0) 5.6k
-C C1 (N2;N5) 0.22u
-C C2 (N3;N0) 0.1u
-C C3 (N6;Output) 0.22u
-C C4 (N7;N0) 0.1u
-#First opamp
-OPAMP3 A1 (N3;N4;N5)
-OPAMP3 A2 (N7;N8;Output) #Second opamp"""
+V V1 (N1;N0) 1
+R R1 (N1;N2) 100
+D D1 (N2;N0)
+R R2 (N1;N3) 100
+D D2 (N0;N3)
+D D3 (N1;N4)
+R R3 (N4;N0) 100"""
 
 
 i = 0
+satCurrent = 10**-7
 simulationDomain = ""
 simulationFrequencies = []
 simulationParameters = []
@@ -124,8 +134,8 @@ voltageSources = 0
 groundNode = "n0"
 for i in range(len(commands)):
 	commandtext = commands[i].split(' ')
-	if ('#' in commands[i]):
-		temp = commands[i][0:commands[i].index('#')]
+	if ('*' in commands[i]):
+		temp = commands[i][0:commands[i].index('*')]
 		if not(temp is ''):
 			commands[i] = temp
 			commandtext = commands[i].split(' ')
@@ -140,8 +150,7 @@ for i in range(len(commands)):
 	elif (commandtext[0].lower() == ".ac"):
 		simulationDomain = "AC"
 		simulationParameters = copy.copy(commandtext)
-
-	if (commandtext[0].lower() == ".gnd"):
+	elif (commandtext[0].lower() == ".gnd"):
 		groundNode = commandtext[1].lower()
 
 	if ((commandtext[0].lower() == "v") | (commandtext[0].lower() == "i")):
@@ -174,7 +183,7 @@ if (groundNodeIndex > 0):
 	nodeListNatural[groundNodeIndex] = copy.copy(nodeListNatural[0])
 	nodeListNatural[0] = temp
 
-unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
+unknownMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 
 def formAdmittanceMatrix():
 	global voltageSources
@@ -227,7 +236,7 @@ def formAdmittanceMatrix():
 				columnSliceTranspose.append(0)
 				admittanceMatrix.append(columnSliceTranspose)
 				voltageSources += 1
-				unknownMatrix.append("I(" + commandtext[1] + ")")
+				unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 				knownMatrix.append(0)
 
 			elif(simulationDomain == "AC"):
@@ -251,7 +260,7 @@ def formAdmittanceMatrix():
 				columnSliceTranspose.append(1)
 				admittanceMatrix.append(columnSliceTranspose)
 				voltageSources += 1
-				unknownMatrix.append("I(" + commandtext[1] + ")")
+				unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 				knownMatrix.append(0)
 
 			elif(simulationDomain == "AC"):
@@ -280,7 +289,7 @@ def formAdmittanceMatrix():
 					columnSliceTranspose.append(0)
 					admittanceMatrix.append(columnSliceTranspose)
 					voltageSources += 1
-					unknownMatrix.append("I(" + commandtext[1] + ")")
+					unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 					knownMatrix.append(componentValue)
 				else:
 					node1 = nodeList.index(nodes[0])
@@ -295,7 +304,7 @@ def formAdmittanceMatrix():
 					columnSliceTranspose.append(0)
 					admittanceMatrix.append(columnSliceTranspose)
 					voltageSources += 1
-					unknownMatrix.append("I(" + commandtext[1] + ")")
+					unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 					knownMatrix.append(0)
 			if(simulationDomain == "AC"):
 				if (len(commandtext) == 5):
@@ -313,7 +322,7 @@ def formAdmittanceMatrix():
 						columnSliceTranspose.append(0)
 						admittanceMatrix.append(columnSliceTranspose)
 						voltageSources += 1
-						unknownMatrix.append("I(" + commandtext[1] + ")")
+						unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 						knownMatrix.append(componentValue)
 					else:
 						for i in range(len(admittanceMatrix)):
@@ -326,7 +335,7 @@ def formAdmittanceMatrix():
 						columnSliceTranspose.append(0)
 						admittanceMatrix.append(columnSliceTranspose)
 						voltageSources += 1
-						unknownMatrix.append("I(" + commandtext[1] + ")")
+						unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 						knownMatrix.append(0)
 				else:
 					node1 = nodeList.index(nodes[0])
@@ -341,7 +350,7 @@ def formAdmittanceMatrix():
 					columnSliceTranspose.append(0)
 					admittanceMatrix.append(columnSliceTranspose)
 					voltageSources += 1
-					unknownMatrix.append("I(" + commandtext[1] + ")")
+					unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 					knownMatrix.append(0)
 
 		elif(commandtext[0].lower() == 'i'):
@@ -384,7 +393,7 @@ def formAdmittanceMatrix():
 				if (i == (node2 - 1)):
 					admittanceMatrix[nodeCount + voltageSources][i] -= componentValue
 			voltageSources += 1
-			unknownMatrix.append("I(" + commandtext[1] + ")")
+			unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 			knownMatrix.append(0)
 
 		elif(commandtext[0].lower() == 'opamp3'):
@@ -404,7 +413,7 @@ def formAdmittanceMatrix():
 				if (i == (node2 - 1)):
 					admittanceMatrix[nodeCount + voltageSources][i] -= 1
 			voltageSources += 1
-			unknownMatrix.append("I(" + commandtext[1] + ")")
+			unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 			knownMatrix.append(0)
 
 
@@ -414,17 +423,59 @@ def performAnalysis():
 	formAdmittanceMatrix()
 	admittanceMatrix = np.array(admittanceMatrix)
 	knownMatrix = np.array(knownMatrix)
-	admittanceMatrixInvert = np.linalg.inv(admittanceMatrix)
-	solutionMatrix = np.dot(admittanceMatrixInvert, knownMatrix)
-	solutionMatrix = solutionMatrix.tolist()
+	baseKnownMatrix = copy.deepcopy(knownMatrix)
+	unknownMatrix = [0 for i in knownMatrix]
+	conv = 100000
+	while conv > 10**-20:
+		nlJacobian = [[0 for j in i] for i in admittanceMatrix]
+		knownMatrix = copy.deepcopy(baseKnownMatrix)
+		#form knownMatrix & complete nlJacobian
+		for i in commands:
+			commandtext = i.split(' ')
+			if not(i.startswith('.')):
+				nodes = getNodes(commandtext[2])
+			if (commandtext[0].lower() == 'd'):
+				node1 = nodeList.index(nodes[0])
+				node2 = nodeList.index(nodes[1])
+				voltageAcross = 0
+				if ((node1 == 0) & (node2 == 0)):
+					voltageAcross = 0
+				elif(node1 == 0):
+					voltageAcross = -unknownMatrix[node2 - 1]
+				elif(node2 == 0):
+					voltageAcross = unknownMatrix[node1 - 1]
+				else:
+					voltageAcross = unknownMatrix[node1 - 1] - unknownMatrix[node2 - 1]
+				if node1 != 0:
+					knownMatrix[node1 - 1] -= satCurrent*(math.e**(voltageAcross/0.026) - 1)
+					nlJacobian[node1 - 1][node1 - 1] += -satCurrent*(math.e**(voltageAcross/0.026) - 1)/0.026
+				if node2 != 0:
+					knownMatrix[node2 - 1] += satCurrent*(math.e**(voltageAcross/0.026) - 1)
+					nlJacobian[node2 - 1][node2 - 1] += -satCurrent*(math.e**(voltageAcross/0.026) - 1)/0.026
+				if((node1 != 0) & (node2 != 0)):
+					nlJacobian[node1 - 1][node2 - 1] += satCurrent*(math.e**(voltageAcross/0.026) - 1)/0.026
+					nlJacobian[node2 - 1][node1 - 1] += satCurrent*(math.e**(voltageAcross/0.026) - 1)/0.026
+
+		Jacobian = admittanceMatrix - nlJacobian
+		unknownMatrix2 = np.dot(np.linalg.inv(Jacobian), -np.dot(nlJacobian, unknownMatrix) + knownMatrix)
+		conv = 0
+		for i in range(len(unknownMatrix)):
+			conv += (unknownMatrix[i] - unknownMatrix2[i])**2
+		unknownMatrix = unknownMatrix2
+	# admittanceMatrixInvert = np.linalg.inv(admittanceMatrix)
+	# solutionMatrix = np.dot(admittanceMatrixInvert, knownMatrix)
+	# solutionMatrix = solutionMatrix.tolist()
+	solutionMatrix = unknownMatrix.tolist()
 
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
 		if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') | 
-		    (commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c')):
-			componentValue = getComponentValue(commandtext[3])
+		    (commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c') | 
+			(commandtext[0].lower() == 'd')):
+			if not(commandtext[0].lower() == 'd'):
+				componentValue = getComponentValue(commandtext[3])
 			node1 = nodeList.index(nodes[0])
 			node2 = nodeList.index(nodes[1])
 			voltageAcross = 0
@@ -438,38 +489,37 @@ def performAnalysis():
 				voltageAcross = solutionMatrix[node1 - 1] - solutionMatrix[node2 - 1]
 		
 		if(commandtext[0].lower() == 'r'):
-			unknownMatrix.append("I(" + commandtext[1] + ")")
+			unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 			solutionMatrix.append(voltageAcross / componentValue)
 
 		elif(commandtext[0].lower() == 'g'):
-			unknownMatrix.append("I(" + commandtext[1] + ")")
+			unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 			solutionMatrix.append(voltageAcross * componentValue)
 
 		elif(commandtext[0].lower() == 'l'):
 			if (simulationDomain == "AC"):
 				componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
-				unknownMatrix.append("I(" + commandtext[1] + ")")
+				unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 				solutionMatrix.append(voltageAcross * componentAdmittance)
 
 		elif(commandtext[0].lower() == 'c'):
 			if (simulationDomain == "AC"):
 				componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
-				unknownMatrix.append("I(" + commandtext[1] + ")")
+				unknownMatrixLabels.append("I(" + commandtext[1] + ")")
 				solutionMatrix.append(voltageAcross * componentAdmittance)
 
+		elif(commandtext[0].lower() == 'd'):
+			unknownMatrixLabels.append("I(" + commandtext[1] + ")")
+			solutionMatrix.append(satCurrent*(math.e**(voltageAcross/0.026) - 1))
+
 	for i in range(len(solutionMatrix)):
-		#print(unknownMatrix[i] + " = " + str(solutionMatrix[i]))
-		if (rect2pol(solutionMatrix[i])[1] < 180):
-			print(unknownMatrix[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + \
-			      str(rect2pol(solutionMatrix[i])[1]) + "]")
-		else:
-			print(unknownMatrix[i] + " = -" + str(rect2pol(solutionMatrix[i])[0]) + "[" + \
-			      str((rect2pol(solutionMatrix[i])[1]) - 180) + "]")
+		#print(unknownMatrixLabels[i] + " = " + str(solutionMatrix[i]))
+		print(unknownMatrixLabels[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
 
 
 if (simulationParameters[1].lower() == "op"):
 	if(simulationDomain == "DC"):
-		unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
+		unknownMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 		admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 		knownMatrix = [0 for i in range(nodeCount)]
 		voltageSources = 0
@@ -477,7 +527,7 @@ if (simulationParameters[1].lower() == "op"):
 		performAnalysis()
 	elif (simulationDomain == "AC"):
 		for i in simulationFrequencies:
-			unknownMatrix = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
+			unknownMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 			admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 			knownMatrix = [0 for i in range(nodeCount)]
 			voltageSources = 0
