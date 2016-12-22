@@ -1,0 +1,10 @@
+{Magic Number|4}{Format Version|16}{Name Length|2}{Name|Name Length}{#Of components, wires|8}{Reserved Bits|4}{Configuration parameters + Reserved|Reserved Bits}
+
+TOTAL : 40 + Name Length + Reserved Bits
+
+for each component:
+{Component type(0 if wire)|4}{Component Orientation|1}{Component coordinate 1|4}{Component coordinate 2|4}{Component Name Length|2}{Component Name|Name Length}{Component Value(fp64) (Length if wire)|8}{Reserved Length|4}{Reserved|Reserved Length}
+
+TOTAL PER COMPONENT : 27 + Component Name Length + Reserved Length
+
+#NEED TO ADD MODELS SUPPORT & SUBCIRCUITS
