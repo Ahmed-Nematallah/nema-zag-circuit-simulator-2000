@@ -112,7 +112,7 @@ def pol2rect(magnitude, phase):
 # OPAMP3 A2 (N7;N8;Output) *Second opamp"""
 netlist = """.DC op
 .GND N0
-V V1 (N1;N0) 1
+V V1 (N1;N0) 10
 R R1 (N1;N2) 100
 D D1 (N2;N0)
 R R2 (N1;N3) 100
