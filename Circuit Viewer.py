@@ -3,6 +3,8 @@ import copy
 import enum
 import sys
 import struct
+import ctypes
+import numpy as np
 
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
@@ -162,11 +164,39 @@ def loadFile(fileName):
 		
 	return 0
 
+def saveFile(fileName):
+	f = open(fileName, 'wb+')
+	f.write(bytes("CIR0", 'ascii'))
+	for i in range(16):
+		f.write(bytes(chr(0), 'ascii'))
+	
+	f.write(struct.pack("!H", len(title)))
+	f.write(bytes(title, 'ascii'))
+
+	f.write(struct.pack("!Q", len(components) + len(lines)))
+	for i in range(4):
+		f.write(bytes(chr(0), 'ascii'))
+
+	for i in range(len(components)):
+		f.write(struct.pack("!I", components[i][0]))
+		f.write(struct.pack("!B", components[i][1]))
+		f.write(struct.pack("!I", components[i][2]))
+		f.write(struct.pack("!I", components[i][3]))
+		f.write(struct.pack("!H", len(components[i][4])))
+		f.write(bytes(components[i][4], 'ascii'))
+
+		f.write(struct.pack('!d', components[i][5]))
+		for i in range(4):
+			f.write(bytes(chr(0), 'ascii'))
+
+	f.close()
+
 def generateNetlist():
 		nodes = []
 		netlist = []
 def kill():
 	pygame.quit()
+	saveFile("123.txt")
 	quit()
 
 #variables
