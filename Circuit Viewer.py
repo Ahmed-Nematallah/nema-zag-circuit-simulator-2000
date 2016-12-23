@@ -36,11 +36,13 @@ def initalize():
 	diodeicon = pygame.image.load('Resources/Diode_symbol.png')
 	inductoricon = pygame.image.load('Resources/Inductor.png')
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
+	csourceicon = pygame.image.load('Resources/Current_source.png')
+
 	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
-	compdict = {0:None,1:vsourceicon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon}
+	compdict = {0:None,1:vsourceicon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon}
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
