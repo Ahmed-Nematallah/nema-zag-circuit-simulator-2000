@@ -62,20 +62,20 @@ def render():
 #Render components
 	if len(components) > 0:
 		for c in components:
-			if c[1] == 0:
+			if c[1] == 1:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2]+c[5],c[3]],2)
 				elif c[0]== 1 :
 					compheight = compdict[c[0]].get_rect().size[1]
 					compimage = compdict[c[0]]
 					gameDisplay.blit(compimage,(c[2],c[3]-(compheight/2)+1))
-			elif c[1]==1:
+			elif c[1]==0:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
 				elif c[0]== 1 :
 					compheight = compdict[c[0]].get_rect().size[1]
 					compimage = compdict[c[0]]
-					compimage = pygame.transform.rotate(compimage, 0)
+					compimage = pygame.transform.rotate(compimage, 90)
 					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
 			elif c[1]==2:
 				if c[0] == 0:
