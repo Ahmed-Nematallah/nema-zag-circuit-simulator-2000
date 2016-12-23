@@ -36,10 +36,11 @@ def initalize():
 	diodeicon = pygame.image.load('Resources/Diode_symbol.png')
 	inductoricon = pygame.image.load('Resources/Inductor.png')
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
+	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
-	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon}
+	compdict = {0:None,1:vsourceicon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon}
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
@@ -57,10 +58,21 @@ def render():
 #Render components
 	if len(components) > 0:
 		for c in components:
-			if c[0] == 0:
-				pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2]+(c[5]*c[1]),c[3]+(c[5]*~c[1])],3)
-			else:
-				gameDisplay.blit(compdict[c[0]],(c[2],c[3]))
+			if c[1] == 0:
+				if c[0] == 0:
+					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2]+c[5],c[3]],2)
+				elif c[0]== 1 :
+					compheight = compdict[c[0]].get_rect().size[1]
+					compimage = compdict[c[0]]
+					gameDisplay.blit(compimage,(c[2],c[3]-(compheight/2)+1))
+			elif c[1]==1:
+				if c[0] == 0:
+					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
+				elif c[0]== 1 :
+					compheight = compdict[c[0]].get_rect().size[1]
+					compimage = compdict[c[0]]
+					compimage = pygame.transform.rotate(compimage, 90)
+					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
 				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
 	
 		#	pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
