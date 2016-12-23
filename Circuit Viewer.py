@@ -31,9 +31,15 @@ def initalize():
 	global lineColor
 	global backgroundColor
 	global compdict
+	resistoricon = pygame.image.load('Resources/res.png')
+	capacitoricon = pygame.image.load('Resources/Capacitor_Symbol.png')
+	diodeicon = pygame.image.load('Resources/Diode_symbol.png')
+	inductoricon = pygame.image.load('Resources/Inductor.png')
+	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
-	compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
-	,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
+	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
+	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
+	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon}
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
@@ -48,29 +54,16 @@ def render():
 	global componentOrientationRender
 	gameDisplay.fill(backgroundColor)
 
-#Render components/wires currently being edited
-	if drawingLine:
-		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
-			componentOrientationRender = 0
-			pygame.draw.line(gameDisplay, lineColor, initialCoordinates, [gridCoordinates[0], initialCoordinates[1]],linethickness)
-		else:
-			componentOrientationRender = 1
-			pygame.draw.line(gameDisplay, lineColor, initialCoordinates, [initialCoordinates[0], gridCoordinates[1]],linethickness)
-
-	if drawingComponenet:
-		if componentOrientationRender == 0:
-			pygame.draw.rect(gameDisplay, currentComponent[9], [gridCoordinates[0] + currentComponent[1], gridCoordinates[1]+ currentComponent[2], currentComponent[3], currentComponent[4]])
-		if componentOrientationRender == 1:
-			pygame.draw.rect(gameDisplay, currentComponent[9], [gridCoordinates[0] + currentComponent[2], gridCoordinates[1] + currentComponent[1], currentComponent[4], currentComponent[3]])
-
-#Render current components/wires
-	if len(lines) > 0:
-		for i in lines :
-			pygame.draw.line(gameDisplay, lineColor, i[0], i[1],linethickness)
-	
+#Render components
 	if len(components) > 0:
-		for i in components:
-			pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
+		for c in components:
+			if c[0] == 0:
+				pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2]+(c[5]*c[1]),c[3]+(c[5]*~c[1])],3)
+			else:
+				gameDisplay.blit(compdict[c[0]],(c[2],c[3]))
+				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
+	
+		#	pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
 
 	pygame.display.update()
 
@@ -79,6 +72,7 @@ def checkEvents():
 		if event.type == pygame.QUIT:
 			return eventType.Quit, None
 		elif event.type == pygame.MOUSEMOTION:
+			print(event.pos)
 			return eventType.Mouse_Motion, event.pos
 		elif event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_s:
@@ -104,6 +98,7 @@ def checkEvents():
 
 def loadFile(fileName):
 	global title
+	global components 
 	f = open(fileName, 'rb')
 	data = f.read()
 	counter = 0
@@ -121,7 +116,7 @@ def loadFile(fileName):
 		counter += 1
 
 	componentCount = int.from_bytes(data[counter:counter + 8], 'big')
-	print(componentCount)
+	#print(componentCount)
 	counter += 8
 	reservedBits = int.from_bytes(data[counter:counter + 4], 'big')
 	counter += 4 + reservedBits
@@ -144,8 +139,10 @@ def loadFile(fileName):
 
 		componentValue = struct.unpack('!d', data[counter:counter + 8])[0]
 		counter += 8
-		print(componentValue)
-
+		print(componentType,componentOrientation,componentCoordx,componentCoordy,componentName,componentValue)
+		print('-----')
+		components.append([componentType,componentOrientation,componentCoordx,componentCoordy,componentName,componentValue])
+		print (components)
 		componentReserveLength = int.from_bytes(data[counter:counter + 4], 'big')
 		counter += 4 + componentReserveLength
 		
@@ -170,9 +167,9 @@ initialCoordinates = [0, 0]
 componentOrientationRender = 0 #0->H 1->v
 gridCoordinates = [0, 0]
 lines = []
-components = []
 verticalWire = False
-
+global components 
+components = []
 if(loadFile("Adder.cir") == -1):
 	kill()
 
