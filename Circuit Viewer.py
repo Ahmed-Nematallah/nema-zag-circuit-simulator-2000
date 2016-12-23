@@ -75,7 +75,15 @@ def render():
 				elif c[0]== 1 :
 					compheight = compdict[c[0]].get_rect().size[1]
 					compimage = compdict[c[0]]
-					compimage = pygame.transform.rotate(compimage, 90)
+					compimage = pygame.transform.rotate(compimage, 0)
+					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
+			elif c[1]==2:
+				if c[0] == 0:
+					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
+				elif c[0]== 1 :
+					compheight = compdict[c[0]].get_rect().size[1]
+					compimage = compdict[c[0]]
+					compimage = pygame.transform.rotate(compimage, 270)
 					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
 				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
 	
