@@ -24,7 +24,12 @@ def flatten(listOfLists):
 	"Flatten one level of nesting"
 	z = [x for sublist in listOfLists for x in sublist]
 	return z
-
+global font
+pygame.font.init()
+font = pygame.font.SysFont(None, 25)
+def writeonscreen(text,color,pos):
+	screentext = font.render(text,True,color)
+	gameDisplay.blit(screentext,pos)
 def initalize():
 	global gameDisplay
 	global clock
@@ -45,14 +50,14 @@ def initalize():
 	inductoricon = pygame.transform.rotate(inductoricon, 90)
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
 	csourceicon = pygame.image.load('Resources/Current_source.png')
-	gndicon = pygame.image.load('Resources/GND.png') 
-
+	gndicon = pygame.image.load('Resources/GND.png')
+	opampicon = pygame.image.load('Resources/GND.png')
 	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
-	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon}
-	typedict={1:'R',2:'C',3:'L',4:'D',5:'V',6:'I'}
+	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon,7:gndicon,8:resistoricon,9:opampicon}
+	typedict={1:'R',2:'C',3:'L',4:'D',5:'V',6:'I',7:'G',8:'g',9:'O'}
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
@@ -96,6 +101,8 @@ def render():
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 90)
 					gameDisplay.blit(compimage,(c[2],c[3]-(compheight/2)+1))
+					writeonscreen(c[4],(0,255,0),[c[2],c[3]-30])
+					writeonscreen("value "+str(c[5]),(0,255,0),[c[2],c[3]+30])
 			elif c[1]==0:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
@@ -103,6 +110,8 @@ def render():
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
+					writeonscreen(c[4],(0,255,0),[c[2]-30,c[3]])
+					writeonscreen("value "+str(c[5]),(0,255,0),[c[2]+30,c[3]])
 			elif c[1]==2:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
@@ -111,6 +120,8 @@ def render():
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 180)
 					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
+					writeonscreen(c[4],(0,255,0),[c[2]-30,c[3]])
+					writeonscreen("value "+str(c[5]),(0,255,0),[c[2]+30,c[3]])
 			elif c[1]==3:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
@@ -119,6 +130,8 @@ def render():
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 270)
 					gameDisplay.blit(compimage,(c[2],c[3]-(compheight/2)+1))
+					writeonscreen(c[4],(0,255,0),[c[2],c[3]-30])
+					writeonscreen("value "+str(c[5]),(0,255,0),[c[2],c[3]+30])
 				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
 	
 		#pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
@@ -132,20 +145,30 @@ def checkEvents():
 			#print(event.pos)
 			return eventType.Mouse_Motion, event.pos
 		elif event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_s:
-				return eventType.Key_Down, "s"
-			elif event.key == pygame.K_r:
+			if event.key == pygame.K_r:
 				return eventType.Key_Down, "r"
-			elif event.key == pygame.K_l:
-				return eventType.Key_Down, "l"
-			elif event.key == pygame.K_q:
-				return eventType.Key_Down, "q"
-			elif event.key == pygame.K_v:
-				return eventType.Key_Down, "v"
-			elif event.key == pygame.K_g:
-				return eventType.Key_Down, "g"
 			elif event.key == pygame.K_c:
 				return eventType.Key_Down, "c"
+			elif event.key == pygame.K_l:
+				return eventType.Key_Down, "l"
+			elif event.key == pygame.K_x:
+				return eventType.Key_Down, "x"
+			elif event.key == pygame.K_d:
+				return eventType.Key_Down, "d"
+			elif event.key == pygame.K_v:
+				return eventType.Key_Down, "v"
+			elif event.key == pygame.K_i:
+				return eventType.Key_Down, "i"
+			elif event.key == pygame.K_o:
+				return eventType.Key_Down, "o"
+			elif event.key == pygame.K_g:
+				return eventType.Key_Down, "g"
+			elif event.key == pygame.K_q:
+				return eventType.Key_Down, "q"
+			elif event.key == pygame.K_s:
+				return eventType.Key_Down, "s"
+			elif event.key == pygame.K_DELETE:
+				return eventType.Key_Down, "delete"
 			else:
 				return eventType.Key_Down, 0
 		elif event.type == pygame.MOUSEBUTTONUP:
@@ -254,7 +277,7 @@ lines = []
 verticalWire = False
 global components 
 components = []
-if(loadFile("123.txt") == -1):
+if(loadFile("adder.cir") == -1):
 	kill()
 
 initalize()
@@ -280,9 +303,19 @@ while not killApp:
 			currentComponent = 2
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
-		if (eventParameter == "g"):
+		if (eventParameter == "l"):
 			drawingLine = False
-			currentComponent = compdict["G"]
+			currentComponent = 3
+			componentOrientationRender = 0
+			drawingComponenet = not drawingComponenet
+		if (eventParameter == "x"):
+			drawingLine = False
+			currentComponent = 8
+			componentOrientationRender = 0
+			drawingComponenet = not drawingComponenet
+		if (eventParameter == "d"):
+			drawingLine = False
+			currentComponent = 4
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "v"):
@@ -295,6 +328,20 @@ while not killApp:
 			currentComponent = 6
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
+		if (eventParameter == "g"):
+			drawingLine = False
+			currentComponent = 7
+			componentOrientationRender = 0
+			drawingComponenet = not drawingComponenet
+		if (eventParameter == "x"):
+			drawingLine = False
+			currentComponent = 9
+			componentOrientationRender = 0
+			drawingComponenet = not drawingComponenet
+		if (eventParameter == "s"):
+			pass
+		if (eventParameter == "delete"):
+			pass
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 #when mouse up
