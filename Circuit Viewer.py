@@ -50,7 +50,7 @@ def initalize():
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
-	compdict = {0:None,1:inductoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon}
+	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon}
 	typedict={1:'R',2:'C',3:'L',4:'D',5:'V',6:'I'}
 	pygame.init()
 	clock = pygame.time.Clock()
@@ -109,7 +109,7 @@ def render():
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 180)
-					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1),c[3])
+					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
 			elif c[1]==3:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
@@ -120,8 +120,7 @@ def render():
 					gameDisplay.blit(compimage,(c[2],c[3]-(compheight/2)+1))
 				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
 	
-		#	pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
-
+		#pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
 	pygame.display.update()
 
 def checkEvents():
@@ -129,7 +128,7 @@ def checkEvents():
 		if event.type == pygame.QUIT:
 			return eventType.Quit, None
 		elif event.type == pygame.MOUSEMOTION:
-			print(event.pos)
+			#print(event.pos)
 			return eventType.Mouse_Motion, event.pos
 		elif event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_s:
@@ -138,8 +137,8 @@ def checkEvents():
 				return eventType.Key_Down, "r"
 			elif event.key == pygame.K_l:
 				return eventType.Key_Down, "l"
-			elif event.key == pygame.K_o:
-				return eventType.Key_Down, "o"
+			elif event.key == pygame.K_q:
+				return eventType.Key_Down, "q"
 			elif event.key == pygame.K_v:
 				return eventType.Key_Down, "v"
 			elif event.key == pygame.K_g:
@@ -237,7 +236,7 @@ def generateNetlist():
 		netlist = []
 def kill():
 	pygame.quit()
-	saveFile("123.txt")
+	#saveFile("123.txt")
 	quit()
 
 #variables
@@ -270,7 +269,7 @@ while not killApp:
 		#print(gridCoordinates)
 #if key pressed start drawing a component
 	elif (returnedEvent == eventType.Key_Down):
-		if (eventParameter == "s"):
+		if (eventParameter == "r"):
 			drawingLine = False
 			currentComponent = 1
 			componentOrientationRender = 0
@@ -290,7 +289,7 @@ while not killApp:
 			currentComponent = 5
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
-		elif (eventParameter == "r"):
+		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 #when mouse up
 	elif (returnedEvent == eventType.Mouse_Up):
@@ -321,8 +320,12 @@ while not killApp:
 			drawingComponenet = False
 			if componentOrientationRender == 0:
 				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),100])
+				print("saved 0")
+				print(components)
 			if componentOrientationRender == 1:
-				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),100])  			
+				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),100])
+				print("saved 1")  
+				print(components)			
 	render()
 	clock.tick(60)
 
