@@ -33,10 +33,15 @@ def initalize():
 	global lineColor
 	global backgroundColor
 	global compdict
+	global currentComponent 
 	resistoricon = pygame.image.load('Resources/res.png')
+	resistoricon = pygame.transform.rotate(resistoricon, 90)
 	capacitoricon = pygame.image.load('Resources/Capacitor_Symbol.png')
+	capacitoricon = pygame.transform.rotate(capacitoricon, 90)
 	diodeicon = pygame.image.load('Resources/Diode_symbol.png')
+	diodeicon = pygame.transform.rotate(diodeicon, 90)
 	inductoricon = pygame.image.load('Resources/Inductor.png')
+	inductoricon = pygame.transform.rotate(inductoricon, 90)
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
 	csourceicon = pygame.image.load('Resources/Current_source.png')
 
@@ -44,7 +49,7 @@ def initalize():
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
-	compdict = {0:None,1:vsourceicon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon}
+	compdict = {0:None,1:inductoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon}
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
@@ -56,8 +61,24 @@ def initalize():
 	#res =pygame.image.load(fileobj, namehint="")
 
 def render():
+	global currentComponent
 	global componentOrientationRender
 	gameDisplay.fill(backgroundColor)
+#Render components/wires currently being edited
+	if drawingLine:
+		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
+			componentOrientation = 0
+			pygame.draw.line(gameDisplay, lineColor, initialCoordinates, [gridCoordinates[0], initialCoordinates[1]],linethickness)
+		else:
+			componentOrientation = 1
+			pygame.draw.line(gameDisplay, lineColor, initialCoordinates, [initialCoordinates[0], gridCoordinates[1]],linethickness)
+
+	if drawingComponenet:
+		if componentOrientationRender == 0:
+			gameDisplay.blit(currentComponent,(gridCoordinates[0],gridCoordinates[1]))
+		if componentOrientationRender == 1:
+			pygame.draw.rect(gameDisplay, currentComponent[9], [gridCoordinates[0] + currentComponent[2], gridCoordinates[1] + currentComponent[1], currentComponent[4], currentComponent[3]])
+
 
 #Render components
 	if len(components) > 0:
@@ -66,25 +87,25 @@ def render():
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2]+c[5],c[3]],2)
 				elif c[0]== 1 :
-					compheight = compdict[c[0]].get_rect().size[1]
+					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
+					compimage = pygame.transform.rotate(compimage, 90)
 					gameDisplay.blit(compimage,(c[2],c[3]-(compheight/2)+1))
 			elif c[1]==0:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
 				elif c[0]== 1 :
-					compheight = compdict[c[0]].get_rect().size[1]
+					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
-					compimage = pygame.transform.rotate(compimage, 90)
 					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
 			elif c[1]==2:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
 				elif c[0]== 1 :
-					compheight = compdict[c[0]].get_rect().size[1]
+					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 270)
-					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
+					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1),c[3])
 				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
 	
 		#	pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
@@ -214,7 +235,6 @@ def kill():
 killApp = False
 drawingLine = False
 drawingComponenet = False
-currentComponent = None
 initialCoordinates = [0, 0]
 componentOrientationRender = 0 #0->H 1->v
 gridCoordinates = [0, 0]
@@ -240,12 +260,12 @@ while not killApp:
 	elif (returnedEvent == eventType.Key_Down):
 		if (eventParameter == "s"):
 			drawingLine = False
-			currentComponent = compdict["R"]
+			currentComponent = compdict[1]
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "c"):
 			drawingLine = False
-			currentComponent = compdict["C"]
+			currentComponent = compdict[2]
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "g"):
@@ -255,7 +275,7 @@ while not killApp:
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "v"):
 			drawingLine = False
-			currentComponent = compdict["V"]
+			currentComponent = compdict[5]
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		elif (eventParameter == "r"):
@@ -269,7 +289,7 @@ while not killApp:
 #save drawn line
 		elif drawingLine == True:
 			if (componentOrientationRender):
-				lines.append([initialCoordinates, [initialCoordinates[0], gridCoordinates[1]]])
+				components.append([0,0,initialCoordinates[0],initialCoordinates[1],("R"+str(len(components))),+gridCoordinates[1]-initialCoordinates[1]])
 				print(lines)
 			else:
 				lines.append([initialCoordinates, [gridCoordinates[0], initialCoordinates[1]]])
