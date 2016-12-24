@@ -45,6 +45,7 @@ def initalize():
 	inductoricon = pygame.transform.rotate(inductoricon, 90)
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
 	csourceicon = pygame.image.load('Resources/Current_source.png')
+	gndicon = pygame.image.load('Resources/GND.png') 
 
 	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
@@ -90,7 +91,7 @@ def render():
 			if c[1] == 1:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2]+c[5],c[3]],2)
-				elif c[0]== 1 :
+				elif c[0]!= 0 :
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 90)
@@ -98,14 +99,14 @@ def render():
 			elif c[1]==0:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
-				elif c[0]== 1 :
+				elif c[0]!= 0 :
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					gameDisplay.blit(compimage,(c[2]-(compheight/2)+1,c[3]))
 			elif c[1]==2:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
-				elif c[0]== 1 :
+				elif c[0]!= 0 :
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 180)
@@ -113,7 +114,7 @@ def render():
 			elif c[1]==3:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0,0,255), [c[2],c[3]], [c[2],c[3]+c[5]],2)
-				elif c[0]== 1 :
+				elif c[0]!= 0 :
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 270)
@@ -235,8 +236,8 @@ def generateNetlist():
 		nodes = []
 		netlist = []
 def kill():
+	saveFile("123.txt")
 	pygame.quit()
-	#saveFile("123.txt")
 	quit()
 
 #variables
@@ -253,7 +254,7 @@ lines = []
 verticalWire = False
 global components 
 components = []
-if(loadFile("Adder.cir") == -1):
+if(loadFile("123.txt") == -1):
 	kill()
 
 initalize()
@@ -287,6 +288,11 @@ while not killApp:
 		if (eventParameter == "v"):
 			drawingLine = False
 			currentComponent = 5
+			componentOrientationRender = 0
+			drawingComponenet = not drawingComponenet
+		if (eventParameter == "i"):
+			drawingLine = False
+			currentComponent = 6
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		elif (eventParameter == "q"):
