@@ -368,6 +368,8 @@ while not killApp:
 			for c in components:
 				if detectCollision(c, gridCoordinates):
 					components.remove(c)
+				elif gridCoordinates == [c[2],c[3]]:
+					components.remove(c)
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 #when mouse up
