@@ -267,18 +267,23 @@ def generateNetlist():
 def detectCollision(component, Coordinates):
 	compheight = 100
 	compwidth = 100
-	# if(component[1] == 0):
+	if(component[1] == 0):
 	# 	compheight = compdict[c[0]].get_rect().size[1]
 	# 	compwidth = compdict[c[0]].get_rect().size[0]
-	# else:
+		if ((Coordinates[0] > c[2] - compwidth / 2) & (Coordinates[0] < (c[2] + compwidth / 2)) & 
+			(Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
+			return True
+		else:
+			return False
+	else:
 	# 	compheight = compdict[c[0]].get_rect().size[0]
 	# 	compwidth = compdict[c[0]].get_rect().size[1]
-
-	if ((Coordinates[0] > c[2]) & (Coordinates[0] < (c[2] + compwidth)) & 
-		(Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
-		return True
-	else:
-		return False
+		if ((Coordinates[0] > c[2]) & (Coordinates[0] < (c[2] + compwidth)) & 
+			(Coordinates[1] > c[3] - compheight / 2) & (Coordinates[1] < (c[3] + compheight / 2))):
+			return True
+		else:
+			return False
+		
 
 	return False
 
