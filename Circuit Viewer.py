@@ -5,7 +5,8 @@ import sys
 import struct
 import ctypes
 import numpy as np
-
+from pygame.locals import *
+import pygame, sys, eztext
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
 
@@ -39,7 +40,7 @@ def initalize():
 	global backgroundColor
 	global compdict
 	global typedict
-	global currentComponent 
+	global currentComponent
 	resistoricon = pygame.image.load('Resources/res.png')
 	resistoricon = pygame.transform.rotate(resistoricon, 90)
 	capacitoricon = pygame.image.load('Resources/Capacitor_Symbol.png')
@@ -53,7 +54,7 @@ def initalize():
 	gndicon = pygame.image.load('Resources/GND.png')
 	opampicon = pygame.image.load('Resources/GND.png')
 	print (resistoricon.get_rect().size[1]) # you can get size
-	# , draw coordinates,width and length,start and end point in grid coordinates, color , type 
+	# , draw coordinates,width and length,start and end point in grid coordinates, color , type
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
 	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon,7:gndicon,8:resistoricon,9:opampicon}
@@ -133,7 +134,7 @@ def render():
 					writeonscreen(c[4],(0,255,0),[c[2],c[3]-30])
 					writeonscreen("value "+str(c[5]),(0,255,0),[c[2],c[3]+30])
 				#pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
-	
+
 		#pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
 	pygame.display.update()
 
@@ -167,18 +168,20 @@ def checkEvents():
 				return eventType.Key_Down, "q"
 			elif event.key == pygame.K_s:
 				return eventType.Key_Down, "s"
+			elif event.key == pygame.K_RETURN:
+				return eventType.Key_Down, "return"
 			elif event.key == pygame.K_DELETE:
 				return eventType.Key_Down, "delete"
 			else:
 				return eventType.Key_Down, 0
 		elif event.type == pygame.MOUSEBUTTONUP:
 			return eventType.Mouse_Up, None
-	
+
 	return 0, 0
 
 def loadFile(fileName):
 	global title
-	global components 
+	global components
 	f = open(fileName, 'rb')
 	data = f.read()
 	counter = 0
@@ -225,7 +228,7 @@ def loadFile(fileName):
 		print (components)
 		componentReserveLength = int.from_bytes(data[counter:counter + 4], 'big')
 		counter += 4 + componentReserveLength
-		
+
 	return 0
 
 def saveFile(fileName):
@@ -233,7 +236,7 @@ def saveFile(fileName):
 	f.write(bytes("CIR0", 'ascii'))
 	for i in range(16):
 		f.write(bytes(chr(0), 'ascii'))
-	
+
 	f.write(struct.pack("!H", len(title)))
 	f.write(bytes(title, 'ascii'))
 
@@ -252,7 +255,7 @@ def saveFile(fileName):
 		f.write(struct.pack('!d', components[i][5]))
 		for i in range(4):
 			f.write(bytes(chr(0), 'ascii'))
-
+	print("saved")
 	f.close()
 
 def generateNetlist():
@@ -275,7 +278,7 @@ componentOrientationRender = 0 #0->H 1->v
 gridCoordinates = [0, 0]
 lines = []
 verticalWire = False
-global components 
+global components
 components = []
 if(loadFile("adder.cir") == -1):
 	kill()
@@ -287,7 +290,7 @@ while not killApp:
 	returnedEvent, eventParameter = checkEvents()
 	if (returnedEvent == eventType.Quit):
 		killApp = True
-#update grid coordinates every time the mouse moves 
+#update grid coordinates every time the mouse moves
 	elif (returnedEvent == eventType.Mouse_Motion):
 		gridCoordinates = [snapToGrid(eventParameter[0], eventParameter[1],25)[0],snapToGrid(eventParameter[0], eventParameter[1],25)[1]]
 		#print(gridCoordinates)
@@ -341,7 +344,9 @@ while not killApp:
 		if (eventParameter == "s"):
 			pass
 		if (eventParameter == "delete"):
-			pass
+			for c in components:
+				if [c[2],c[3]]==gridCoordinates:
+					components.remove(c)
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 #when mouse up
@@ -372,13 +377,48 @@ while not killApp:
 					compcount+=1
 			drawingComponenet = False
 			if componentOrientationRender == 0:
-				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),100])
+				finished = 0
+				txtbx = eztext.Input(maxlength=45, color=(255,0,0), prompt='type value here: ')
+				while not finished:
+					# update txtbx
+					clock.tick(60)
+					events = pygame.event.get()
+					val =txtbx.update(events)
+					if val != None :
+						finished = 1
+					# blit txtbx on the sceen
+					txtbx.draw(gameDisplay)
+					pygame.display.flip()
+					returnedEvent, eventParameter = checkEvents()
+					if (returnedEvent == eventType.Key_Down):
+						if (eventParameter == "return"):
+							val =txtbx.update(events)
+							finished = 1
+				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 0")
 				print(components)
 			if componentOrientationRender == 1:
-				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),100])
-				print("saved 1")  
-				print(components)			
+				events = pygame.event.get()
+				finished = 0
+				txtbx = eztext.Input(maxlength=45, color=(255,0,0), prompt='type value here: ')
+				while not finished:
+					# update txtbx
+					clock.tick(60)
+					events = pygame.event.get()
+					val =txtbx.update(events)
+					if val != None :
+						finished = 1
+					# blit txtbx on the sceen
+					txtbx.draw(gameDisplay)
+					pygame.display.flip()
+					returnedEvent, eventParameter = checkEvents()
+					if (returnedEvent == eventType.Key_Down):
+						if (eventParameter == "return"):
+							val =txtbx.update(events)
+							finished = 1
+				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
+				print("saved 1")
+				print(components)
 	render()
 	clock.tick(60)
 
