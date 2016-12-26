@@ -378,7 +378,7 @@ while not killApp:
 			drawingComponenet = False
 			if componentOrientationRender == 0:
 				finished = 0
-				txtbx = eztext.Input(maxlength=45, color=(255,0,0), prompt='type value here: ')
+				txtbx = eztext.Input(maxlength=45, color=(0,255,0), prompt='type value here: ')
 				while not finished:
 					# update txtbx
 					clock.tick(60)
@@ -390,10 +390,6 @@ while not killApp:
 					txtbx.draw(gameDisplay)
 					pygame.display.flip()
 					returnedEvent, eventParameter = checkEvents()
-					if (returnedEvent == eventType.Key_Down):
-						if (eventParameter == "return"):
-							val =txtbx.update(events)
-							finished = 1
 				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 0")
 				print(components)
@@ -412,10 +408,6 @@ while not killApp:
 					txtbx.draw(gameDisplay)
 					pygame.display.flip()
 					returnedEvent, eventParameter = checkEvents()
-					if (returnedEvent == eventType.Key_Down):
-						if (eventParameter == "return"):
-							val =txtbx.update(events)
-							finished = 1
 				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 1")
 				print(components)
