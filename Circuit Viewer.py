@@ -25,12 +25,14 @@ def flatten(listOfLists):
 	"Flatten one level of nesting"
 	z = [x for sublist in listOfLists for x in sublist]
 	return z
+
 global font
 pygame.font.init()
 font = pygame.font.SysFont(None, 25)
 def writeonscreen(text,color,pos):
 	screentext = font.render(text,True,color)
 	gameDisplay.blit(screentext,pos)
+
 def initalize():
 	global gameDisplay
 	global clock
@@ -259,8 +261,27 @@ def saveFile(fileName):
 	f.close()
 
 def generateNetlist():
-		nodes = []
-		netlist = []
+	nodes = []
+	netlist = []
+
+def detectCollision(component, Coordinates):
+	compheight = 100
+	compwidth = 100
+	# if(component[1] == 0):
+	# 	compheight = compdict[c[0]].get_rect().size[1]
+	# 	compwidth = compdict[c[0]].get_rect().size[0]
+	# else:
+	# 	compheight = compdict[c[0]].get_rect().size[0]
+	# 	compwidth = compdict[c[0]].get_rect().size[1]
+
+	if ((Coordinates[0] > c[2]) & (Coordinates[0] < (c[2] + compwidth)) & 
+		(Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
+		return True
+	else:
+		return False
+
+	return False
+
 def kill():
 	saveFile("123.txt")
 	pygame.quit()
@@ -345,7 +366,7 @@ while not killApp:
 			pass
 		if (eventParameter == "delete"):
 			for c in components:
-				if [c[2],c[3]]==gridCoordinates:
+				if detectCollision(c, gridCoordinates):
 					components.remove(c)
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
