@@ -54,7 +54,8 @@ def initalize():
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
 	csourceicon = pygame.image.load('Resources/Current_source.png')
 	gndicon = pygame.image.load('Resources/GND.png')
-	opampicon = pygame.image.load('Resources/GND.png')
+	opampicon = pygame.image.load('Resources/Op-amp_symbol.png')
+	opampicon = pygame.transform.rotate(opampicon, 90)
 	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
@@ -170,6 +171,8 @@ def checkEvents():
 				return eventType.Key_Down, "q"
 			elif event.key == pygame.K_s:
 				return eventType.Key_Down, "s"
+			elif event.key == pygame.K_e:
+				return eventType.Key_Down, "e"
 			elif event.key == pygame.K_RETURN:
 				return eventType.Key_Down, "return"
 			elif event.key == pygame.K_DELETE:
@@ -265,11 +268,12 @@ def generateNetlist():
 	netlist = []
 
 def detectCollision(component, Coordinates):
+	global compdict
 	compheight = 100
 	compwidth = 100
 	if(component[1] == 0):
-	# 	compheight = compdict[c[0]].get_rect().size[1]
-	# 	compwidth = compdict[c[0]].get_rect().size[0]
+		#compheight = compdict[c[0]].get_rect().size[1]
+		#compwidth = compdict[c[0]].get_rect().size[0]
 		if ((Coordinates[0] > c[2] - compwidth / 2) & (Coordinates[0] < (c[2] + compwidth / 2)) & 
 			(Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
 			return True
@@ -362,12 +366,14 @@ while not killApp:
 			currentComponent = 7
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
-		if (eventParameter == "x"):
+		if (eventParameter == "o"):
 			drawingLine = False
 			currentComponent = 9
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "s"):
+			pass
+		if (eventParameter == "e"):
 			pass
 		if (eventParameter == "delete"):
 			for c in components:
