@@ -5,6 +5,7 @@ import sys
 import struct
 import ctypes
 import numpy as np
+import matplotlib.pyplot as plt
 from pygame.locals import *
 import pygame, sys, eztext
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
@@ -173,6 +174,8 @@ def checkEvents():
 				return eventType.Key_Down, "s"
 			elif event.key == pygame.K_e:
 				return eventType.Key_Down, "e"
+			elif event.key == pygame.K_n:
+				return eventType.Key_Down, "n"
 			elif event.key == pygame.K_RETURN:
 				return eventType.Key_Down, "return"
 			elif event.key == pygame.K_DELETE:
@@ -310,7 +313,7 @@ lines = []
 verticalWire = False
 global components
 components = []
-if(loadFile("adder.cir") == -1):
+if(loadFile("123.txt") == -1):
 	kill()
 
 initalize()
@@ -372,9 +375,10 @@ while not killApp:
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "s"):
+			writeonscreen("saved",(255,0,0),[750,550])
 			pass
-		if (eventParameter == "e"):
-			pass
+		if (eventParameter == "n"):
+			generateNetlist()
 		if (eventParameter == "delete"):
 			for c in components:
 				if detectCollision(c, gridCoordinates):

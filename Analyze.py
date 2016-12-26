@@ -3,6 +3,7 @@ import numpy as np
 import math
 import random
 import copy
+import matplotlib.pyplot as plt
 
 def getComponentValue(componentValue):
 	if(componentValue.lower().endswith('k')):
@@ -74,11 +75,13 @@ def pol2rect(magnitude, phase):
 # R R3 (N4;N3) 10k
 # OPAMP3 A1 (N2;N3;N4)"""
 # netlist = """.AC OP
-# V V1 (N1;N0) 10 1k
+# .GRAPH N1 N2
+# V V1 (N1;N0) 10 1
 # G G1 (N1;N2) 6.28318530718m
 # C C1 (N2;N0) 1u
 # R R1 (N1;N0) 1k"""
 # netlist = """.AC OP
+# .GRAPH N1 N4
 # V V1 (N1;N0) 10 500
 # V V2 (N2;N0) 5 200
 # R R1 (N0;N2) 1k
@@ -87,38 +90,40 @@ def pol2rect(magnitude, phase):
 # R R2 (N3;N4) 1k
 # R R3 (N3;N0) 1k"""
 # netlist = """.AC op
+# .GRAPH N1 N2
 # V V1 (N1;N0) 10 500
 # V V2 (N2;N0) 10 0
 # C C1 (N1;N2) 1u
 # R R1 (N1;N2) 1k
 # R R2 (N1;N0) 1k"""
-# netlist = """.AC op
-# .GND N0
-# V V1 (Input;N0) 10 180
-# R R1 (Input;N2) 4.7k
-# R R2 (N2;N3) 6.8k
-# R R3 (N5;N4) 1.0k
-# R R4 (N4;N0) 6.8k
-# R R5 (N5;N6) 4.7k
-# R R6 (N6;N7) 6.8k
-# R R7 (Output;N8) 6.8k
-# R R8 (N8;N0) 5.6k
-# C C1 (N2;N5) 0.22u
-# C C2 (N3;N0) 0.1u
-# C C3 (N6;Output) 0.22u
-# C C4 (N7;N0) 0.1u
-# *First opamp
-# OPAMP3 A1 (N3;N4;N5)
-# OPAMP3 A2 (N7;N8;Output) *Second opamp"""
-netlist = """.DC op
+netlist = """.AC op
 .GND N0
-V V1 (N1;N0) 100
-R R1 (N1;N2) 100
-D D1 (N2;N0)
-R R2 (N1;N3) 100
-#D D2 (N0;N3)
-D D3 (N1;N4)
-R R3 (N4;N0) 100"""
+.GRAPH Input Output
+V V1 (Input;N0) 10 180
+R R1 (Input;N2) 4.7k
+R R2 (N2;N3) 6.8k
+R R3 (N5;N4) 1.0k
+R R4 (N4;N0) 6.8k
+R R5 (N5;N6) 4.7k
+R R6 (N6;N7) 6.8k
+R R7 (Output;N8) 6.8k
+R R8 (N8;N0) 5.6k
+C C1 (N2;N5) 0.22u
+C C2 (N3;N0) 0.1u
+C C3 (N6;Output) 0.22u
+C C4 (N7;N0) 0.1u
+*First opamp
+OPAMP3 A1 (N3;N4;N5)
+OPAMP3 A2 (N7;N8;Output) *Second opamp"""
+# netlist = """.DC op
+# .GND N0
+# V V1 (N1;N0) 100
+# R R1 (N1;N2) 100
+# D D1 (N2;N0)
+# R R2 (N1;N3) 100
+# #D D2 (N0;N3)
+# D D3 (N1;N4)
+# R R3 (N4;N0) 100"""
 
 
 i = 0
@@ -128,6 +133,7 @@ vCriticalDiode = thermalVoltage * math.log1p(thermalVoltage / (math.sqrt(2) * sa
 simulationDomain = ""
 simulationFrequencies = []
 simulationParameters = []
+toGraph = []
 commands = netlist.splitlines()
 commands = list(filter(None, commands))
 nodeList = []
@@ -154,6 +160,9 @@ for i in range(len(commands)):
 		simulationParameters = copy.copy(commandtext)
 	elif (commandtext[0].lower() == ".gnd"):
 		groundNode = commandtext[1].lower()
+	elif (commandtext[0].lower() == ".graph"):
+		toGraph.append(commandtext[1].lower())
+		toGraph.append(commandtext[2].lower())
 
 	if ((commandtext[0].lower() == "v") | (commandtext[0].lower() == "i")):
 		if (len(commandtext) > 4):
@@ -186,6 +195,33 @@ if (groundNodeIndex > 0):
 	nodeListNatural[0] = temp
 
 voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
+
+def plot2sine(mag1,phase1,mag2,phase2): 
+	t = np.arange(0.0,1.01,0.01)
+	figure1 = plt.figure(1)
+	fig = figure1.add_subplot(111)
+	fig.plot(t,mag1*np.sin(4*np.pi*t+phase1*(180/np.pi)))
+	fig.plot(t,mag2*np.sin(4*np.pi*t+phase2*(180/np.pi)))
+	fig.set_ylim((-max(mag1,mag2),max(mag1,mag2)))
+	fig.set_ylabel('Magnitude')
+	fig.set_title('phase difference')
+	plt.show()
+
+def displaymagphase(array1,array2,array3,array4):
+	#array1=[1,2,3,4,5,6]
+	#array2=[0.5,2,3,4,5,6]
+	figure1 = plt.figure(1)
+	up = figure1.add_subplot(211)
+	up.plot(array1,array2)
+	up.set_ylim((0,max(max(array1),max(array2))))
+	up.set_ylabel('magnitude')
+	up.set_title('magnitude')
+	down = figure1.add_subplot(212)
+	down.plot(array3,array4)
+	down.set_ylim((0,max(max(array3),max(array4))))
+	down.set_ylabel('phase')
+	down.set_title('phase')
+	plt.show()
 
 def formAdmittanceMatrix():
 	global voltageSources
@@ -475,7 +511,12 @@ def performAnalysis():
 		conv = 0
 		for i in range(len(voltageMatrix)):
 			conv += (voltageMatrix[i] - voltageMatrix2[i])**2
-		voltageAcrossOld = voltageAcross
+
+		for i in range(len(voltageMatrix)):
+			if ((voltageMatrix[i] - voltageMatrix2[i]) > 10):
+				voltageMatrix2[i] = voltageMatrix[i] - 10
+			elif ((voltageMatrix2[i] - voltageMatrix[i]) > 10):
+				voltageMatrix2[i] = voltageMatrix[i] + 10
 		voltageMatrix = copy.copy(voltageMatrix2)
 	# admittanceMatrixInvert = np.linalg.inv(admittanceMatrix)
 	# solutionMatrix = np.dot(admittanceMatrixInvert, currentMatrix)
@@ -487,7 +528,7 @@ def performAnalysis():
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
 		if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') | 
-		    (commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c') | 
+			(commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c') | 
 			(commandtext[0].lower() == 'd')):
 			if not(commandtext[0].lower() == 'd'):
 				componentValue = getComponentValue(commandtext[3])
@@ -530,7 +571,11 @@ def performAnalysis():
 	for i in range(len(solutionMatrix)):
 		#print(voltageMatrixLabels[i] + " = " + str(solutionMatrix[i]))
 		print(voltageMatrixLabels[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
-
+	a = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[0]
+	b = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[1]
+	c = rect2pol(solutionMatrix[nodeList.index(toGraph[1]) - 1])[0]
+	d = rect2pol(solutionMatrix[nodeList.index(toGraph[1]) - 1])[1]
+	plot2sine(a, b, c, d)
 
 if (simulationParameters[1].lower() == "op"):
 	if(simulationDomain == "DC"):
