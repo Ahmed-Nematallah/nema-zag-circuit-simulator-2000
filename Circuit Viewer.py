@@ -423,7 +423,6 @@ while not killApp:
 					# blit txtbx on the sceen
 					txtbx.draw(gameDisplay)
 					pygame.display.flip()
-					returnedEvent, eventParameter = checkEvents()
 				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 0")
 				print(components)
@@ -441,7 +440,6 @@ while not killApp:
 					# blit txtbx on the sceen
 					txtbx.draw(gameDisplay)
 					pygame.display.flip()
-					returnedEvent, eventParameter = checkEvents()
 				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 1")
 				print(components)
