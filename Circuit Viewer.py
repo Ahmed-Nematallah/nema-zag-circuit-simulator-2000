@@ -5,6 +5,7 @@ import sys
 import struct
 import ctypes
 import numpy as np
+import matplotlib.pyplot as plt
 from pygame.locals import *
 import pygame, sys, eztext
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
@@ -25,6 +26,15 @@ def flatten(listOfLists):
 	"Flatten one level of nesting"
 	z = [x for sublist in listOfLists for x in sublist]
 	return z
+
+def flattenml(listOfLists):
+	listOfLists2 = copy.deepcopy(listOfLists)
+	while not(type(listOfLists2[0]) == int):
+		listOfLists3 = flatten(listOfLists2)
+		listOfLists2 = copy.deepcopy(listOfLists3)
+
+	return listOfLists2
+
 
 global font
 pygame.font.init()
@@ -54,7 +64,8 @@ def initalize():
 	vsourceicon = pygame.image.load('Resources/Voltage_source.png')
 	csourceicon = pygame.image.load('Resources/Current_source.png')
 	gndicon = pygame.image.load('Resources/GND.png')
-	opampicon = pygame.image.load('Resources/GND.png')
+	opampicon = pygame.image.load('Resources/Op-amp_symbol.png')
+	opampicon = pygame.transform.rotate(opampicon, 90)
 	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
@@ -64,7 +75,7 @@ def initalize():
 	pygame.init()
 	clock = pygame.time.Clock()
 	gameDisplay = pygame.display.set_mode((800, 600))
-	pygame.display.set_caption("nema-zag circuit simulator 2000 😎 Now showing : " + title)
+	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 	gridspace = 25
 	linethickness = 3
 	lineColor = (0,255,255)
@@ -170,6 +181,10 @@ def checkEvents():
 				return eventType.Key_Down, "q"
 			elif event.key == pygame.K_s:
 				return eventType.Key_Down, "s"
+			elif event.key == pygame.K_e:
+				return eventType.Key_Down, "e"
+			elif event.key == pygame.K_n:
+				return eventType.Key_Down, "n"
 			elif event.key == pygame.K_RETURN:
 				return eventType.Key_Down, "return"
 			elif event.key == pygame.K_DELETE:
@@ -261,15 +276,119 @@ def saveFile(fileName):
 	f.close()
 
 def generateNetlist():
-	nodes = []
-	netlist = []
+	nodes = [0 for i in components]
+	netlist = ""
+	for i in range(len(components)):
+		if not(components[i][0] == 0):
+			nodes[i] = -1
+
+	for i in range(len(nodes)):
+		if nodes[i] == 0:
+			nodes[i] = i
+			connnod = findConnectedNodes(i, nodes)
+			if not(connnod == None):
+				for j in connnod:
+					nodes[j] = i
+
+	for i in range(len(components)):
+		if (components[i][0] == 7):
+			for j in range(len(components)):
+				if (components[j][0] == 0):
+					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
+						for k in range(len(nodes)):
+							if(nodes[j] == nodes[k]) & (j != k):
+								nodes[k] = i
+
+						nodes[j] = i
+		if (components[i][0] >= 1) & (components[i][0] >= 6):
+			for j in range(len(components)):
+				if (components[j][0] == 0):
+					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
+						for k in range(len(nodes)):
+							if(nodes[j] == nodes[k]) & (j != k):
+								nodes[k] = i
+
+						nodes[j] = i
+
+					if (components[i][1] == 0):
+						if(findCollisionWirePoint(components[j], (components[i][2] - 100, components[i][3]))):
+							for k in range(len(nodes)):
+								if(nodes[j] == nodes[k]) & (j != k):
+									nodes[k] += i + 100
+
+							nodes[j] += i + 100
+
+					if (components[i][1] == 1):
+						if(findCollisionWirePoint(components[j], (components[i][2], components[i][3] + 100))):
+							for k in range(len(nodes)):
+								if(nodes[j] == nodes[k]) & (j != k):
+									nodes[k] += i + 100
+
+							nodes[j] += i + 100
+
+		if (components[i][0] == 9):
+			for j in range(len(components)):
+				if (components[j][0] == 0):
+					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
+						for k in range(len(nodes)):
+							if(nodes[j] == nodes[k]) & (j != k):
+								nodes[k] = i
+
+						nodes[j] = i
+
+	print(nodes)
+
+
+def findConnectedNodes(indexw1, mask):
+	rrrrrr = []
+	mmmmm = copy.copy(mask)
+	for i in range(len(components)):
+		if not(mask[i] == 0):
+			continue
+		else:
+			if(findWireCollision(components[indexw1], components[i])):
+				rrrrrr.append(i)
+				mmmmm[i] = -1
+				for j in rrrrrr:
+					k = findConnectedNodes(j, mmmmm)
+					for l in k:
+						if not(rrrrrr.__contains__(l)):
+							if(type(l) == int):
+								rrrrrr.append(l)
+							else:
+								flattenml(l)
+								rrrrrr.append(l[0])
+	return rrrrrr
+
+
+def findWireCollision(wire1, wire2):
+	if (wire1[2] == wire2[2]) & (wire1[3] >= wire2[3]) & (wire1[3] <= (wire2[3] + wire2[5])):
+		return True
+	if (wire1[3] == wire2[3]) & (wire1[2] >= wire2[2]) & (wire1[2] <= (wire2[2] + wire2[5])):
+		return True
+	if (wire2[2] == wire1[2]) & (wire2[3] >= wire1[3]) & (wire2[3] <= (wire1[3] + wire1[5])):
+		return True
+	if (wire2[3] == wire1[3]) & (wire2[2] >= wire1[2]) & (wire2[2] <= (wire1[2] + wire1[5])):
+		return True
+	return False
+
+def findCollisionWirePoint(wire, point):
+	if((point[0] >= wire[2]) & (point[0] <= wire[2] + wire[5]) & (point[1] == wire[3])):
+		return True
+	if((point[1] >= wire[3]) & (point[1] <= wire[3] + wire[5]) & (point[0] == wire[2])):
+		return True
+
+	return False
+
+
 
 def detectCollision(component, Coordinates):
+	global compdict
 	compheight = 100
 	compwidth = 100
 	if(component[1] == 0):
-	# 	compheight = compdict[c[0]].get_rect().size[1]
-	# 	compwidth = compdict[c[0]].get_rect().size[0]
+		#compheight = compdict[c[0]].get_rect().size[1]
+		#compwidth = compdict[c[0]].get_rect().size[0]
 		if ((Coordinates[0] > c[2] - compwidth / 2) & (Coordinates[0] < (c[2] + compwidth / 2)) & 
 			(Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
 			return True
@@ -306,7 +425,7 @@ lines = []
 verticalWire = False
 global components
 components = []
-if(loadFile("adder.cir") == -1):
+if(loadFile("123.txt") == -1):
 	kill()
 
 initalize()
@@ -362,13 +481,16 @@ while not killApp:
 			currentComponent = 7
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
-		if (eventParameter == "x"):
+		if (eventParameter == "o"):
 			drawingLine = False
 			currentComponent = 9
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "s"):
+			writeonscreen("saved",(255,0,0),[750,550])
 			pass
+		if (eventParameter == "n"):
+			generateNetlist()
 		if (eventParameter == "delete"):
 			for c in components:
 				if detectCollision(c, gridCoordinates):
@@ -417,7 +539,6 @@ while not killApp:
 					# blit txtbx on the sceen
 					txtbx.draw(gameDisplay)
 					pygame.display.flip()
-					returnedEvent, eventParameter = checkEvents()
 				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 0")
 				print(components)
@@ -435,7 +556,6 @@ while not killApp:
 					# blit txtbx on the sceen
 					txtbx.draw(gameDisplay)
 					pygame.display.flip()
-					returnedEvent, eventParameter = checkEvents()
 				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
 				print("saved 1")
 				print(components)
