@@ -96,25 +96,25 @@ R R1 (N1;N0) 1k"""
 # C C1 (N1;N2) 1u
 # R R1 (N1;N2) 1k
 # R R2 (N1;N0) 1k"""
-# netlist = """.AC SWEEP FREQ V1 10 10000 OUTPUT
-# .GND N0
-# .GRAPH Input Output
-# V V1 (Input;N0) 10 180
-# R R1 (Input;N2) 4.7k
-# R R2 (N2;N3) 6.8k
-# R R3 (N5;N4) 1.0k
-# R R4 (N4;N0) 6.8k
-# R R5 (N5;N6) 4.7k
-# R R6 (N6;N7) 6.8k
-# R R7 (Output;N8) 6.8k
-# R R8 (N8;N0) 5.6k
-# C C1 (N2;N5) 0.22u
-# C C2 (N3;N0) 0.1u
-# C C3 (N6;Output) 0.22u
-# C C4 (N7;N0) 0.1u
-# *First opamp
-# OPAMP3 A1 (N3;N4;N5)
-# OPAMP3 A2 (N7;N8;Output) *Second opamp"""
+netlist = """.AC op
+.GND N0
+.GRAPH Input Output
+V V1 (Input;N0) 10 180
+R R1 (Input;N2) 4.7k
+R R2 (N2;N3) 6.8k
+R R3 (N5;N4) 1.0k
+R R4 (N4;N0) 6.8k
+R R5 (N5;N6) 4.7k
+R R6 (N6;N7) 6.8k
+R R7 (Output;N8) 6.8k
+R R8 (N8;N0) 5.6k
+C C1 (N2;N5) 0.22u
+C C2 (N3;N0) 0.1u
+C C3 (N6;Output) 0.22u
+C C4 (N7;N0) 0.1u
+*First opamp
+OPAMP3 A1 (N3;N4;N5)
+OPAMP3 A2 (N7;N8;Output) *Second opamp"""
 # netlist = """.DC op
 # .GND N0
 # V V1 (N1;N0) 100
