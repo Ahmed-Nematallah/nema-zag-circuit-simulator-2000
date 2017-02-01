@@ -290,51 +290,51 @@ def generateNetlist():
 				for j in connnod:
 					nodes[j] = i
 
-	for i in range(len(components)):
-		if (components[i][0] == 7):
-			for j in range(len(components)):
-				if (components[j][0] == 0):
-					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
-						for k in range(len(nodes)):
-							if(nodes[j] == nodes[k]) & (j != k):
-								nodes[k] = i
+	# for i in range(len(components)):
+	# 	if (components[i][0] == 7):
+	# 		for j in range(len(components)):
+	# 			if (components[j][0] == 0):
+	# 				if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
+	# 					for k in range(len(nodes)):
+	# 						if(nodes[j] == nodes[k]) & (j != k):
+	# 							nodes[k] = i
 
-						nodes[j] = i
-		if (components[i][0] >= 1) & (components[i][0] >= 6):
-			for j in range(len(components)):
-				if (components[j][0] == 0):
-					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
-						for k in range(len(nodes)):
-							if(nodes[j] == nodes[k]) & (j != k):
-								nodes[k] = i
+	# 					nodes[j] = i
+	# 	if (components[i][0] >= 1) & (components[i][0] >= 6):
+	# 		for j in range(len(components)):
+	# 			if (components[j][0] == 0):
+	# 				if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
+	# 					for k in range(len(nodes)):
+	# 						if(nodes[j] == nodes[k]) & (j != k):
+	# 							nodes[k] = i
 
-						nodes[j] = i
+	# 					nodes[j] = i
 
-					if (components[i][1] == 0):
-						if(findCollisionWirePoint(components[j], (components[i][2] - 100, components[i][3]))):
-							for k in range(len(nodes)):
-								if(nodes[j] == nodes[k]) & (j != k):
-									nodes[k] += i + 100
+	# 				if (components[i][1] == 0):
+	# 					if(findCollisionWirePoint(components[j], (components[i][2] - 100, components[i][3]))):
+	# 						for k in range(len(nodes)):
+	# 							if(nodes[j] == nodes[k]) & (j != k):
+	# 								nodes[k] += i + 100
 
-							nodes[j] += i + 100
+	# 						nodes[j] += i + 100
 
-					if (components[i][1] == 1):
-						if(findCollisionWirePoint(components[j], (components[i][2], components[i][3] + 100))):
-							for k in range(len(nodes)):
-								if(nodes[j] == nodes[k]) & (j != k):
-									nodes[k] += i + 100
+	# 				if (components[i][1] == 1):
+	# 					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3] + 100))):
+	# 						for k in range(len(nodes)):
+	# 							if(nodes[j] == nodes[k]) & (j != k):
+	# 								nodes[k] += i + 100
 
-							nodes[j] += i + 100
+	# 						nodes[j] += i + 100
 
-		if (components[i][0] == 9):
-			for j in range(len(components)):
-				if (components[j][0] == 0):
-					if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
-						for k in range(len(nodes)):
-							if(nodes[j] == nodes[k]) & (j != k):
-								nodes[k] = i
+	# 	if (components[i][0] == 9):
+	# 		for j in range(len(components)):
+	# 			if (components[j][0] == 0):
+	# 				if(findCollisionWirePoint(components[j], (components[i][2], components[i][3]))):
+	# 					for k in range(len(nodes)):
+	# 						if(nodes[j] == nodes[k]) & (j != k):
+	# 							nodes[k] = i
 
-						nodes[j] = i
+	# 					nodes[j] = i
 
 	print(nodes)
 
@@ -362,20 +362,24 @@ def findConnectedNodes(indexw1, mask):
 
 
 def findWireCollision(wire1, wire2):
-	if (wire1[2] == wire2[2]) & (wire1[3] >= wire2[3]) & (wire1[3] <= (wire2[3] + wire2[5])):
+	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3]])):
 		return True
-	if (wire1[3] == wire2[3]) & (wire1[2] >= wire2[2]) & (wire1[2] <= (wire2[2] + wire2[5])):
+	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & wire1[1]):
 		return True
-	if (wire2[2] == wire1[2]) & (wire2[3] >= wire1[3]) & (wire2[3] <= (wire1[3] + wire1[5])):
+	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & ~wire1[1]):
 		return True
-	if (wire2[3] == wire1[3]) & (wire2[2] >= wire1[2]) & (wire2[2] <= (wire1[2] + wire1[5])):
+	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3]])):
+		return True
+	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & wire2[1]):
+		return True
+	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & ~wire2[1]):
 		return True
 	return False
 
 def findCollisionWirePoint(wire, point):
-	if((point[0] >= wire[2]) & (point[0] <= wire[2] + wire[5]) & (point[1] == wire[3])):
+	if((point[0] >= wire[2]) & (point[0] <= wire[2] + wire[5]) & (point[1] == wire[3]) & (wire[1])):
 		return True
-	if((point[1] >= wire[3]) & (point[1] <= wire[3] + wire[5]) & (point[0] == wire[2])):
+	if((point[1] >= wire[3]) & (point[1] <= wire[3] + wire[5]) & (point[0] == wire[2]) & ~(wire[1])):
 		return True
 
 	return False
