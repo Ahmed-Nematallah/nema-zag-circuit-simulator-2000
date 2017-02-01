@@ -1,4 +1,4 @@
-import pygame
+import pygame , Buttons
 import copy
 import enum
 import sys
@@ -42,6 +42,28 @@ font = pygame.font.SysFont(None, 25)
 def writeonscreen(text,color,pos):
 	screentext = font.render(text,True,color)
 	gameDisplay.blit(screentext,pos)
+# create Buttons
+buttonnamelist=["Resistor","Capacitor","Inductor","Diode","Voltage source","Current source","Ground","conductance","OPAMP"]
+buttonlist = []
+#for b in buttonnamelist:
+ #   button = Buttons.Button()
+#	buttonlist.append(button)
+	
+resistor = Buttons.Button()
+capacitor = Buttons.Button()
+inductor = Buttons.Button()
+diode = Buttons.Button()
+vsource = Buttons.Button()
+csource = Buttons.Button()
+gnd = Buttons.Button()
+conductance = Buttons.Button()
+opamp = Buttons.Button()
+rotate = Buttons.Button()
+save = Buttons.Button()
+netlist = Buttons.Button()
+AC = Buttons.Button()
+DC = Buttons.Button()
+sweep = Buttons.Button()
 
 def initalize():
 	global gameDisplay
@@ -53,6 +75,7 @@ def initalize():
 	global compdict
 	global typedict
 	global currentComponent
+	#load component icons
 	resistoricon = pygame.image.load('Resources/res.png')
 	resistoricon = pygame.transform.rotate(resistoricon, 90)
 	capacitoricon = pygame.image.load('Resources/Capacitor_Symbol.png')
@@ -66,15 +89,21 @@ def initalize():
 	gndicon = pygame.image.load('Resources/GND.png')
 	opampicon = pygame.image.load('Resources/Op-amp_symbol.png')
 	opampicon = pygame.transform.rotate(opampicon, 90)
+
+
 	print (resistoricon.get_rect().size[1]) # you can get size
 	# , draw coordinates,width and length,start and end point in grid coordinates, color , type
 	#compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	#,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
+	
+#create buttons
+
+	#create component dictionary
 	compdict = {0:None,1:resistoricon,2:capacitoricon,3:inductoricon,4:diodeicon,5:vsourceicon,6:csourceicon,7:gndicon,8:resistoricon,9:opampicon}
 	typedict={1:'R',2:'C',3:'L',4:'D',5:'V',6:'I',7:'G',8:'g',9:'O'}
 	pygame.init()
 	clock = pygame.time.Clock()
-	gameDisplay = pygame.display.set_mode((800, 600))
+	gameDisplay = pygame.display.set_mode((1000,720))
 	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 	gridspace = 25
 	linethickness = 3
@@ -86,6 +115,26 @@ def render():
 	global currentComponent
 	global componentOrientationRender
 	gameDisplay.fill(backgroundColor)
+
+#Displaying buttons
+		#Parameters:           surface,      color,       x,   y,   length, height, width,    text,      text_color
+
+	resistor.create_button(   gameDisplay, (160,160,160), 0 , 0   , 200    ,    40 ,    0, "Resistor", (0,0,0))
+	capacitor.create_button(  gameDisplay, (160,160,160), 200 , 0   , 200    ,    40 ,    0, "Capacitor", (0,0,0))
+	inductor.create_button(   gameDisplay, (160,160,160), 400 , 0   , 200    ,    40 ,    0, "Inductor", (0,0,0))
+	diode.create_button(      gameDisplay, (160,160,160), 600 , 0   , 200    ,    40 ,    0, "Diode", (0,0,0))
+	vsource.create_button(    gameDisplay, (160,160,160), 800 , 0   , 200    ,    40 ,    0, "Voltage source", (0,0,0))
+	csource.create_button(    gameDisplay, (160,160,160), 0 ,   40  , 200    ,    40 ,   0, "Current source", (0,0,0))
+	gnd.create_button(        gameDisplay, (160,160,160), 200 , 40   , 200    ,    40 ,    0, "Ground", (0,0,0))
+	conductance.create_button(gameDisplay, (160,160,160), 400 , 40   , 200    ,    40 ,    0, "Conductance", (0,0,0))
+	opamp.create_button(      gameDisplay, (160,160,160), 600 ,  40   , 200    ,    40 ,    0, "OPAMP", (0,0,0))
+	rotate.create_button(     gameDisplay, (160,160,160), 800 , 40   , 200    ,    40 ,    0, "ٌRotate", (0,0,0))
+	save.create_button(       gameDisplay, (160,160,160), 0 ,   80   , 200    ,    40 ,    0, "Save", (0,0,0))
+	netlist.create_button(    gameDisplay, (160,160,160), 200 , 80   , 200    ,    40 ,    0, "Netlist", (0,0,0))
+	AC.create_button(         gameDisplay, (160,160,160), 400 , 80   , 200    ,    40 ,    0, "AC", (0,0,0))
+	DC.create_button(         gameDisplay, (160,160,160), 600 , 80   , 200    ,    40 ,    0, "DC", (0,0,0))
+	sweep.create_button(      gameDisplay, (160,160,160), 800 , 80   , 200    ,    40 ,    0, "Sweep", (0,0,0))
+	
 #Render components/wires currently being edited
 	if drawingLine:
 		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
@@ -192,6 +241,36 @@ def checkEvents():
 			else:
 				return eventType.Key_Down, 0
 		elif event.type == pygame.MOUSEBUTTONUP:
+			if resistor.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "r"
+			if capacitor.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "c"
+			if inductor.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "l"
+			if conductance.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "x"
+			if diode.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "d"
+			if vsource.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "v"
+			if csource.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "i"
+			if opamp.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "o"
+			if gnd.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "g"
+			if rotate.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "q"
+			if save.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "s"
+			if netlist.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "n"
+			if AC.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "1"
+			if DC.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "2"
+			if sweep.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "3"
 			return eventType.Mouse_Up, None
 
 	return 0, 0
@@ -405,6 +484,17 @@ def detectCollision(component, Coordinates):
 		
 
 	return False
+def AC_analysis():
+	print("AC analysis")
+	pass
+
+def DC_analysis():
+	print("DC analysis")
+	pass
+
+def sweep_analysis():
+	print("sweep analysis")
+	pass
 
 def kill():
 	saveFile("123.txt")
@@ -491,6 +581,12 @@ while not killApp:
 			pass
 		if (eventParameter == "n"):
 			generateNetlist()
+		if (eventParameter == "1"):
+			AC_analysis()
+		if (eventParameter == "2"):
+			DC_analysis()
+		if (eventParameter == "3"):
+			sweep_analysis()
 		if (eventParameter == "delete"):
 			for c in components:
 				if detectCollision(c, gridCoordinates):

@@ -1,20 +1,19 @@
-
-import matplotlib.pyplot as plt
-
-def displaymagphase(array1,array2,array3,array4):
-	#array1=[1,2,3,4,5,6]
-	#array2=[0.5,2,3,4,5,6]
-	figure1 = plt.figure(1)
-	up = figure1.add_subplot(211)
-	up.plot(array1,array2)
-	up.set_ylim((0,max(max(array1),max(array2))))
-	up.set_ylabel('magnitude')
-	up.set_title('magnitude')
-	down = figure1.add_subplot(212)
-	down.plot(array3,array4)
-	down.set_ylim((0,max(max(array3),max(array4))))
-	down.set_ylabel('phase')
-	down.set_title('phase')
-	plt.show()
-
-displaymagphase(range(100), range(100), range(100), range(100))
+import time,random
+ 
+items = [chr(i) for i in range(0x30a1, 0x30ff + 1)] # katakana
+ 
+ 
+for i in range(1,11): # spaces and numbers
+    items.append(str(i))
+    items.append(" "*i)
+ 
+def rain(row,column):         # rows,columns
+     for i in range(row): #for every row
+             s = ''      #new string
+             for j in range(column): #for every column (or character)
+                     ri = random.randrange(len(items)) #random index
+                     s += items[ri]
+             print(s)
+             time.sleep(0.5) # change this to whatever makes the rain a good speed
+while(1):
+	rain(10,10)

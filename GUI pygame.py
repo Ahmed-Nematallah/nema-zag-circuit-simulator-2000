@@ -1,6 +1,7 @@
-import pygame
+import pygame , Buttons
 import copy
 import enum
+from pygame.locals import *
 
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
