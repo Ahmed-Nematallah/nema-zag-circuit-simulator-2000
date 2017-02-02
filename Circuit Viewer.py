@@ -432,15 +432,15 @@ def findConnectedNodes(indexw1, mask):
 def findWireCollision(wire1, wire2):
 	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3]])):
 		return True
-	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & wire1[1]):
+	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & ~wire1[1]):
 		return True
-	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & ~wire1[1]):
+	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & wire1[1]):
 		return True
 	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3]])):
 		return True
-	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & wire2[1]):
+	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & ~wire2[1]):
 		return True
-	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & ~wire2[1]):
+	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & wire2[1]):
 		return True
 	return False
 
