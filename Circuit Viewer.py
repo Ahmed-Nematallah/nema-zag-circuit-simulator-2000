@@ -496,7 +496,7 @@ def sweep_analysis():
 	pass
 
 def kill():
-	saveFile("123.txt")
+	saveFile("myfirstcir.cir")
 	pygame.quit()
 	quit()
 
@@ -514,7 +514,7 @@ lines = []
 verticalWire = False
 global components
 components = []
-if(loadFile("123.txt") == -1):
+if(loadFile("myfirstcir.cir") == -1):
 	kill()
 
 initalize()
