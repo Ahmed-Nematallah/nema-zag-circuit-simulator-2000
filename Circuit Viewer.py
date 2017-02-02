@@ -375,32 +375,42 @@ def generateNetlist():
 			for j in range(len(components)):
 				if (components[j][0] == 0):
 					if(findCollisionWirePoint(components[j], [components[i][2], components[i][3]])):
+						connections[i].append("T1")
 						connections[i].append(nodes[j])
 					if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] + 100]) & ~components[i][1]):
+						connections[i].append("T2")
 						connections[i].append(nodes[j])
 					if(findCollisionWirePoint(components[j], [components[i][2] + 100, components[i][3]]) & components[i][1]):
+						connections[i].append("T2")
 						connections[i].append(nodes[j])
 		if (components[i][0] == 7):
 			for j in range(len(components)):
 				if (components[j][0] == 0):
 					if(findCollisionWirePoint(components[j], [components[i][2], components[i][3]])):
+						connections[i].append("T1")
 						connections[i].append(nodes[j])
 		if (components[i][0] == 9):
 			for j in range(len(components)):
 				if (components[j][0] == 0):
 					if (components[i][1]):
 						if(findCollisionWirePoint(components[j], [components[i][2] + 25, components[i][3]])):
+							connections[i].append("T1")
 							connections[i].append(nodes[j])
 						if(findCollisionWirePoint(components[j], [components[i][2] - 25, components[i][3]])):
+							connections[i].append("T2")
 							connections[i].append(nodes[j])
 						if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] + 100])):
+							connections[i].append("T3")
 							connections[i].append(nodes[j])
 					else:
 						if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] + 25])):
+							connections[i].append("T1")
 							connections[i].append(nodes[j])
 						if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] - 25])):
+							connections[i].append("T2")
 							connections[i].append(nodes[j])
 						if(findCollisionWirePoint(components[j], [components[i][2] + 100, components[i][3]])):
+							connections[i].append("T3")
 							connections[i].append(nodes[j])
 	
 	print(nodes)
