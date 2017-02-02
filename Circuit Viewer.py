@@ -128,7 +128,7 @@ def render():
 	gnd.create_button(        gameDisplay, (160,160,160), 200 , 40   , 200    ,    40 ,    0, "Ground", (0,0,0))
 	conductance.create_button(gameDisplay, (160,160,160), 400 , 40   , 200    ,    40 ,    0, "Conductance", (0,0,0))
 	opamp.create_button(      gameDisplay, (160,160,160), 600 ,  40   , 200    ,    40 ,    0, "OPAMP", (0,0,0))
-	rotate.create_button(     gameDisplay, (160,160,160), 800 , 40   , 200    ,    40 ,    0, "ٌRotate", (0,0,0))
+	rotate.create_button(     gameDisplay, (160,160,160), 800 , 40   , 200    ,    40 ,    0, "Rotate", (0,0,0))
 	save.create_button(       gameDisplay, (160,160,160), 0 ,   80   , 200    ,    40 ,    0, "Save", (0,0,0))
 	netlist.create_button(    gameDisplay, (160,160,160), 200 , 80   , 200    ,    40 ,    0, "Netlist", (0,0,0))
 	AC.create_button(         gameDisplay, (160,160,160), 400 , 80   , 200    ,    40 ,    0, "AC", (0,0,0))
