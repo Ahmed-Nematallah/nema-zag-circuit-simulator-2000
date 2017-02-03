@@ -478,7 +478,7 @@ def findConnectedNodes(indexw1, mask):
 			if not(mask[i] == 0):
 				continue
 			else:
-				if(findCollisionWireWire(components[indexw1], components[i])):
+				if(findCollisionWireWire(components[indexw1], components[i])[0]):
 					rrrrrr.append(i)
 					mmmmm[i] = -1
 					for j in rrrrrr:
@@ -496,18 +496,18 @@ def findConnectedNodes(indexw1, mask):
 def findCollisionWireWire(wire1, wire2):
 	"""Find if one wire ends on another."""
 	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3]])):
-		return True
+		return True, [wire2[2], wire2[3]]
 	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & ~wire1[1]):
-		return True
+		return True, [wire2[2] + wire2[5], wire2[3]]
 	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & wire1[1]):
-		return True
+		return True, [wire2[2], wire2[3] + wire2[5]]
 	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3]])):
-		return True
+		return True, [wire1[2], wire1[3]]
 	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & ~wire2[1]):
-		return True
+		return True, [wire1[2] + wire1[5], wire1[3]]
 	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & wire2[1]):
-		return True
-	return False
+		return True, [wire1[2], wire1[3] + wire1[5]]
+	return False, [0, 0]
 
 def findCollisionWirePoint(wire, point):
 	"""Find if a point lies on a wire."""
