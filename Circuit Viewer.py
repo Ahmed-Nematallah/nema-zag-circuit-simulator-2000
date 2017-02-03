@@ -480,7 +480,7 @@ def generateNetlist():
 	# Add components one by one
 	for i in range(len(components)):
 		if(components[i][0] != 0) & (components[i][0] != 7):
-    			temp = ""
+				temp = ""
 				temp += typedict[components[i][0]] + " "
 				temp += components[i][4] + " "
 				t1 = -1
