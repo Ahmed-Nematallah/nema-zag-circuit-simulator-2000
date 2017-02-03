@@ -479,7 +479,31 @@ def generateNetlist():
 
 	# Add components one by one
 	for i in range(len(components)):
-		pass
+		if(components[i][0] != 0) & (components[i][0] != 7):
+    			temp = ""
+			temp += typedict[components[i][0]] + " "
+			temp += components[i][4] + " "
+			t1 = -1
+			t2 = -1
+			t3 = -1
+			for j in range(0, len(connections[i]), 2):
+				if(connections[i][j] == "T1"):
+					t1 = connections[i][j + 1]
+				if(connections[i][j] == "T2"):
+					t2 = connections[i][j + 1]
+				if(connections[i][j] == "T3"):
+					t3 = connections[i][j + 1]
+			temp += "("
+			if (t1 > -1):
+				temp += "N" + str(t1) + ";"
+			if (t2 > -1):
+				temp += "N" + str(t2) + ";"
+			if (t3 > -1):
+				temp += "N" + str(t3) + ";"
+			temp = temp[0:-1]
+			temp += ") "
+			temp += str(components[i][5]) + "\n"
+			netlist += temp
 
 	print(nodes)
 	print(connections)
