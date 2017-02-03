@@ -70,6 +70,9 @@ netlist = Buttons.Button()
 AC = Buttons.Button()
 DC = Buttons.Button()
 sweep = Buttons.Button()
+changetitle=Buttons.Button()
+delete = Buttons.Button()
+graph = Buttons.Button()
 
 def initalize():
 	"""Initialize SDL and other stuff."""
@@ -139,7 +142,9 @@ def render():
 	AC.create_button(         gameDisplay, (160,160,160), 400 , 80   , 200    ,    40 ,    0, "AC", (0,0,0))
 	DC.create_button(         gameDisplay, (160,160,160), 600 , 80   , 200    ,    40 ,    0, "DC", (0,0,0))
 	sweep.create_button(      gameDisplay, (160,160,160), 800 , 80   , 200    ,    40 ,    0, "Sweep", (0,0,0))
-
+	changetitle.create_button(gameDisplay, (160,160,160), 0 , 120   , 200    ,    40 ,    0, "Change Title", (0,0,0))
+	delete.create_button(     gameDisplay, (160,160,160), 200 , 120   , 200    ,    40 ,    0, "Delete", (0,0,0))
+	graph.create_button(      gameDisplay, (160,160,160), 400 , 120   , 200    ,    40 ,    0, "Graph", (0,0,0))
 	# Render components/wires currently being edited
 	if drawingLine:
 		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
@@ -307,6 +312,12 @@ def checkEvents():
 				return eventType.Key_Down, "2"
 			if sweep.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "3"
+			if delete.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "delete"
+			if graph.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "4"
+			if changetitle.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "change"
 			return eventType.Mouse_Up, None
 
 	return 0, 0
@@ -480,7 +491,6 @@ def generateNetlist():
 	# Add components one by one
 	for i in range(len(components)):
 		if(components[i][0] != 0) & (components[i][0] != 7):
-<<<<<<< HEAD
 			temp = ""
 			temp += typedict[components[i][0]] + " "
 			temp += components[i][4] + " "
@@ -505,32 +515,6 @@ def generateNetlist():
 			temp += ") "
 			temp += str(components[i][5]) + "\n"
 			netlist += temp
-=======
-				temp = ""
-				temp += typedict[components[i][0]] + " "
-				temp += components[i][4] + " "
-				t1 = -1
-				t2 = -1
-				t3 = -1
-				for j in range(0, len(connections[i]), 2):
-					if(connections[i][j] == "T1"):
-						t1 = connections[i][j + 1]
-					if(connections[i][j] == "T2"):
-						t2 = connections[i][j + 1]
-					if(connections[i][j] == "T3"):
-						t3 = connections[i][j + 1]
-				temp += "("
-				if (t1 > -1):
-					temp += "N" + str(t1) + ";"
-				if (t2 > -1):
-					temp += "N" + str(t2) + ";"
-				if (t3 > -1):
-					temp += "N" + str(t3) + ";"
-				temp = temp[0:-1]
-				temp += ") "
-				temp += str(components[i][5]) + "\n"
-				netlist += temp
->>>>>>> bbbcefb9727906449513c64523248eda4236bb87
 
 	print(nodes)
 	print(connections)
@@ -594,8 +578,8 @@ def findCollisionWirePoint(wire, point):
 def detectCollision(component, Coordinates):
 	"""Find if coordinates are on a component."""
 	global compdict
-	compheight = compdict[component[0]].get_rect().size[0]
-	compwidth = compdict[component[0]].get_rect().size[1]
+	compheight = 100
+	compwidth = 100
 	if(component[1] == 0):
 		# compheight = compdict[c[0]].get_rect().size[1]
 		# compwidth = compdict[c[0]].get_rect().size[0]
@@ -628,6 +612,14 @@ def DC_analysis():
 def sweep_analysis():
 	"""Perform Sweep Analysis."""
 	print("sweep analysis")
+	pass
+
+def Graph():
+	print("Graph")
+	pass
+
+def Changetitle():
+	print("change title")
 	pass
 
 def kill():
@@ -716,6 +708,7 @@ while not killApp:
 			componentOrientationRender = 0
 			drawingComponenet = not drawingComponenet
 		if (eventParameter == "s"):
+			#TODO
 			writeonscreen("saved", (255, 0, 0), [750, 550])
 			pass
 		if (eventParameter == "n"):
@@ -726,6 +719,10 @@ while not killApp:
 			DC_analysis()
 		if (eventParameter == "3"):
 			sweep_analysis()
+		if (eventParameter == "4"):
+			Graph()
+		if (eventParameter == "change"):
+			Changetitle()
 		if (eventParameter == "delete"):
 			for c in components:
 				if detectCollision(c, gridCoordinates):
