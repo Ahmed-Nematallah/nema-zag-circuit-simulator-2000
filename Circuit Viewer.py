@@ -173,7 +173,7 @@ def render():
 					if n[0] == 0:
 						if n != c:
 							if findCollisionWireWire(n,c)[0]:
-								pygame.draw.rect(gameDisplay, (0,0,255), (findCollisionWireWire(n,c)[1][0]-2,findCollisionWireWire(n,c)[1][1]-2,6,6), 0)
+								pygame.draw.rect(gameDisplay, (0,0,255), (findCollisionWireWire(n,c)[1][0]-3,findCollisionWireWire(n,c)[1][1]-3,8,8), 0)
 
 			#rendering
 			if c[1] == 1:
