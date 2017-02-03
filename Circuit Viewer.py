@@ -167,6 +167,15 @@ def render():
 # Render components
 	if len(components) > 0:
 		for c in components:
+			#add joints
+			if c[0] == 0:
+				for n in components:
+					if n[0] == 0:
+						if n != c:
+							if findCollisionWireWire(n,c)[0]:
+								pygame.draw.rect(gameDisplay, (0,0,255), (findCollisionWireWire(n,c)[1][0]-2,findCollisionWireWire(n,c)[1][1]-2,6,6), 0)
+
+			#rendering
 			if c[1] == 1:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0, 0, 255), [c[2], c[3]], [c[2] + c[5], c[3]], 2)
@@ -680,10 +689,6 @@ while not killApp:
 		if ((drawingLine == False) & (drawingComponenet == False)):
 			initialCoordinates = copy.copy(gridCoordinates)
 			drawingLine = True
-			for c in components:
-				if c[4][0] == 'N':
-					if findCollisionWirePoint(c,initialCoordinates):
-						joints.append(initialCoordinates)
 		# save drawn line
 		elif drawingLine == True:
 			linecount = 0
