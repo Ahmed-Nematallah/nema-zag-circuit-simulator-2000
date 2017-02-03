@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pygame.locals import *
 import pygame, sys, eztext
+import time
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
 
@@ -531,6 +532,7 @@ initalize()
 
 #main loop
 while not killApp:
+	time.sleep(0.025)
 	returnedEvent, eventParameter = checkEvents()
 	if (returnedEvent == eventType.Quit):
 		killApp = True
