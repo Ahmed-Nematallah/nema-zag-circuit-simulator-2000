@@ -1,4 +1,5 @@
 {
 	"python.linting.pylintEnabled": false,
-	"python.linting.prospectorEnabled": false
+	"python.linting.prospectorEnabled": false,
+	"python.formatting.provider": "yapf"
 }
