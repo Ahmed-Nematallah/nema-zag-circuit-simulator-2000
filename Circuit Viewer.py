@@ -433,7 +433,7 @@ def findConnectedNodes(indexw1, mask):
 			if not(mask[i] == 0):
 				continue
 			else:
-				if(findWireCollision(components[indexw1], components[i])):
+				if(findCollisionWireWire(components[indexw1], components[i])):
 					rrrrrr.append(i)
 					mmmmm[i] = -1
 					for j in rrrrrr:
@@ -448,7 +448,7 @@ def findConnectedNodes(indexw1, mask):
 	return rrrrrr
 
 
-def findWireCollision(wire1, wire2):
+def findCollisionWireWire(wire1, wire2):
 	"""Find if one wire ends on another."""
 	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3]])):
 		return True
@@ -629,8 +629,8 @@ while not killApp:
 		elif drawingLine == True:
 			linecount = 0
 			for c in components:
-				if c[4][0]=='N':
-					linecount+=1
+				if c[4][0] == 'N':
+					linecount += 1
 			if (componentOrientationRender):
 				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
 									gridCoordinates[1] - initialCoordinates[1]])

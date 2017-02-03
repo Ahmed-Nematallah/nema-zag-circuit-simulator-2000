@@ -1,11 +1,14 @@
-import re
+"""Module for analyzing the netlist."""
+
+# import re
 import numpy as np
 import math
-import random
+# import random
 import copy
 import matplotlib.pyplot as plt
 
 def getComponentValue(componentValue):
+	"""Convert component value suffix to floatinv value."""
 	if(componentValue.lower().endswith('k')):
 		val = complex(componentValue[:-1]) * 1000
 	elif(componentValue.lower().endswith('meg')):
@@ -33,6 +36,7 @@ def getNodes(nodeValue):
 	return nodeValue[1:-1].lower().split(';')
 
 def rect2pol(complexNumber):
+	"""Rectangular to plar coordinates."""
 	if (complexNumber.real == 0):
 		if (complexNumber.imag == 0):
 			phase = 0
@@ -41,7 +45,7 @@ def rect2pol(complexNumber):
 
 	elif (complexNumber.imag == 0):
 		phase = 0
-	
+
 	else:
 		phase = math.atan(complexNumber.imag / complexNumber.real) * 180 / math.pi
 
@@ -51,6 +55,7 @@ def rect2pol(complexNumber):
 	return (abs(complexNumber), phase)
 
 def pol2rect(magnitude, phase):
+	"""Polar to rectangular coordinates."""
 	complexNumber = complex(magnitude * math.cos(phase), magnitude * math.sin(phase))
 	return complexNumber
 
@@ -125,13 +130,12 @@ OPAMP3 A2 (N7;N8;Output) *Second opamp"""
 # D D3 (N1;N4)
 # R R3 (N4;N0) 100"""
 
-
-i = 0
 sweepit = 0
 satCurrent = 10**-14
 thermalVoltage = 0.026
 magList = [0 for i in range(100)]
 phaList = [0 for i in range(100)]
+i = 0
 vCriticalDiode = thermalVoltage * math.log1p(thermalVoltage / (math.sqrt(2) * satCurrent))
 simulationDomain = ""
 simulationFrequencies = []
@@ -183,7 +187,7 @@ commands = list(filter(None, commands))
 simulationFrequencies.sort()
 simulationFrequency = 0
 nodeCount = len(nodeList) - 1
-nodeListNatural = [x for (y,x) in sorted(zip(nodeList,nodeListNatural), key=lambda pair: pair[0])]
+nodeListNatural = [x for (y, x) in sorted(zip(nodeList, nodeListNatural), key=lambda pair: pair[0])]
 nodeList.sort()
 admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 currentMatrix = [0 for i in range(nodeCount)]
@@ -199,34 +203,36 @@ if (groundNodeIndex > 0):
 
 voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 
-def plot2sine(mag1,phase1,mag2,phase2): 
-	t = np.arange(0.0,1.01,0.01)
+def plot2sine(mag1, phase1, mag2, phase2):
+	"""Plot magniteude and phase of two complex numbers."""
+	t = np.arange(0.0, 1.01, 0.01)
 	figure1 = plt.figure(1)
 	fig = figure1.add_subplot(111)
-	fig.plot(t,mag1*np.sin(4*np.pi*t+phase1*(180/np.pi)))
-	fig.plot(t,mag2*np.sin(4*np.pi*t+phase2*(180/np.pi)))
-	fig.set_ylim((-max(mag1,mag2),max(mag1,mag2)))
+	fig.plot(t, mag1 * np.sin(4 * np.pi * t + phase1 * (180 / np.pi)))
+	fig.plot(t, mag2 * np.sin(4 * np.pi * t + phase2 * (180 / np.pi)))
+	fig.set_ylim((-max(mag1, mag2), max(mag1, mag2)))
 	fig.set_ylabel('Magnitude')
 	fig.set_title('phase difference')
 	plt.show()
 
-def displaymagphase(array1,array2,array3,array4):
-	#array1=[1,2,3,4,5,6]
-	#array2=[0.5,2,3,4,5,6]
+def displaymagphase(array1, array2, array3, array4):
+	# array1=[1,2,3,4,5,6]
+	# array2=[0.5,2,3,4,5,6]
 	figure1 = plt.figure(1)
 	up = figure1.add_subplot(211)
-	up.plot(array1,array2)
-	up.set_ylim((0,max(max(array1),max(array2))))
+	up.plot(array1, array2)
+	up.set_ylim((0, max(max(array1), max(array2))))
 	up.set_ylabel('magnitude')
 	up.set_title('magnitude')
 	down = figure1.add_subplot(212)
-	down.plot(array3,array4)
-	down.set_ylim((0,max(max(array3),max(array4))))
+	down.plot(array3, array4)
+	down.set_ylim((0, max(max(array3), max(array4))))
 	down.set_ylabel('phase')
 	down.set_title('phase')
 	plt.show()
 
 def formAdmittanceMatrix():
+	"""Form the base admittance matrix for analysis."""
 	global voltageSources
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
@@ -240,7 +246,7 @@ def formAdmittanceMatrix():
 			componentValue = getComponentValue(commandtext[3])
 			node1 = nodeList.index(nodes[0])
 			node2 = nodeList.index(nodes[1])
-			componentAdmittance = 1/componentValue
+			componentAdmittance = 1 / componentValue
 			if(node1 != 0):
 				admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
 			if((node1 != 0) & (node2 != 0)):
@@ -261,13 +267,13 @@ def formAdmittanceMatrix():
 				admittanceMatrix[node2 - 1][node1 - 1] -= componentAdmittance
 			if(node2 != 0):
 				admittanceMatrix[node2 - 1][node2 - 1] += componentAdmittance
-			
+
 		elif(commandtext[0].lower() == 'l'):
 			componentValue = getComponentValue(commandtext[3])
 			node1 = nodeList.index(nodes[0])
 			node2 = nodeList.index(nodes[1])
-			if((simulationDomain == "DC") | (simulationFrequency == 0)):	#Consider it a short circuit, 
-				for i in range(len(admittanceMatrix)):                      #or a 0V voltage source, neat, heh?
+			if((simulationDomain == "DC") | (simulationFrequency == 0)):  # Consider it a short circuit,
+				for i in range(len(admittanceMatrix)):					  # or a 0V voltage source, neat, heh?
 					admittanceMatrix[i].append(0)
 					if (i == (node1 - 1)):
 						admittanceMatrix[i][nodeCount + voltageSources] += 1
@@ -281,7 +287,7 @@ def formAdmittanceMatrix():
 				currentMatrix.append(0)
 
 			elif(simulationDomain == "AC"):
-				componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
+				componentAdmittance = (-1j) / (2 * math.pi * simulationFrequency * componentValue)
 				if(node1 != 0):
 					admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
 				if((node1 != 0) & (node2 != 0)):
@@ -305,7 +311,7 @@ def formAdmittanceMatrix():
 				currentMatrix.append(0)
 
 			elif(simulationDomain == "AC"):
-				componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
+				componentAdmittance = (1j) * (2 * math.pi * simulationFrequency * componentValue)
 				if(node1 != 0):
 					admittanceMatrix[node1 - 1][node1 - 1] += componentAdmittance
 				if((node1 != 0) & (node2 != 0)):
@@ -313,7 +319,7 @@ def formAdmittanceMatrix():
 					admittanceMatrix[node2 - 1][node1 - 1] -= componentAdmittance
 				if(node2 != 0):
 					admittanceMatrix[node2 - 1][node2 - 1] += componentAdmittance
-			
+
 		elif(commandtext[0].lower() == 'v'):
 			if(simulationDomain == "DC"):
 				if (len(commandtext) == 4):
@@ -445,7 +451,7 @@ def formAdmittanceMatrix():
 				admittanceMatrix[i].append(0)
 				if (i == (node3 - 1)):
 					admittanceMatrix[i][nodeCount + voltageSources] += 1
-			columnSliceTranspose = [0 for i in range(len(admittanceMatrix))] #No longer the transpose
+			columnSliceTranspose = [0 for i in range(len(admittanceMatrix))]  # No longer the transpose
 			columnSliceTranspose.append(0)
 			admittanceMatrix.append(columnSliceTranspose)
 			for i in range(len(admittanceMatrix)):
@@ -459,6 +465,7 @@ def formAdmittanceMatrix():
 
 
 def performAnalysis():
+	"""Perform the analysis."""
 	global magList
 	global phaList
 	global sweepit
@@ -469,13 +476,13 @@ def performAnalysis():
 	currentMatrix = np.array(currentMatrix)
 	basecurrentMatrix = copy.deepcopy(currentMatrix)
 	voltageMatrix = [0 for i in currentMatrix]
-	voltageMatrixOld = [0 for i in currentMatrix]
+	# voltageMatrixOld = [0 for i in currentMatrix]
 	voltageAcrossOld = 0
 	conv = 100000
 	while conv > 10**-20:
 		nlJacobian = [[0 for j in i] for i in admittanceMatrix]
 		currentMatrix = copy.deepcopy(basecurrentMatrix)
-		#form currentMatrix & complete nlJacobian
+		# form currentMatrix & complete nlJacobian
 		for i in commands:
 			commandtext = i.split(' ')
 			if not(i.startswith('.')):
@@ -493,24 +500,24 @@ def performAnalysis():
 					voltageAcross = voltageMatrix[node1 - 1]
 				else:
 					voltageAcross = voltageMatrix[node1 - 1] - voltageMatrix[node2 - 1]
-				
+
 				if (voltageAcrossOld < vCriticalDiode):
 					pass
 				else:
 					voltageAcross = voltageAcrossOld + thermalVoltage *  \
-					math.log1p((((voltageAcross - voltageAcrossOld)/thermalVoltage) + 1).real)
-				
-				diodeCurrent = satCurrent*(math.e**(voltageAcross/thermalVoltage) - 1)
+						math.log1p((((voltageAcross - voltageAcrossOld) / thermalVoltage) + 1).real)
+
+				diodeCurrent = satCurrent * (math.e ** (voltageAcross / thermalVoltage) - 1)
 				print(voltageAcross)
 				if node1 != 0:
 					currentMatrix[node1 - 1] -= diodeCurrent
-					nlJacobian[node1 - 1][node1 - 1] += -diodeCurrent/thermalVoltage
+					nlJacobian[node1 - 1][node1 - 1] += -diodeCurrent / thermalVoltage
 				if node2 != 0:
 					currentMatrix[node2 - 1] += diodeCurrent
-					nlJacobian[node2 - 1][node2 - 1] += -diodeCurrent/thermalVoltage
+					nlJacobian[node2 - 1][node2 - 1] += -diodeCurrent / thermalVoltage
 				if((node1 != 0) & (node2 != 0)):
-					nlJacobian[node1 - 1][node2 - 1] += diodeCurrent/thermalVoltage
-					nlJacobian[node2 - 1][node1 - 1] += diodeCurrent/thermalVoltage
+					nlJacobian[node1 - 1][node2 - 1] += diodeCurrent / thermalVoltage
+					nlJacobian[node2 - 1][node1 - 1] += diodeCurrent / thermalVoltage
 
 		Jacobian = admittanceMatrix - nlJacobian
 		voltageMatrix2 = np.dot(np.linalg.inv(Jacobian), -np.dot(nlJacobian, voltageMatrix) + currentMatrix)
@@ -533,8 +540,8 @@ def performAnalysis():
 		commandtext = commands[i].split(' ')
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
-		if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') | 
-			(commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c') | 
+		if ((commandtext[0].lower() == 'r') | (commandtext[0].lower() == 'g') |
+			(commandtext[0].lower() == 'l') | (commandtext[0].lower() == 'c') |
 			(commandtext[0].lower() == 'd')):
 			if not(commandtext[0].lower() == 'd'):
 				componentValue = getComponentValue(commandtext[3])
@@ -549,7 +556,7 @@ def performAnalysis():
 				voltageAcross = solutionMatrix[node1 - 1]
 			else:
 				voltageAcross = solutionMatrix[node1 - 1] - solutionMatrix[node2 - 1]
-		
+
 		if(commandtext[0].lower() == 'r'):
 			voltageMatrixLabels.append("I(" + commandtext[1] + ")")
 			solutionMatrix.append(voltageAcross / componentValue)
@@ -560,22 +567,22 @@ def performAnalysis():
 
 		elif(commandtext[0].lower() == 'l'):
 			if (simulationDomain == "AC"):
-				componentAdmittance = (-1j)/(2*math.pi*simulationFrequency*componentValue)
+				componentAdmittance = (-1j) / (2 * math.pi * simulationFrequency * componentValue)
 				voltageMatrixLabels.append("I(" + commandtext[1] + ")")
 				solutionMatrix.append(voltageAcross * componentAdmittance)
 
 		elif(commandtext[0].lower() == 'c'):
 			if (simulationDomain == "AC"):
-				componentAdmittance = (1j)*(2*math.pi*simulationFrequency*componentValue)
+				componentAdmittance = (1j) * (2 * math.pi * simulationFrequency * componentValue)
 				voltageMatrixLabels.append("I(" + commandtext[1] + ")")
 				solutionMatrix.append(voltageAcross * componentAdmittance)
 
 		elif(commandtext[0].lower() == 'd'):
 			voltageMatrixLabels.append("I(" + commandtext[1] + ")")
-			solutionMatrix.append(satCurrent*(math.e**(voltageAcross/thermalVoltage) - 1))
+			solutionMatrix.append(satCurrent * (math.e ** (voltageAcross / thermalVoltage) - 1))
 
 	for i in range(len(solutionMatrix)):
-		#print(voltageMatrixLabels[i] + " = " + str(solutionMatrix[i]))
+		# print(voltageMatrixLabels[i] + " = " + str(solutionMatrix[i]))
 		print(voltageMatrixLabels[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
 	a = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[0]
 	b = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[1]
@@ -613,13 +620,12 @@ elif (simulationParameters[1].lower() == "sweep"):
 					a = float(simulationParameters[4])
 					b = float(simulationParameters[5])
 					for j in range(100):
-						simulationFrequency = a + (b - a)*j/100
-						commands[i] = commands[i].split(" ")[0] + " " + commands[i].split(" ")[1] + " " + commands[i].split(" ")[2] \
-						 + " " + commands[i].split(" ")[3] + " " + str(simulationFrequency)
+						simulationFrequency = a + (b - a) * j / 100
+						commands[i] = commands[i].split(" ")[0] + " " + commands[i].split(" ")[1] + " " + \
+							commands[i].split(" ")[2] + " " + commands[i].split(" ")[3] + " " + str(simulationFrequency)
 						voltageMatrixLabels = ["V(" + nodeListNatural[k + 1] + ")" for k in range(nodeCount)]
 						admittanceMatrix = [[0 for k in range(nodeCount)] for i in range(nodeCount)]
 						currentMatrix = [0 for l in range(nodeCount)]
 						voltageSources = 0
 						performAnalysis()
 					displaymagphase(magList, range(100), phaList, range(100))
-
