@@ -151,12 +151,19 @@ def render():
 
 	if drawingComponenet:
 		compheight = compdict[currentComponent].get_rect().size[0]
-		if componentOrientationRender == 0:
-			gameDisplay.blit(compdict[currentComponent], (gridCoordinates[0] - (compheight / 2) + 1, gridCoordinates[1]))
-		if componentOrientationRender == 1:
-			compimage = pygame.transform.rotate(compdict[currentComponent], 270)
-			gameDisplay.blit(compimage, (gridCoordinates[0], gridCoordinates[1] - (compheight / 2) + 1))
-
+		compwidth = compdict[currentComponent].get_rect().size[1]
+		if currentComponent != 9:
+			if componentOrientationRender == 0:
+				gameDisplay.blit(compdict[currentComponent], (gridCoordinates[0] - (compheight / 2) + 1, gridCoordinates[1]))
+			if componentOrientationRender == 1:
+				compimage = pygame.transform.rotate(compdict[currentComponent], 270)
+				gameDisplay.blit(compimage, (gridCoordinates[0], gridCoordinates[1] - (compheight / 2) + 1))
+		if currentComponent == 9:
+			if componentOrientationRender == 0:
+				gameDisplay.blit(compdict[currentComponent], (gridCoordinates[0] - (compheight / 2), gridCoordinates[1]-(compwidth)))
+			if componentOrientationRender == 1:
+				compimage = pygame.transform.rotate(compdict[currentComponent], 270)
+				gameDisplay.blit(compimage, (gridCoordinates[0], gridCoordinates[1] - (compheight / 2) + 1))
 # Render components
 	if len(components) > 0:
 		for c in components:
@@ -170,13 +177,21 @@ def render():
 					gameDisplay.blit(compimage, (c[2], c[3] - (compheight / 2) + 1))
 					writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
 					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] + 30])
+					
 			elif c[1] == 0:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0, 0, 255), [c[2], c[3]], [c[2], c[3] + c[5]], 2)
-				elif c[0] != 0:
+				elif c[0] != 0 and c[0] != 9 :
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					gameDisplay.blit(compimage, (c[2] - (compheight / 2) + 1, c[3]))
+					writeonscreen(c[4], (0, 255, 0), [c[2] - 30, c[3]])
+					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2] + 30, c[3]])
+				elif c[0] == 9 :
+					compheight = compdict[c[0]].get_rect().size[0]
+					compwidth = compdict[c[0]].get_rect().size[1]
+					compimage = compdict[c[0]]
+					gameDisplay.blit(compimage, (c[2] - (compheight / 2) , c[3]-compwidth))
 					writeonscreen(c[4], (0, 255, 0), [c[2] - 30, c[3]])
 					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2] + 30, c[3]])
 			elif c[1] == 2:
@@ -192,7 +207,7 @@ def render():
 			elif c[1] == 3:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0, 0, 255), [c[2], c[3]], [c[2], c[3] + c[5]], 2)
-				elif c[0] != 0:
+				elif c[0] != 0 :
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 270)
