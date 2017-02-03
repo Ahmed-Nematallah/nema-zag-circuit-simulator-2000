@@ -173,7 +173,7 @@ def render():
 					if n[0] == 0:
 						if n != c:
 							if findCollisionWireWire(n,c)[0]:
-								pygame.draw.rect(gameDisplay, (0,0,255), (findCollisionWireWire(n,c)[1][0]-3,findCollisionWireWire(n,c)[1][1]-3,8,8), 0)
+								pygame.draw.rect(gameDisplay, (0,0,200), (findCollisionWireWire(n,c)[1][0]-3,findCollisionWireWire(n,c)[1][1]-3,8,8), 0)
 
 			#rendering
 			if c[1] == 1:
@@ -543,8 +543,8 @@ def findCollisionWirePoint(wire, point):
 def detectCollision(component, Coordinates):
 	"""Find if coordinates are on a component."""
 	global compdict
-	compheight = 100
-	compwidth = 100
+	compheight = compdict[component[0]].get_rect().size[0]
+	compwidth = compdict[component[0]].get_rect().size[1]
 	if(component[1] == 0):
 		# compheight = compdict[c[0]].get_rect().size[1]
 		# compwidth = compdict[c[0]].get_rect().size[0]
