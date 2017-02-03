@@ -693,18 +693,8 @@ while not killApp:
 				if c[4][0] == 'N':
 					linecount += 1
 			if (componentOrientationRender):
-<<<<<<< HEAD
 				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
 									gridCoordinates[1] - initialCoordinates[1]])
-			# add joints
-			for c in components:
-				if c[4][0] == 'N':
-					if findCollisionWireWire(components[-1],c):
-						joints.append([gridCoordinates[0], gridCoordinates[1]])
-=======
-				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)),
-					 gridCoordinates[1] - initialCoordinates[1]])
->>>>>>> a4c63532f2a161b05fa1a666c0f3262dd667891b
 				print(components)
 				print(joints)
 				print("check")
