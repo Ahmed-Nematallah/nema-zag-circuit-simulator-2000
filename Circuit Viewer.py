@@ -102,7 +102,7 @@ def initalize():
 	# compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	# ,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
 
-# create buttons
+	# create buttons
 
 	# create component dictionary
 	compdict = {0:None, 1:resistoricon, 2:capacitoricon, 3:inductoricon, 4:diodeicon, 5:vsourceicon, 6:csourceicon, 7:gndicon, 8:resistoricon, 9:opampicon}
@@ -177,7 +177,7 @@ def render():
 					gameDisplay.blit(compimage, (c[2], c[3] - (compheight / 2) + 1))
 					writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
 					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] + 30])
-					
+
 			elif c[1] == 0:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0, 0, 255), [c[2], c[3]], [c[2], c[3] + c[5]], 2)
@@ -216,7 +216,7 @@ def render():
 					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] + 30])
 				# pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
 
-		# pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
+				# pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
 	pygame.display.update()
 
 def checkEvents():
@@ -415,14 +415,14 @@ def generateNetlist():
 		if (components[i][0] == 9):
 			for j in range(len(components)):
 				if (components[j][0] == 0):
-					if (components[i][1]):
+					if not(components[i][1]):
 						if(findCollisionWirePoint(components[j], [components[i][2] + 25, components[i][3]])):
 							connections[i].append("T1")
 							connections[i].append(nodes[j])
 						if(findCollisionWirePoint(components[j], [components[i][2] - 25, components[i][3]])):
 							connections[i].append("T2")
 							connections[i].append(nodes[j])
-						if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] + 100])):
+						if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] - 125])):
 							connections[i].append("T3")
 							connections[i].append(nodes[j])
 					else:
@@ -432,12 +432,42 @@ def generateNetlist():
 						if(findCollisionWirePoint(components[j], [components[i][2], components[i][3] - 25])):
 							connections[i].append("T2")
 							connections[i].append(nodes[j])
-						if(findCollisionWirePoint(components[j], [components[i][2] + 100, components[i][3]])):
+						if(findCollisionWirePoint(components[j], [components[i][2] + 125, components[i][3]])):
 							connections[i].append("T3")
 							connections[i].append(nodes[j])
 
+	# Short all grounds together
+	short_to = -1
+	for i in range(len(components)):
+		if (components[i][0] == 7):
+			if(short_to == -1):
+				short_to = connections[i][1]
+			short_from = connections[i][1]
+			for j in range(len(nodes)):
+				if (nodes[j] == short_from):
+					nodes[j] = short_to
+			for j in connections:
+				for k in range(len(j)):
+					if(j[k] == short_from):
+						j[k] = short_to
+
+	if (simType == "DC"):
+		netlist += ".DC OP\n"
+
+	# Set ground to the ground node with .GND
+	if (short_to > -1):
+		netlist += ".GND N" + str(short_to) + "\n"
+	else:
+		print("ERROR : No ground node!")
+		return
+
+	# Add components one by one
+	for i in range(len(components)):
+		pass
+
 	print(nodes)
 	print(connections)
+	print(netlist)
 
 def findConnectedNodes(indexw1, mask):
 	"""Find all nodes connected to a wire."""
@@ -502,16 +532,16 @@ def detectCollision(component, Coordinates):
 	if(component[1] == 0):
 		# compheight = compdict[c[0]].get_rect().size[1]
 		# compwidth = compdict[c[0]].get_rect().size[0]
-		if ((Coordinates[0] > c[2] - compwidth / 2) & (Coordinates[0] < (c[2] + compwidth / 2)) & 
-			(Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
+		if ((Coordinates[0] > c[2] - compwidth / 2) & (Coordinates[0] < (c[2] + compwidth / 2)) &
+		 (Coordinates[1] > c[3]) & (Coordinates[1] < (c[3] + compheight))):
 			return True
 		else:
 			return False
 	else:
 		# compheight = compdict[c[0]].get_rect().size[0]
 		# compwidth = compdict[c[0]].get_rect().size[1]
-		if ((Coordinates[0] > c[2]) & (Coordinates[0] < (c[2] + compwidth)) & 
-			(Coordinates[1] > c[3] - compheight / 2) & (Coordinates[1] < (c[3] + compheight / 2))):
+		if ((Coordinates[0] > c[2]) & (Coordinates[0] < (c[2] + compwidth)) &
+		 (Coordinates[1] > c[3] - compheight / 2) & (Coordinates[1] < (c[3] + compheight / 2))):
 			return True
 		else:
 			return False
@@ -551,6 +581,7 @@ componentOrientationRender = 0  # 0->H 1->v
 gridCoordinates = [0, 0]
 lines = []
 verticalWire = False
+simType = "DC"
 global components
 components = []
 if(loadFile("myfirstcir.cir") == -1):
@@ -568,7 +599,7 @@ while not killApp:
 	elif (returnedEvent == eventType.Mouse_Motion):
 		gridCoordinates = [snapToGrid(eventParameter[0], eventParameter[1], 25)[0], snapToGrid(eventParameter[0], eventParameter[1], 25)[1]]
 		# print(gridCoordinates)
-# if key pressed start drawing a component
+	# if key pressed start drawing a component
 	elif (returnedEvent == eventType.Key_Down):
 		if (eventParameter == "r"):
 			drawingLine = False
@@ -647,13 +678,13 @@ while not killApp:
 				if c[4][0] == 'N':
 					linecount += 1
 			if (componentOrientationRender):
-				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
-									gridCoordinates[1] - initialCoordinates[1]])
+				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)),
+					 gridCoordinates[1] - initialCoordinates[1]])
 				print(components)
 				print("check")
 			else:
-				components.append([0, 1, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
-									gridCoordinates[0] - initialCoordinates[0]])
+				components.append([0, 1, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)),
+					 gridCoordinates[0] - initialCoordinates[0]])
 				print(components)
 			drawingLine = False
 		# or save drawn component
