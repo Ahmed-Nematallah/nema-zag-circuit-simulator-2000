@@ -215,17 +215,15 @@ def render():
 					writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
 					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] + 30])
 				# pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
-<<<<<<< HEAD
 		
 	
 		# pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
 	#render joints
-	for n in joints :
-		pygame.draw.rect(gameDisplay, (0,0,255), (n[0]-2,n[1]-2,4,4), 0)
-=======
+	#for n in joints :
+	#	pygame.draw.rect(gameDisplay, (0,0,255), (n[0]-2,n[1]-2,4,4), 0)
+
 
 				# pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
->>>>>>> a4c63532f2a161b05fa1a666c0f3262dd667891b
 	pygame.display.update()
 
 def checkEvents():
