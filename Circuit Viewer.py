@@ -215,8 +215,12 @@ def render():
 					writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
 					writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] + 30])
 				# pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
-
+		
+	
 		# pygame.draw.rect(gameDisplay, i[4], flatten(i)[0:4])
+	#render joints
+	for n in joints :
+		pygame.draw.rect(gameDisplay, (0,0,255), (n[0]-2,n[1]-2,4,4), 0)
 	pygame.display.update()
 
 def checkEvents():
@@ -553,6 +557,8 @@ lines = []
 verticalWire = False
 global components
 components = []
+global joints
+joints =[]
 if(loadFile("myfirstcir.cir") == -1):
 	kill()
 
@@ -640,6 +646,10 @@ while not killApp:
 		if ((drawingLine == False) & (drawingComponenet == False)):
 			initialCoordinates = copy.copy(gridCoordinates)
 			drawingLine = True
+			for c in components:
+				if c[4][0] == 'N':
+					if findCollisionWirePoint(c,initialCoordinates):
+						joints.append(initialCoordinates)
 		# save drawn line
 		elif drawingLine == True:
 			linecount = 0
@@ -649,7 +659,13 @@ while not killApp:
 			if (componentOrientationRender):
 				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
 									gridCoordinates[1] - initialCoordinates[1]])
+			# add joints
+			for c in components:
+				if c[4][0] == 'N':
+					if findCollisionWireWire(components[-1],c):
+						joints.append([gridCoordinates[0], gridCoordinates[1]])
 				print(components)
+				print(joints)
 				print("check")
 			else:
 				components.append([0, 1, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
