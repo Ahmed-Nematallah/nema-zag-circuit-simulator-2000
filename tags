@@ -1,0 +1,238 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AC	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^AC = Buttons.Button()$/;"	kind:variable	line:70
+AC_analysis	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def AC_analysis():$/;"	kind:function	line:567
+About	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def About():$/;"	kind:function	line:41
+Analyze.py	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	1;"	kind:file	line:1
+Button	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	/^class Button:$/;"	kind:class	line:9
+Button-Example.py	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	1;"	kind:file	line:1
+Button_Example	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^class Button_Example:$/;"	kind:class	line:13
+Buttons	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^import pygame, Buttons$/;"	kind:namespace	line:7
+Buttons	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import Buttons$/;"	kind:namespace	line:3
+Buttons	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^import pygame , Buttons$/;"	kind:namespace	line:1
+Buttons.py	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	1;"	kind:file	line:1
+Circuit Viewer.py	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	1;"	kind:file	line:1
+Close	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def Close():$/;"	kind:function	line:38
+Config	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^class Config:$/;"	kind:class	line:7
+Config	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^class Config:$/;"	kind:class	line:7
+ConfigError	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^class ConfigError(KeyError): pass$/;"	kind:class	line:5
+ConfigError	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^class ConfigError(KeyError): pass$/;"	kind:class	line:5
+DC	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^DC = Buttons.Button()$/;"	kind:variable	line:71
+DC_analysis	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def DC_analysis():$/;"	kind:function	line:572
+GUI pygame.py	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	1;"	kind:file	line:1
+GUI.py	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	1;"	kind:file	line:1
+Input	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^class Input:$/;"	kind:class	line:18
+Input	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^class Input:$/;"	kind:class	line:18
+__init__	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^	def __init__(self):$/;"	kind:member	line:14
+__init__	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^    def __init__(self, **options):$/;"	kind:member	line:20
+__init__	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^    def __init__(self, options, *look_for):$/;"	kind:member	line:9
+__init__	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^    def __init__(self, **options):$/;"	kind:member	line:20
+__init__	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^    def __init__(self, options, *look_for):$/;"	kind:member	line:9
+a	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^					a = float(simulationParameters[4])$/;"	kind:variable	line:620
+admittanceMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^						admittanceMatrix = [[0 for k in range(nodeCount)] for i in range(nodeCount)]$/;"	kind:variable	line:627
+admittanceMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^			admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]$/;"	kind:variable	line:609
+admittanceMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]$/;"	kind:variable	line:601
+admittanceMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]$/;"	kind:variable	line:192
+b	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^					b = float(simulationParameters[5])$/;"	kind:variable	line:621
+buttonlist	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^buttonlist = []$/;"	kind:variable	line:53
+buttonnamelist	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^buttonnamelist = ["Resistor", "Capacitor", "Inductor", "Diode", "Voltage source", "Current source", "Ground", "conductance", "OPAMP"]$/;"	kind:variable	line:52
+c	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^c = Canvas(root,height = 400,width = 500)$/;"	kind:variable	line:19
+capacitor	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^capacitor = Buttons.Button()$/;"	kind:variable	line:59
+checkEvents	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def checkEvents():$/;"	kind:function	line:238
+checkEvents	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def checkEvents():$/;"	kind:function	line:76
+commands	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^commands = list(filter(None, commands))$/;"	kind:variable	line:145
+commands	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^commands = list(filter(None, commands))$/;"	kind:variable	line:186
+commands	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^commands = netlist.splitlines()$/;"	kind:variable	line:144
+commandtext	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^			commandtext = commands[i].split(' ')$/;"	kind:variable	line:156
+commandtext	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^	commandtext = commands[i].split(' ')$/;"	kind:variable	line:151
+commandtext	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^	commandtext = list(filter(None, commandtext))$/;"	kind:variable	line:160
+componentOrientation	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^componentOrientation = 0 #0->H 1->v$/;"	kind:variable	line:119
+componentOrientationRender	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^componentOrientationRender = 0  # 0->H 1->v$/;"	kind:variable	line:596
+components	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^components = []$/;"	kind:variable	line:602
+components	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^components = []$/;"	kind:variable	line:122
+conductance	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^conductance = Buttons.Button()$/;"	kind:variable	line:65
+copy	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^import copy$/;"	kind:namespace	line:7
+copy	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import copy$/;"	kind:namespace	line:4
+copy	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^import copy$/;"	kind:namespace	line:2
+create_button	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	/^    def create_button(self, surface, color, x, y, length, height, width, text, text_color):$/;"	kind:member	line:10
+csource	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^csource = Buttons.Button()$/;"	kind:variable	line:63
+currentComponent	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^currentComponent = None$/;"	kind:variable	line:117
+currentMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^						currentMatrix = [0 for l in range(nodeCount)]$/;"	kind:variable	line:628
+currentMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^			currentMatrix = [0 for i in range(nodeCount)]$/;"	kind:variable	line:610
+currentMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		currentMatrix = [0 for i in range(nodeCount)]$/;"	kind:variable	line:602
+currentMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^currentMatrix = [0 for i in range(nodeCount)]$/;"	kind:variable	line:193
+ddrag	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def ddrag(event):$/;"	kind:function	line:26
+ddrop	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def ddrop(event):$/;"	kind:function	line:32
+detectCollision	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def detectCollision(component, Coordinates):$/;"	kind:function	line:543
+diode	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^diode = Buttons.Button()$/;"	kind:variable	line:61
+display	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^	def display(self):$/;"	kind:member	line:18
+displaymagphase	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def displaymagphase(array1, array2, array3, array4):$/;"	kind:function	line:218
+donothing	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def donothing():$/;"	kind:function	line:43
+draw	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^    def draw(self, surface):$/;"	kind:member	line:42
+draw	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^    def draw(self, surface):$/;"	kind:member	line:42
+draw_button	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	/^    def draw_button(self, surface, color, length, height, x, y, width):           $/;"	kind:member	line:24
+drawingComponenet	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^drawingComponenet = False$/;"	kind:variable	line:594
+drawingComponenet	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^drawingComponenet = False$/;"	kind:variable	line:116
+drawingLine	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^drawingLine = False$/;"	kind:variable	line:593
+drawingLine	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^drawingLine = False$/;"	kind:variable	line:115
+enum	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import enum$/;"	kind:namespace	line:5
+enum	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^import enum$/;"	kind:namespace	line:3
+eventType	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")$/;"	kind:variable	line:14
+eventType	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")$/;"	kind:variable	line:6
+example.py	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\example.py	1;"	kind:file	line:1
+example.py	C:\Work\Mini-Project\cool circuit simulator 2000\example.py	1;"	kind:file	line:1
+eztext	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import eztext$/;"	kind:namespace	line:12
+eztext	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\example.py	/^import pygame, sys, eztext$/;"	kind:namespace	line:3
+eztext	C:\Work\Mini-Project\cool circuit simulator 2000\example.py	/^import pygame, sys, eztext$/;"	kind:namespace	line:3
+eztext.py	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	1;"	kind:file	line:1
+eztext.py	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	1;"	kind:file	line:1
+findCollisionWirePoint	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def findCollisionWirePoint(wire, point):$/;"	kind:function	line:528
+findCollisionWireWire	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def findCollisionWireWire(wire1, wire2):$/;"	kind:function	line:512
+findConnectedNodes	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def findConnectedNodes(indexw1, mask):$/;"	kind:function	line:488
+flatten	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def flatten(listOfLists):$/;"	kind:function	line:28
+flatten	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def flatten(listOfLists):$/;"	kind:function	line:20
+flattenml	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def flattenml(listOfLists):$/;"	kind:function	line:33
+font	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^font = pygame.font.SysFont(None, 25)$/;"	kind:variable	line:45
+formAdmittanceMatrix	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def formAdmittanceMatrix():$/;"	kind:function	line:234
+funclist	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^funclist=[[ donothing , donothing , donothing , donothing , Close ]$/;"	kind:variable	line:77
+g	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^g =0$/;"	kind:variable	line:103
+generateNetlist	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def generateNetlist():$/;"	kind:function	line:395
+generateNetlist	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def generateNetlist():$/;"	kind:function	line:104
+getComponentValue	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def getComponentValue(componentValue):$/;"	kind:function	line:10
+getNodes	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def getNodes(nodeValue):$/;"	kind:function	line:35
+gnd	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^gnd = Buttons.Button()$/;"	kind:variable	line:64
+gridCoordinates	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^gridCoordinates = [0, 0]$/;"	kind:variable	line:597
+gridCoordinates	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^gridCoordinates = [0, 0]$/;"	kind:variable	line:120
+groundNode	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		groundNode = commandtext[1].lower()$/;"	kind:variable	line:169
+groundNode	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^groundNode = "n0"$/;"	kind:variable	line:149
+groundNodeIndex	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^groundNodeIndex = nodeList.index(groundNode)$/;"	kind:variable	line:195
+i	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^i = 0$/;"	kind:variable	line:138
+inductor	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^inductor = Buttons.Button()$/;"	kind:variable	line:60
+initalize	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def initalize():$/;"	kind:function	line:74
+initalize	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def initalize():$/;"	kind:function	line:25
+initialCoordinates	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^initialCoordinates = [0, 0]$/;"	kind:variable	line:595
+initialCoordinates	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^initialCoordinates = [0, 0]$/;"	kind:variable	line:118
+itemlist	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^itemlist=[]$/;"	kind:variable	line:15
+items	C:\Work\Mini-Project\cool circuit simulator 2000\test.py	/^items = [chr(i) for i in range(0x30a1, 0x30ff + 1)] # katakana$/;"	kind:variable	line:3
+joints	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^joints =[]$/;"	kind:variable	line:604
+kill	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def kill():$/;"	kind:function	line:582
+kill	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def kill():$/;"	kind:function	line:107
+killApp	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^killApp = False$/;"	kind:variable	line:592
+killApp	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^killApp = False$/;"	kind:variable	line:114
+l	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^l = []$/;"	kind:variable	line:88
+lines	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^lines = []$/;"	kind:variable	line:598
+lines	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^lines = []$/;"	kind:variable	line:121
+loadFile	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def loadFile(fileName):$/;"	kind:function	line:314
+localNodes	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		localNodes = getNodes(commandtext[2])$/;"	kind:variable	line:180
+m	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^    m = 0$/;"	kind:variable	line:106
+magList	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^magList = [0 for i in range(100)]$/;"	kind:variable	line:136
+main	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^	def main(self):$/;"	kind:member	line:31
+main	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\example.py	/^def main():$/;"	kind:function	line:5
+main	C:\Work\Mini-Project\cool circuit simulator 2000\example.py	/^def main():$/;"	kind:function	line:5
+math	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^import math$/;"	kind:namespace	line:5
+matplotlib	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:8
+matplotlib	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:10
+menu	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^menu = Menu(root)$/;"	kind:variable	line:86
+menu_commands	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^menu_commands = [["Open","Save","Save as","Print","Close"]$/;"	kind:variable	line:89
+menulist	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^menulist=["File","Edit","View","Simulate","Components","Tools","Help"]$/;"	kind:variable	line:97
+messagebox	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^import tkinter.messagebox$/;"	kind:namespace	line:2
+motion	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def motion(event):$/;"	kind:function	line:55
+netlist	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^netlist = Buttons.Button()$/;"	kind:variable	line:69
+new	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^new = Button(toolbar,command = donothing,compound=CENTER,image=newicon)$/;"	kind:variable	line:65
+newcom	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^def newcom():$/;"	kind:function	line:49
+newicon	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^newicon = PhotoImage(file="Resources\/Icons\/new.png")$/;"	kind:variable	line:22
+nodeCount	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^nodeCount = len(nodeList) - 1$/;"	kind:variable	line:189
+nodeList	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^nodeList = []$/;"	kind:variable	line:146
+nodeListNatural	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^nodeListNatural = []$/;"	kind:variable	line:147
+nodeListNatural	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^nodeListNatural = [x for (y, x) in sorted(zip(nodeList, nodeListNatural), key=lambda pair: pair[0])]$/;"	kind:variable	line:190
+np	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^import numpy as np$/;"	kind:namespace	line:4
+np	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import numpy as np$/;"	kind:namespace	line:9
+obj	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^	obj = Button_Example()$/;"	kind:variable	line:44
+opamp	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^opamp = Buttons.Button()$/;"	kind:variable	line:66
+performAnalysis	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def performAnalysis():$/;"	kind:function	line:467
+phaList	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^phaList = [0 for i in range(100)]$/;"	kind:variable	line:137
+plot2sine	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def plot2sine(mag1, phase1, mag2, phase2):$/;"	kind:function	line:206
+plt	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:8
+plt	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import matplotlib.pyplot as plt$/;"	kind:namespace	line:10
+pol2rect	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def pol2rect(magnitude, phase):$/;"	kind:function	line:57
+pressed	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	/^    def pressed(self, mouse):$/;"	kind:member	line:38
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^import pygame, Buttons$/;"	kind:namespace	line:7
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	/^import pygame$/;"	kind:namespace	line:6
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import pygame$/;"	kind:namespace	line:2
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^import pygame , Buttons$/;"	kind:namespace	line:1
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\example.py	/^import pygame, sys, eztext$/;"	kind:namespace	line:3
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^import pygame, string$/;"	kind:namespace	line:3
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\example.py	/^import pygame, sys, eztext$/;"	kind:namespace	line:3
+pygame	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^import pygame, string$/;"	kind:namespace	line:3
+rain	C:\Work\Mini-Project\cool circuit simulator 2000\test.py	/^def rain(row,column):         # rows,columns$/;"	kind:function	line:10
+random	C:\Work\Mini-Project\cool circuit simulator 2000\test.py	/^import time,random$/;"	kind:namespace	line:1
+rect2pol	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^def rect2pol(complexNumber):$/;"	kind:function	line:38
+render	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def render():$/;"	kind:function	line:120
+render	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def render():$/;"	kind:function	line:46
+resicon	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^resicon = PhotoImage(file="Resources\/Icons\/Res(2).png")$/;"	kind:variable	line:23
+resistor	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^resistor = Buttons.Button()$/;"	kind:variable	line:58
+resistor	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^resistor = Button(toolbar,command = donothing,compound=CENTER,image=resicon)$/;"	kind:variable	line:67
+ressym	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^ressym = PhotoImage(file = "Resources\/Icons\/Res.png")$/;"	kind:variable	line:24
+root	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^root = Tk()$/;"	kind:variable	line:14
+rotate	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^rotate = Buttons.Button()$/;"	kind:variable	line:67
+satCurrent	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^satCurrent = 10**-14$/;"	kind:variable	line:134
+save	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^save = Buttons.Button()$/;"	kind:variable	line:68
+save	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^save = Button(toolbar,command = donothing,compound=CENTER,image=saveicon)$/;"	kind:variable	line:66
+saveFile	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def saveFile(fileName):$/;"	kind:function	line:367
+saveicon	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^saveicon = PhotoImage(file="Resources\/Icons\/save.png")$/;"	kind:variable	line:21
+set_font	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^    def set_font(self, font):$/;"	kind:member	line:38
+set_font	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^    def set_font(self, font):$/;"	kind:member	line:38
+set_pos	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^    def set_pos(self, x, y):$/;"	kind:member	line:33
+set_pos	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^    def set_pos(self, x, y):$/;"	kind:member	line:33
+simType	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^simType = "DC"$/;"	kind:variable	line:600
+simulationDomain	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		simulationDomain = "AC"$/;"	kind:variable	line:166
+simulationDomain	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		simulationDomain = "DC"$/;"	kind:variable	line:163
+simulationDomain	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^simulationDomain = ""$/;"	kind:variable	line:140
+simulationFrequencies	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^simulationFrequencies = []$/;"	kind:variable	line:141
+simulationFrequency	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^						simulationFrequency = a + (b - a) * j \/ 100$/;"	kind:variable	line:623
+simulationFrequency	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^			simulationFrequency = i$/;"	kind:variable	line:612
+simulationFrequency	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^simulationFrequency = 0$/;"	kind:variable	line:188
+simulationParameters	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		simulationParameters = copy.copy(commandtext)$/;"	kind:variable	line:164
+simulationParameters	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		simulationParameters = copy.copy(commandtext)$/;"	kind:variable	line:167
+simulationParameters	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^simulationParameters = []$/;"	kind:variable	line:142
+snapToGrid	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def snapToGrid(x, y, gridspace):$/;"	kind:function	line:16
+snapToGrid	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^def snapToGrid(x, y, gridspace):$/;"	kind:function	line:9
+statusbar	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^statusbar = Label (root , text =("status"),bd = 1, relief = SUNKEN,anchor = W)$/;"	kind:variable	line:74
+string	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^import pygame, string$/;"	kind:namespace	line:3
+string	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^import pygame, string$/;"	kind:namespace	line:3
+struct	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import struct$/;"	kind:namespace	line:7
+sweep	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^sweep = Buttons.Button()$/;"	kind:variable	line:72
+sweep_analysis	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def sweep_analysis():$/;"	kind:function	line:577
+sweepit	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^sweepit = 0$/;"	kind:variable	line:133
+sys	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\example.py	/^import pygame, sys, eztext$/;"	kind:namespace	line:3
+sys	C:\Work\Mini-Project\cool circuit simulator 2000\example.py	/^import pygame, sys, eztext$/;"	kind:namespace	line:3
+temp	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		temp = commands[i][0:commands[i].index('*')]$/;"	kind:variable	line:153
+temp	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^	temp = copy.copy(nodeListNatural[groundNodeIndex])$/;"	kind:variable	line:200
+test.py	C:\Work\Mini-Project\cool circuit simulator 2000\test.py	1;"	kind:file	line:1
+thermalVoltage	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^thermalVoltage = 0.026$/;"	kind:variable	line:135
+time	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^import time$/;"	kind:namespace	line:13
+time	C:\Work\Mini-Project\cool circuit simulator 2000\test.py	/^import time,random$/;"	kind:namespace	line:1
+tkinter	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^import tkinter.messagebox$/;"	kind:namespace	line:2
+toGraph	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^toGraph = []$/;"	kind:variable	line:143
+toolbar	C:\Work\Mini-Project\cool circuit simulator 2000\GUI.py	/^toolbar = Frame(root,bd =2,relief = RAISED)$/;"	kind:variable	line:64
+update	C:\Work\Mini-Project\cool circuit simulator 2000\Resources\eztext\eztext\eztext.py	/^    def update(self, events):$/;"	kind:member	line:47
+update	C:\Work\Mini-Project\cool circuit simulator 2000\eztext.py	/^    def update(self, events):$/;"	kind:member	line:47
+update_display	C:\Work\Mini-Project\cool circuit simulator 2000\Button-Example.py	/^	def update_display(self):$/;"	kind:member	line:23
+vCriticalDiode	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^vCriticalDiode = thermalVoltage * math.log1p(thermalVoltage \/ (math.sqrt(2) * satCurrent))$/;"	kind:variable	line:139
+verticalWire	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^verticalWire = False$/;"	kind:variable	line:599
+verticalWire	C:\Work\Mini-Project\cool circuit simulator 2000\GUI pygame.py	/^verticalWire = False$/;"	kind:variable	line:123
+voltageMatrixLabels	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^						voltageMatrixLabels = ["V(" + nodeListNatural[k + 1] + ")" for k in range(nodeCount)]$/;"	kind:variable	line:626
+voltageMatrixLabels	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^			voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]$/;"	kind:variable	line:608
+voltageMatrixLabels	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]$/;"	kind:variable	line:600
+voltageMatrixLabels	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]$/;"	kind:variable	line:204
+voltageSources	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^						voltageSources = 0$/;"	kind:variable	line:629
+voltageSources	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^			voltageSources = 0$/;"	kind:variable	line:611
+voltageSources	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^		voltageSources = 0$/;"	kind:variable	line:603
+voltageSources	C:\Work\Mini-Project\cool circuit simulator 2000\Analyze.py	/^voltageSources = 0$/;"	kind:variable	line:148
+vsource	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^vsource = Buttons.Button()$/;"	kind:variable	line:62
+write_text	C:\Work\Mini-Project\cool circuit simulator 2000\Buttons.py	/^    def write_text(self, surface, text, text_color, length, height, x, y):$/;"	kind:member	line:16
+writeonscreen	C:\Work\Mini-Project\cool circuit simulator 2000\Circuit Viewer.py	/^def writeonscreen(text, color, pos):$/;"	kind:function	line:47
