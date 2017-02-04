@@ -99,6 +99,9 @@ sweepButton = Buttons.Button()
 changetitleButton = Buttons.Button()
 deleteButton = Buttons.Button()
 graphButton = Buttons.Button()
+newButton = Buttons.Button()
+labelButton = Buttons.Button()
+startsimButton = Buttons.Button()
 
 def initalize():
 	"""Initialize SDL and other stuff."""
@@ -158,19 +161,22 @@ def render():
 	inductorButton.create_button(   gameDisplay, (160,160,160), 400 , 0   , 200    ,    40 ,    0, "Inductor", (0,0,0))
 	diodeButton.create_button(      gameDisplay, (160,160,160), 600 , 0   , 200    ,    40 ,    0, "Diode", (0,0,0))
 	vsourceButton.create_button(    gameDisplay, (160,160,160), 800 , 0   , 200    ,    40 ,    0, "Voltage source", (0,0,0))
-	csourceButton.create_button(    gameDisplay, (160,160,160), 0 ,   40  , 200    ,    40 ,   0, "Current source", (0,0,0))
-	gndButton.create_button(        gameDisplay, (160,160,160), 200 , 40   , 200    ,    40 ,    0, "Ground", (0,0,0))
-	conductanceButton.create_button(gameDisplay, (160,160,160), 400 , 40   , 200    ,    40 ,    0, "Conductance", (0,0,0))
-	opampButton.create_button(      gameDisplay, (160,160,160), 600 ,  40   , 200    ,    40 ,    0, "OPAMP", (0,0,0))
-	rotateButton.create_button(     gameDisplay, (160,160,160), 800 , 40   , 200    ,    40 ,    0, "Rotate", (0,0,0))
-	saveButton.create_button(       gameDisplay, (160,160,160), 0 ,   80   , 200    ,    40 ,    0, "Save", (0,0,0))
-	netlistButton.create_button(    gameDisplay, (160,160,160), 200 , 80   , 200    ,    40 ,    0, "Netlist", (0,0,0))
-	ACButton.create_button(         gameDisplay, (160,160,160), 400 , 80   , 200    ,    40 ,    0, "AC", (0,0,0))
-	DCButton.create_button(         gameDisplay, (160,160,160), 600 , 80   , 200    ,    40 ,    0, "DC", (0,0,0))
-	sweepButton.create_button(      gameDisplay, (160,160,160), 800 , 80   , 200    ,    40 ,    0, "Sweep", (0,0,0))
-	changetitleButton.create_button(gameDisplay, (160,160,160), 0 , 120   , 200    ,    40 ,    0, "Change Title", (0,0,0))
-	deleteButton.create_button(     gameDisplay, (160,160,160), 200 , 120   , 200    ,    40 ,    0, "Delete", (0,0,0))
-	graphButton.create_button(      gameDisplay, (160,160,160), 400 , 120   , 200    ,    40 ,    0, "Graph", (0,0,0))
+	csourceButton.create_button(    gameDisplay, (160,160,160), 0 ,   40  , 200    ,    40 ,    0,"Current source", (0,0,0))
+	gndButton.create_button(        gameDisplay, (160,160,160), 200 , 40   , 200    ,   40 ,    0, "Ground", (0,0,0))
+	conductanceButton.create_button(gameDisplay, (160,160,160), 400 , 40   , 200    ,   40 ,    0, "Conductance", (0,0,0))
+	opampButton.create_button(      gameDisplay, (160,160,160), 600 ,  40   , 200    ,  40 ,    0, "OPAMP", (0,0,0))
+	rotateButton.create_button(     gameDisplay, (160,160,160), 800 , 40   , 200    ,   40 ,    0, "Rotate", (0,0,0))
+	saveButton.create_button(       gameDisplay, (160,160,160), 0 ,   80   , 200    ,   40 ,    0, "Save", (0,0,0))
+	netlistButton.create_button(    gameDisplay, (160,160,160), 200 , 80   , 200    ,   40 ,    0, "Netlist", (0,0,0))
+	ACButton.create_button(         gameDisplay, (160,160,160), 400 , 80   , 200    ,   40 ,    0, "AC", (0,0,0))
+	DCButton.create_button(         gameDisplay, (160,160,160), 600 , 80   , 200    ,   40 ,    0, "DC", (0,0,0))
+	sweepButton.create_button(      gameDisplay, (160,160,160), 800 , 80   , 200    ,   40 ,    0, "Sweep", (0,0,0))
+	changetitleButton.create_button(gameDisplay, (160,160,160), 0 , 120   ,  200    ,   40 ,    0, "Change Title", (0,0,0))
+	deleteButton.create_button(     gameDisplay, (160,160,160), 200 , 120   , 200    ,  40 ,    0, "Delete", (0,0,0))
+	graphButton.create_button(      gameDisplay, (160,160,160), 400 , 120   , 200    ,  40 ,    0, "Graph", (0,0,0))
+	newButton.create_button(        gameDisplay, (160,160,160), 600 , 120   , 200    ,  40 ,    0, "New", (0,0,0))
+	labelButton.create_button(      gameDisplay, (160,160,160), 800 , 120   , 200    ,  40 ,    0, "Label", (0,0,0))
+	startsimButton.create_button(   gameDisplay, (160,160,160), 0 , 160   , 200    ,    40 ,    0, "Start imulation", (0,0,0))
 	# Render components/wires currently being edited
 	if drawingLine:
 		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
@@ -343,6 +349,12 @@ def checkEvents():
 				return eventType.Key_Down, "delete"
 			if graphButton.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "4"
+			if newButton.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "new"
+			if labelButton.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "label"
+			if startsimButton.pressed(pygame.mouse.get_pos()):
+				return eventType.Key_Down, "startsim"
 			if changetitleButton.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "change"
 			return eventType.Mouse_Up, None
@@ -694,6 +706,18 @@ def Changetitle():
 	title = askForValue("Enter the new title : ")
 	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 
+def  Deduplicatewire():
+	pass
+
+def Newfile():
+	pass
+
+def Label():
+	pass
+
+def Startsimulation():
+	pass
+
 def kill():
 	"""End Circuit Simulator."""
 	saveFile("myfirstcir.cir")
@@ -796,6 +820,12 @@ while not killApp:
 			Graph()
 		if (eventParameter == "change"):
 			Changetitle()
+		if (eventParameter == "new"):
+			Newfile()
+		if (eventParameter == "label"):
+			Label()
+		if (eventParameter == "startsim"):
+			Startsimulation()
 		if (eventParameter == "delete"):
 			for c in components:
 				if detectCollision(c, gridCoordinates):
@@ -819,12 +849,13 @@ while not killApp:
 			if (componentOrientationRender):
 				components.append([0, 0, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)), 
 									gridCoordinates[1] - initialCoordinates[1]])
+				Deduplicatewire()
 				print(components)
-				print(joints)
 				print("check")
 			else:
 				components.append([0, 1, initialCoordinates[0], initialCoordinates[1], ("N" + str(linecount)),
 					 gridCoordinates[0] - initialCoordinates[0]])
+				Deduplicatewire()
 				print(components)
 			drawingLine = False
 		# or save drawn component
@@ -843,6 +874,6 @@ while not killApp:
 			print("saved")
 			print(components)
 	render()
-	clock.tick(60)
+	clock.tick(30)
 
 kill()

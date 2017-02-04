@@ -1,5 +1,4 @@
 .DC OP
-.GND N4
-V V0 (N2;N4) 10.0
-R R0 (N3;N4) 1000.0
-D D0 (N2;N3) 
+.GND N2
+R R0 (N1;N2) 100.0
+I I0 (N1;N2) 1.0
