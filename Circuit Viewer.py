@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from pygame.locals import *
 import eztext
 import time
+import Analyze
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
 def snapToGrid(x, y, gridspace):
@@ -572,6 +573,10 @@ def generateNetlist():
 	print(nodes)
 	print(connections)
 	print(netlist)
+	f = open("circuit.net", 'w+')
+	f.write(netlist)
+	f.close()
+	Analyze.__main__()
 
 def findConnectedNodes(indexw1, mask):
 	"""Find all nodes connected to a wire."""

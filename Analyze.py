@@ -149,67 +149,86 @@ simulationDomain = ""
 simulationFrequencies = []
 simulationParameters = []
 toGraph = []
-commands = netlist.splitlines()
-commands = list(filter(None, commands))
+commands = []
 nodeList = []
 nodeListNatural = []
 voltageSources = 0
 groundNode = "n0"
-for i in range(len(commands)):
-	commandtext = commands[i].split(' ')
-	if ('*' in commands[i]):
-		temp = commands[i][0:commands[i].index('*')]
-		if not(temp is ''):
-			commands[i] = temp
-			commandtext = commands[i].split(' ')
-		else:
-			commands[i] = ''
-			continue
-	commandtext = list(filter(None, commandtext))
+nodeCount = 0
+admittanceMatrix = []
+currentMatrix = []
+groundNodeIndex = []
+voltageMatrixLabels = []
+def analyzeFile():
+	global commands
+	global simulationDomain
+	global simulationFrequencies
+	global simulationParameters
+	global nodeList
+	global nodeListNatural
+	global nodeCount
+	global admittanceMatrix
+	global currentMatrix
+	global groundNodeIndex
+	global voltageMatrixLabels
 
-	if (commandtext[0].lower() == ".dc"):
-		simulationDomain = "DC"
-		simulationParameters = copy.copy(commandtext)
-	elif (commandtext[0].lower() == ".ac"):
-		simulationDomain = "AC"
-		simulationParameters = copy.copy(commandtext)
-	elif (commandtext[0].lower() == ".gnd"):
-		groundNode = commandtext[1].lower()
-	elif (commandtext[0].lower() == ".graph"):
-		toGraph.append(commandtext[1].lower())
-		toGraph.append(commandtext[2].lower())
+	commands = netlist.splitlines()
+	commands = list(filter(None, commands))
+	for i in range(len(commands)):
+		commandtext = commands[i].split(' ')
+		if ('*' in commands[i]):
+			temp = commands[i][0:commands[i].index('*')]
+			if not(temp is ''):
+				commands[i] = temp
+				commandtext = commands[i].split(' ')
+			else:
+				commands[i] = ''
+				continue
+		commandtext = list(filter(None, commandtext))
 
-	if ((commandtext[0].lower() == "v") | (commandtext[0].lower() == "i")):
-		if (len(commandtext) > 4):
-			if (rect2pol(getComponentValue(commandtext[4]))[0] not in simulationFrequencies):
-				simulationFrequencies.append(rect2pol(getComponentValue(commandtext[4]))[0])
+		if (commandtext[0].lower() == ".dc"):
+			simulationDomain = "DC"
+			simulationParameters = copy.copy(commandtext)
+		elif (commandtext[0].lower() == ".ac"):
+			simulationDomain = "AC"
+			simulationParameters = copy.copy(commandtext)
+		elif (commandtext[0].lower() == ".gnd"):
+			groundNode = commandtext[1].lower()
+		elif (commandtext[0].lower() == ".graph"):
+			toGraph.append(commandtext[1].lower())
+			toGraph.append(commandtext[2].lower())
 
-	if not(commands[i].startswith('.')):
-		localNodes = getNodes(commandtext[2])
-		for i in range(len(localNodes)):
-			if localNodes[i] not in nodeList:
-				nodeList.append(localNodes[i])
-				nodeListNatural.append(commandtext[2][1:-1].split(';')[i])
+		if ((commandtext[0].lower() == "v") | (commandtext[0].lower() == "i")):
+			if (len(commandtext) > 4):
+				if (rect2pol(getComponentValue(commandtext[4]))[0] not in simulationFrequencies):
+					simulationFrequencies.append(rect2pol(getComponentValue(commandtext[4]))[0])
 
-commands = list(filter(None, commands))
-simulationFrequencies.sort()
-simulationFrequency = 0
-nodeCount = len(nodeList) - 1
-nodeListNatural = [x for (y, x) in sorted(zip(nodeList, nodeListNatural), key=lambda pair: pair[0])]
-nodeList.sort()
-admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
-currentMatrix = [0 for i in range(nodeCount)]
+		if not(commands[i].startswith('.')):
+			localNodes = getNodes(commandtext[2])
+			for i in range(len(localNodes)):
+				if localNodes[i] not in nodeList:
+					nodeList.append(localNodes[i])
+					nodeListNatural.append(commandtext[2][1:-1].split(';')[i])
 
-groundNodeIndex = nodeList.index(groundNode)
-if (groundNodeIndex > 0):
-	nodeList[groundNodeIndex] = copy.copy(nodeList[0])
-	nodeList[0] = groundNode
+	commands = list(filter(None, commands))
+	simulationFrequencies.sort()
+	simulationFrequency = 0
+	nodeCount = len(nodeList) - 1
+	nodeListNatural = [x for (y, x) in sorted(zip(nodeList, nodeListNatural), key=lambda pair: pair[0])]
+	nodeList.sort()
+	admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
+	currentMatrix = [0 for i in range(nodeCount)]
 
-	temp = copy.copy(nodeListNatural[groundNodeIndex])
-	nodeListNatural[groundNodeIndex] = copy.copy(nodeListNatural[0])
-	nodeListNatural[0] = temp
+	groundNodeIndex = nodeList.index(groundNode)
+	if (groundNodeIndex > 0):
+		nodeList[groundNodeIndex] = copy.copy(nodeList[0])
+		nodeList[0] = groundNode
 
-voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
+		temp = copy.copy(nodeListNatural[groundNodeIndex])
+		nodeListNatural[groundNodeIndex] = copy.copy(nodeListNatural[0])
+		nodeListNatural[0] = temp
+
+	voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 
 def plot2sine(mag1, phase1, mag2, phase2):
 	"""Plot magniteude and phase of two complex numbers."""
@@ -592,48 +611,57 @@ def performAnalysis():
 	for i in range(len(solutionMatrix)):
 		# print(voltageMatrixLabels[i] + " = " + str(solutionMatrix[i]))
 		print(voltageMatrixLabels[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
-	a = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[0]
-	b = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[1]
-	c = rect2pol(solutionMatrix[nodeList.index(toGraph[1]) - 1])[0]
-	d = rect2pol(solutionMatrix[nodeList.index(toGraph[1]) - 1])[1]
-	if simulationParameters[1].lower() == "op":
-		plot2sine(a, b, c, d)
-	elif simulationParameters[1].lower() == "sweep":
-		magList[sweepit] = rect2pol(solutionMatrix[nodeList.index(simulationParameters[6].lower()) - 1])[0]
-		phaList[sweepit] = rect2pol(solutionMatrix[nodeList.index(simulationParameters[6].lower()) - 1])[1]
-		sweepit += 1
+	if len(toGraph) > 0:
+		a = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[0]
+		b = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[1]
+		c = rect2pol(solutionMatrix[nodeList.index(toGraph[1]) - 1])[0]
+		d = rect2pol(solutionMatrix[nodeList.index(toGraph[1]) - 1])[1]
+		if simulationParameters[1].lower() == "op":
+			plot2sine(a, b, c, d)
+		elif simulationParameters[1].lower() == "sweep":
+			magList[sweepit] = rect2pol(solutionMatrix[nodeList.index(simulationParameters[6].lower()) - 1])[0]
+			phaList[sweepit] = rect2pol(solutionMatrix[nodeList.index(simulationParameters[6].lower()) - 1])[1]
+			sweepit += 1
 
-if (simulationParameters[1].lower() == "op"):
-	if(simulationDomain == "DC"):
-		voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
-		admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
-		currentMatrix = [0 for i in range(nodeCount)]
-		voltageSources = 0
-		print("Results for DC :")
-		performAnalysis()
-	elif (simulationDomain == "AC"):
-		for i in simulationFrequencies:
+def __main__():
+	global netlist
+	f = open("circuit.net", 'r')
+	netlist = f.read()
+	analyzeFile()
+	print(netlist)
+	if (simulationParameters[1].lower() == "op"):
+		if(simulationDomain == "DC"):
 			voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 			admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
 			currentMatrix = [0 for i in range(nodeCount)]
 			voltageSources = 0
-			simulationFrequency = i
-			print("Results for frequency " + str(simulationFrequency) + " :")
+			print("Results for DC :")
 			performAnalysis()
-elif (simulationParameters[1].lower() == "sweep"):
-	if (simulationDomain == "AC"):
-		if (simulationParameters[2].lower() == "freq"):
-			for i in range(len(commands)):
-				if commands[i].split(" ")[1] == simulationParameters[3]:
-					a = float(simulationParameters[4])
-					b = float(simulationParameters[5])
-					for j in range(100):
-						simulationFrequency = a + (b - a) * j / 100
-						commands[i] = commands[i].split(" ")[0] + " " + commands[i].split(" ")[1] + " " + \
-							commands[i].split(" ")[2] + " " + commands[i].split(" ")[3] + " " + str(simulationFrequency)
-						voltageMatrixLabels = ["V(" + nodeListNatural[k + 1] + ")" for k in range(nodeCount)]
-						admittanceMatrix = [[0 for k in range(nodeCount)] for i in range(nodeCount)]
-						currentMatrix = [0 for l in range(nodeCount)]
-						voltageSources = 0
-						performAnalysis()
-					displaymagphase(magList, range(100), phaList, range(100))
+		elif (simulationDomain == "AC"):
+			for i in simulationFrequencies:
+				voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
+				admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
+				currentMatrix = [0 for i in range(nodeCount)]
+				voltageSources = 0
+				simulationFrequency = i
+				print("Results for frequency " + str(simulationFrequency) + " :")
+				performAnalysis()
+	elif (simulationParameters[1].lower() == "sweep"):
+		if (simulationDomain == "AC"):
+			if (simulationParameters[2].lower() == "freq"):
+				for i in range(len(commands)):
+					if commands[i].split(" ")[1] == simulationParameters[3]:
+						a = float(simulationParameters[4])
+						b = float(simulationParameters[5])
+						for j in range(100):
+							simulationFrequency = a + (b - a) * j / 100
+							commands[i] = commands[i].split(" ")[0] + " " + commands[i].split(" ")[1] + " " + \
+								commands[i].split(" ")[2] + " " + commands[i].split(" ")[3] + " " + str(simulationFrequency)
+							voltageMatrixLabels = ["V(" + nodeListNatural[k + 1] + ")" for k in range(nodeCount)]
+							admittanceMatrix = [[0 for k in range(nodeCount)] for i in range(nodeCount)]
+							currentMatrix = [0 for l in range(nodeCount)]
+							voltageSources = 0
+							performAnalysis()
+						displaymagphase(magList, range(100), phaList, range(100))
+
+__main__()
