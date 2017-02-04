@@ -159,6 +159,7 @@ admittanceMatrix = []
 currentMatrix = []
 groundNodeIndex = []
 voltageMatrixLabels = []
+simulationFrequency = 0
 def analyzeFile():
 	global commands
 	global simulationDomain
@@ -171,6 +172,7 @@ def analyzeFile():
 	global currentMatrix
 	global groundNodeIndex
 	global voltageMatrixLabels
+	global simulationFrequency
 
 	commands = netlist.splitlines()
 	commands = list(filter(None, commands))
@@ -262,6 +264,7 @@ def formAdmittanceMatrix():
 	"""Form the base admittance matrix for analysis."""
 	global voltageSources
 	global admittanceMatrix
+	global simulationFrequency
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
 		if not(commands[i].startswith('.')):
@@ -441,7 +444,7 @@ def formAdmittanceMatrix():
 
 			elif(simulationDomain == "AC"):
 				if (len(commandtext) == 5):
-					if(getComponentValue(commandtext[5]) == simulationFrequency):
+					if(getComponentValue(commandtext[4]) == simulationFrequency):
 						componentValue = getComponentValue(commandtext[3])
 						node1 = nodeList.index(nodes[0])
 						node2 = nodeList.index(nodes[1])
@@ -627,6 +630,7 @@ def performAnalysis():
 def __main__():
 	global netlist
 	global voltageSources
+	global simulationFrequency
 	f = open("circuit.net", 'r')
 	netlist = f.read()
 	analyzeFile()

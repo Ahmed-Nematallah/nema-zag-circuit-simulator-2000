@@ -576,7 +576,7 @@ def generateNetlist():
 			temp = temp[0:-1]
 			temp += ") "
 			if (components[i][0] in [1, 2, 3, 5, 6, 8]):
-				temp += str(components[i][5])
+				temp += str(components[i][5]) + " "
 			if (simType == "AC"):
 				if (components[i][0] in [5, 6]):
 					temp += str(ACParameters[0])
