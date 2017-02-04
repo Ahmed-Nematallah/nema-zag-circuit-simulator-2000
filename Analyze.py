@@ -79,12 +79,12 @@ def pol2rect(magnitude, phase):
 # R R2 (N2;N0) 10k
 # R R3 (N4;N3) 10k
 # OPAMP3 A1 (N2;N3;N4)"""
-netlist = """.AC SWEEP FREQ V1 10 10000 N2
-.GRAPH N1 N2
-V V1 (N1;N0) 10 1
-G G1 (N1;N2) 6.28318530718m
-C C1 (N0;N2) 1u
-R R1 (N1;N0) 1k"""
+# netlist = """.AC SWEEP FREQ V1 10 10000 N2
+# .GRAPH N1 N2
+# V V1 (N1;N0) 10 1
+# G G1 (N1;N2) 6.28318530718m
+# C C1 (N0;N2) 1u
+# R R1 (N1;N0) 1k"""
 # netlist = """.AC OP
 # .GRAPH N1 N4
 # V V1 (N1;N0) 10 500
@@ -101,25 +101,25 @@ R R1 (N1;N0) 1k"""
 # C C1 (N1;N2) 1u
 # R R1 (N1;N2) 1k
 # R R2 (N1;N0) 1k"""
-netlist = """.AC op
-.GND N0
-.GRAPH Input Output
-V V1 (Input;N0) 10 180
-R R1 (Input;N2) 4.7k
-R R2 (N2;N3) 6.8k
-R R3 (N5;N4) 1.0k
-R R4 (N4;N0) 6.8k
-R R5 (N5;N6) 4.7k
-R R6 (N6;N7) 6.8k
-R R7 (Output;N8) 6.8k
-R R8 (N8;N0) 5.6k
-C C1 (N2;N5) 0.22u
-C C2 (N3;N0) 0.1u
-C C3 (N6;Output) 0.22u
-C C4 (N7;N0) 0.1u
-*First opamp
-OPAMP3 A1 (N3;N4;N5)
-OPAMP3 A2 (N7;N8;Output) *Second opamp"""
+# netlist = """.AC op
+# .GND N0
+# .GRAPH Input Output
+# V V1 (Input;N0) 10 180
+# R R1 (Input;N2) 4.7k
+# R R2 (N2;N3) 6.8k
+# R R3 (N5;N4) 1.0k
+# R R4 (N4;N0) 6.8k
+# R R5 (N5;N6) 4.7k
+# R R6 (N6;N7) 6.8k
+# R R7 (Output;N8) 6.8k
+# R R8 (N8;N0) 5.6k
+# C C1 (N2;N5) 0.22u
+# C C2 (N3;N0) 0.1u
+# C C3 (N6;Output) 0.22u
+# C C4 (N7;N0) 0.1u
+# *First opamp
+# OPAMP3 A1 (N3;N4;N5)
+# OPAMP3 A2 (N7;N8;Output) *Second opamp"""
 # netlist = """.DC op
 # .GND N0
 # V V1 (N1;N0) 100
@@ -129,6 +129,14 @@ OPAMP3 A2 (N7;N8;Output) *Second opamp"""
 # D D2 (N0;N3)
 # D D3 (N1;N4)
 # R R3 (N4;N0) 100"""
+netlist = """.DC OP
+.GND N5
+OPAMP3 O0 (N13;N9;N2) 
+R R0 (N2;N5) 1000.0
+V V0 (N9;N5) 10.0
+R R1 (N13;N5) 1000.0
+R R2 (N13;N2) 1000.0
+"""
 
 sweepit = 0
 satCurrent = 10**-14

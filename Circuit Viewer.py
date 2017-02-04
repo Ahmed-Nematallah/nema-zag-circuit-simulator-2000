@@ -39,6 +39,31 @@ def flattenml(listOfLists):
 
 	return listOfLists2
 
+def getComponentValue(componentValue):
+	"""Convert component value suffix to floatinv value."""
+	if(componentValue.lower().endswith('k')):
+		val = complex(componentValue[:-1]) * 1000
+	elif(componentValue.lower().endswith('meg')):
+		val = complex(componentValue[:-3]) * 1000000
+	elif(componentValue.lower().endswith('g')):
+		val = complex(componentValue[:-1]) * 1000000000
+	elif(componentValue.lower().endswith('t')):
+		val = complex(componentValue[:-1]) * 1000000000000
+	elif(componentValue.lower().endswith('m')):
+		val = complex(componentValue[:-1]) / 1000
+	elif(componentValue.lower().endswith('u')):
+		val = complex(componentValue[:-1]) / 1000000
+	elif(componentValue.lower().endswith('n')):
+		val = complex(componentValue[:-1]) / 1000000000
+	elif(componentValue.lower().endswith('p')):
+		val = complex(componentValue[:-1]) / 1000000000000
+	elif(componentValue.lower().endswith('f')):
+		val = complex(componentValue[:-1]) / 1000000000000000
+	else:
+		val = complex(componentValue)
+
+	return val
+
 
 global font
 pygame.font.init()
@@ -403,6 +428,21 @@ def saveFile(fileName):
 	print("saved")
 	f.close()
 
+def askForValue(text):
+	finished = 0
+	txtbx = eztext.Input(maxlength=45, color=(0, 255, 0), prompt=text)
+	while not finished:
+		# update txtbx
+		clock.tick(60)
+		events = pygame.event.get()
+		val = txtbx.update(events)
+		if val != None:
+			finished = 1
+		# blit txtbx on the sceen
+		txtbx.draw(gameDisplay)
+		pygame.display.flip()
+	return float(getComponentValue(val).real)
+
 def generateNetlist():
 	"""Generate netlist for simulation."""
 	nodes = [0 for i in components]
@@ -480,6 +520,8 @@ def generateNetlist():
 
 	if (simType == "DC"):
 		netlist += ".DC OP\n"
+	elif (simType == "AC"):
+		netlist += ".AC OP\n"
 
 	# Set ground to the ground node with .GND
 	if (short_to > -1):
@@ -492,7 +534,10 @@ def generateNetlist():
 	for i in range(len(components)):
 		if(components[i][0] != 0) & (components[i][0] != 7):
 			temp = ""
-			temp += typedict[components[i][0]] + " "
+			compType = typedict[components[i][0]]
+			if compType == "O":
+				compType = "OPAMP3"
+			temp += compType + " "
 			temp += components[i][4] + " "
 			t1 = -1
 			t2 = -1
@@ -513,7 +558,12 @@ def generateNetlist():
 				temp += "N" + str(t3) + ";"
 			temp = temp[0:-1]
 			temp += ") "
-			temp += str(components[i][5]) + "\n"
+			if (components[i][0] in [1, 2, 3, 5, 6, 8]):
+				temp += str(components[i][5])
+			if (simType == "AC"):
+				if (components[i][0] in [5, 6]):
+					temp += str(ACParameters[0])
+			temp += "\n"
 			netlist += temp
 
 	print(nodes)
@@ -602,12 +652,15 @@ def detectCollision(component, Coordinates):
 def AC_analysis():
 	"""Perform AC Analysis."""
 	print("AC analysis")
-	pass
+	simType = "AC"
+	ACParameters = []
+	frequency = askForValue("Enter the desired freuency : ")
+	ACParameters.append(frequency)
 
 def DC_analysis():
 	"""Perform DC Analysis."""
 	print("DC analysis")
-	pass
+	simType = "DC"
 
 def sweep_analysis():
 	"""Perform Sweep Analysis."""
@@ -641,6 +694,7 @@ gridCoordinates = [0, 0]
 lines = []
 verticalWire = False
 simType = "DC"
+ACParameters = []
 global components
 components = []
 global joints
@@ -761,39 +815,14 @@ while not killApp:
 				if c[4][0] == typedict[currentComponent]:
 					compcount += 1
 			drawingComponenet = False
-			if componentOrientationRender == 0:
-				finished = 0
-				txtbx = eztext.Input(maxlength=45, color=(0, 255, 0), prompt='type value here: ')
-				while not finished:
-					# update txtbx
-					clock.tick(60)
-					events = pygame.event.get()
-					val = txtbx.update(events)
-					if val != None:
-						finished = 1
-					# blit txtbx on the sceen
-					txtbx.draw(gameDisplay)
-					pygame.display.flip()
-				components.append([currentComponent,0,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
-				print("saved 0")
-				print(components)
-			if componentOrientationRender == 1:
-				events = pygame.event.get()
-				finished = 0
-				txtbx = eztext.Input(maxlength=45, color=(255, 0, 0), prompt='type value here: ')
-				while not finished:
-					# update txtbx
-					clock.tick(60)
-					events = pygame.event.get()
-					val =txtbx.update(events)
-					if val != None :
-						finished = 1
-					# blit txtbx on the sceen
-					txtbx.draw(gameDisplay)
-					pygame.display.flip()
-				components.append([currentComponent,3,gridCoordinates[0],gridCoordinates[1],(typedict[currentComponent]+str(compcount)),float(val)])
-				print("saved 1")
-				print(components)
+			events = pygame.event.get()
+			val = 0
+			if (currentComponent in [1, 2, 3, 5, 6, 8]):
+				val = askForValue('type value here: ')
+			components.append([currentComponent, componentOrientationRender * 3 ,gridCoordinates[0], gridCoordinates[1],
+								(typedict[currentComponent] + str(compcount)), val])
+			print("saved")
+			print(components)
 	render()
 	clock.tick(60)
 
