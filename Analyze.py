@@ -261,6 +261,7 @@ def displaymagphase(array1, array2, array3, array4):
 def formAdmittanceMatrix():
 	"""Form the base admittance matrix for analysis."""
 	global voltageSources
+	global admittanceMatrix
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
 		if not(commands[i].startswith('.')):
@@ -625,10 +626,10 @@ def performAnalysis():
 
 def __main__():
 	global netlist
+	global voltageSources
 	f = open("circuit.net", 'r')
 	netlist = f.read()
 	analyzeFile()
-	print(netlist)
 	if (simulationParameters[1].lower() == "op"):
 		if(simulationDomain == "DC"):
 			voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
@@ -664,4 +665,4 @@ def __main__():
 							performAnalysis()
 						displaymagphase(magList, range(100), phaList, range(100))
 
-__main__()
+# __main__()
