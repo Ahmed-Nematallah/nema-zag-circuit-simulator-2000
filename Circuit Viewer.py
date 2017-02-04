@@ -178,7 +178,8 @@ def render():
 					if n[0] == 0:
 						if n != c:
 							if findCollisionWireWire(n,c)[0]:
-								pygame.draw.rect(gameDisplay, (0,0,200), (findCollisionWireWire(n,c)[1][0]-3,findCollisionWireWire(n,c)[1][1]-3,8,8), 0)
+								if findCollisionWireWire(n,c)[1] != None:
+									pygame.draw.rect(gameDisplay, (0,0,200), (findCollisionWireWire(n,c)[1][0]-3,findCollisionWireWire(n,c)[1][1]-3,8,8), 0)
 
 			#rendering
 			if c[1] == 1:
@@ -547,17 +548,24 @@ def findConnectedNodes(indexw1, mask):
 def findCollisionWireWire(wire1, wire2):
 	"""Find if one wire ends on another."""
 	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3]])):
+		if wire1[2] == wire2[2] and wire1[3]==wire2[3]:
+			return True, None
 		return True, [wire2[2], wire2[3]]
 	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & ~wire1[1]):
 		return True, [wire2[2] + wire2[5], wire2[3]]
 	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & wire1[1]):
 		return True, [wire2[2], wire2[3] + wire2[5]]
+
 	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3]])):
-		return True, [wire1[2], wire1[3]]
+		if wire1[2] == wire2[2] and wire1[3]==wire2[3]:
+			return True, None
+		return True , [wire1[2], wire1[3]]
 	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & ~wire2[1]):
 		return True, [wire1[2] + wire1[5], wire1[3]]
+		#return True, [wire1[2] + wire1[5], wire1[3]]
 	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & wire2[1]):
 		return True, [wire1[2], wire1[3] + wire1[5]]
+		#return True, [wire1[2], wire1[3] + wire1[5]]
 	return False, [0, 0]
 
 def findCollisionWirePoint(wire, point):
