@@ -176,7 +176,7 @@ def render():
 	graphButton.create_button(      gameDisplay, (160,160,160), 400 , 120   , 200    ,  40 ,    0, "Graph", (0,0,0))
 	newButton.create_button(        gameDisplay, (160,160,160), 600 , 120   , 200    ,  40 ,    0, "New", (0,0,0))
 	labelButton.create_button(      gameDisplay, (160,160,160), 800 , 120   , 200    ,  40 ,    0, "Label", (0,0,0))
-	startsimButton.create_button(   gameDisplay, (160,160,160), 0 , 160   , 200    ,    40 ,    0, "Start imulation", (0,0,0))
+	startsimButton.create_button(   gameDisplay, (160,160,160), 0 , 160   , 200    ,    40 ,    0, "Start simulation", (0,0,0))
 	# Render components/wires currently being edited
 	if drawingLine:
 		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
@@ -589,7 +589,6 @@ def generateNetlist():
 	f = open("circuit.net", 'w+')
 	f.write(netlist)
 	f.close()
-	Analyze.__main__()
 
 def findConnectedNodes(indexw1, mask):
 	"""Find all nodes connected to a wire."""
@@ -706,7 +705,7 @@ def Changetitle():
 	title = askForValue("Enter the new title : ")
 	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 
-def  Deduplicatewire():
+def Deduplicatewire():
 	pass
 
 def Newfile():
@@ -716,7 +715,7 @@ def Label():
 	pass
 
 def Startsimulation():
-	pass
+	Analyze.__main__()
 
 def kill():
 	"""End Circuit Simulator."""
