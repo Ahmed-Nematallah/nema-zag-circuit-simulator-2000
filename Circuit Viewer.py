@@ -165,22 +165,17 @@ def render():
 	gameDisplay.fill(backgroundColor)
 	
 	#write node names on statusbar when hovering on them
-	foundsomthing = False
+	foundsomething = False
 	for c in components:
-		if c[0] == 0:
-			if detectCollision(c, pygame.mouse.get_pos())[0]:
+		if detectCollision(c, pygame.mouse.get_pos())[0]:
+			if c[0] == 0:
 				status = ("This is node " + str(nodes[components.index(c)]))
-				foundsomthing = True
-	if foundsomthing == False:
-		for c in components:
-			if  c[0] != 0:
-				if detectCollision(c, pygame.mouse.get_pos())[0]:
-					status = "str(c[4])"
-					foundsomthing = True
-	if  not foundsomthing:
-		if not deletemode and not graphMode: 
-			status = "good"
-			gameDisplay.fill(backgroundColor)
+			else:
+				status = str(c[4])
+		foundsomething = True
+	if not deletemode and not graphMode and not foundsomething: 
+		status = "good"
+		gameDisplay.fill(backgroundColor)
 	#write component names on statusbar when hovering on them
 	
 	#update statusbar with status
@@ -885,7 +880,7 @@ nodes = [0 for i in components]
 Deduplicatewire()
 # main loop
 while not killApp:
-	#time.sleep(0.025)
+	time.sleep(0.05)
 	returnedEvent, eventParameter = checkEvents()
 	if (returnedEvent == eventType.Quit):
 		killApp = True
