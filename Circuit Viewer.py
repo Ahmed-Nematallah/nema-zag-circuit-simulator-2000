@@ -74,6 +74,9 @@ def writeonscreen(text, color, pos):
 	screentext = font.render(text, True, color)
 	gameDisplay.blit(screentext, pos)
 
+def statusbar():
+    pass
+
 # create Buttons
 buttonnamelist = ["Resistor", "Capacitor", "Inductor", "Diode", "Voltage source", "Current source", "Ground", "conductance", "OPAMP"]
 buttonlist = []
@@ -154,6 +157,14 @@ def render():
 	global currentComponent
 	global componentOrientationRender
 	gameDisplay.fill(backgroundColor)
+	# Display node names on wires
+	nodenames=[]
+	for c in components:
+		if c[0] == 0:
+			text = str(nodes[components.index(c)])+"N"
+			if not text in nodenames:
+				nodenames.append(text)
+				writeonscreen(text,(0,0,255),[c[2],c[3]])
 	# Displaying buttons
 	# Parameters:           surface,      color,       x,   y,   length, height, width,    text,      text_color
 	resistorButton.create_button(   gameDisplay, (160,160,160), 0 , 0   , 200    ,    40 ,    0, "Resistor", (0,0,0))
@@ -204,7 +215,7 @@ def render():
 # Render components
 	if len(components) > 0:
 		for c in components:
-			#add joints
+			#add wire joints
 			if c[0] == 0:
 				for n in components:
 					if n[0] == 0:
@@ -711,7 +722,7 @@ def Deduplicatewire():
 
 	# Remove zero length wires
 	for c in components:
-		if c[0] == 0 & c[5] == 0:
+		if c[0] == 0 and c[5] == 0:
 			components.remove(c)
 	
 	# Update nodes
