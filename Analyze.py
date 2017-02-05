@@ -232,7 +232,7 @@ def analyzeFile():
 	voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
 
 def plot2sine(mag1, phase1, mag2, phase2):
-	"""Plot magniteude and phase of two complex numbers."""
+	"""Plot magnitude and phase of two complex numbers."""
 	t = np.arange(0.0, 1.01, 0.01)
 	figure1 = plt.figure(1)
 	fig = figure1.add_subplot(111)
@@ -249,12 +249,12 @@ def displaymagphase(array1, array2, array3, array4):
 	figure1 = plt.figure(1)
 	up = figure1.add_subplot(211)
 	up.plot(array1, array2)
-	up.set_ylim((0, max(max(array1), max(array2))))
+	up.set_ylim(min(array2), max(array2))
 	up.set_ylabel('magnitude')
 	up.set_title('magnitude')
 	down = figure1.add_subplot(212)
 	down.plot(array3, array4)
-	down.set_ylim((0, max(max(array3), max(array4))))
+	down.set_ylim(min(array4), max(array4))
 	down.set_ylabel('phase')
 	down.set_title('phase')
 	plt.show()
@@ -507,7 +507,6 @@ def performAnalysis():
 	global currentMatrix
 	formAdmittanceMatrix()
 	admittanceMatrix = np.array(admittanceMatrix)
-	admittanceMatrix2 = admittanceMatrix
 	currentMatrix = np.array(currentMatrix)
 	basecurrentMatrix = copy.deepcopy(currentMatrix)
 	voltageMatrix = [0 for i in currentMatrix]
@@ -515,7 +514,6 @@ def performAnalysis():
 	voltageAcrossOld = 0
 	conv = 100000
 	while conv > 10**-20:
-		admittanceMatrix = np.array(admittanceMatrix2)
 		nlJacobian = [[0 for j in i] for i in admittanceMatrix]
 		currentMatrix = copy.deepcopy(basecurrentMatrix)
 		# form currentMatrix & complete nlJacobian
@@ -636,6 +634,12 @@ def __main__():
 	global netlist
 	global voltageSources
 	global simulationFrequency
+	global admittanceMatrix
+	global currentMatrix
+	global voltageSources
+	global voltageMatrixLabels
+	global sweepit
+	sweepit = 0
 	f = open("circuit.net", 'r')
 	netlist = f.read()
 	analyzeFile()
@@ -672,6 +676,6 @@ def __main__():
 							currentMatrix = [0 for l in range(nodeCount)]
 							voltageSources = 0
 							performAnalysis()
-						displaymagphase(magList, range(100), phaList, range(100))
+						displaymagphase(np.arange(a, b, (b-a)/100), magList, np.arange(a, b, (b-a)/100), phaList)
 
-__main__()
+# __main__()

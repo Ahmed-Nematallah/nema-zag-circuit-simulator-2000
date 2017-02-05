@@ -12,6 +12,7 @@ from pygame.locals import *
 import eztext
 import time
 import Analyze
+import importlib
 eventType = enum.Enum("eventType", "Quit Mouse_Motion Key_Down Mouse_Up")
 
 def snapToGrid(x, y, gridspace):
@@ -827,6 +828,8 @@ def Newfile():
 
 def Startsimulation():
 	global status
+	global Analyze
+	Analyze = importlib.reload(Analyze)
 	Analyze.__main__()
 	status = "Simulation Done"
 
