@@ -175,18 +175,21 @@ def render():
 	global status
 	global x
 	gameDisplay.fill(backgroundColor)
-	
 	#write node names on statusbar when hovering on them
 	foundsomething = False
 	#write node names on statusbar when hovering on them
 	for c in components:
 		if c[0] == 0:
 			if detectCollision(c, pygame.mouse.get_pos()):
-				status = ("this is node " +str(nodes[components.index(c)]))
+				status = ("N " +str(nodes[components.index(c)]))
+				print(status)
+				foundsomething = True
 	#update statusbar with status
-	if not deletemode and not graphMode and not foundsomething: 
-			status = "good"
-			#gameDisplay.fill(backgroundColor)
+	if not deletemode and not graphMode : 
+		gameDisplay.fill(backgroundColor)
+		if not foundsomething:
+			pass
+			#status = "good"
 	#x+=1
 	#write component names on statusbar when hovering on them
 	
@@ -746,7 +749,7 @@ def detectCollision(component, Coordinates):
 	if component[0] == 0:
 		if component[1] == 1 :
 			line =pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
-			return line.colliderect(mouserect)
+			return line.colliderect(mouserect),components[0]
 		elif component[1] == 0 :
 			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2], component[3] + component[5]], 2)
 			return line.colliderect(mouserect),components[0]
@@ -969,7 +972,8 @@ while not killApp:
 			if graphMode:
 				status = "Graph mode"
 			else:
-				status = "Good"
+				pass
+				#status = "Good"
 		if (eventParameter == "change"):
 			Changetitle()
 		if (eventParameter == "new"):
@@ -988,7 +992,8 @@ while not killApp:
 			if deletemode:
 				status = "Delete mode"
 			else:
-				status = "Good"
+				pass
+				#status = "Good"
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 	# when mouse up
