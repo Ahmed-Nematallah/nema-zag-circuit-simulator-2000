@@ -164,11 +164,12 @@ def render():
 	global status
 	gameDisplay.fill(backgroundColor)
 	
-	#update statusbar with status
+	#write node names on statusbar when hovering on them
 	for c in components:
 		if c[0] == 0:
 			if detectCollision(c, pygame.mouse.get_pos()):
 				status = ("this is node " +str(nodes[components.index(c)]))
+	#update statusbar with status
 	Writeonstatusbar(status)	
 	# Display node names on wires
 	nodenames=[]
