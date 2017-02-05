@@ -857,7 +857,8 @@ def Startsimulation():
 	global Analyze
 	Analyze = importlib.reload(Analyze)
 	result = Analyze.__main__()
-	displayonwindow("Analysis result",result)
+	if not(simType == "Sweep"):
+		displayonwindow("Analysis result",result)
 	status = "Simulation Done"
 
 def kill():
