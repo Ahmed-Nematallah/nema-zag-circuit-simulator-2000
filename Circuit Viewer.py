@@ -709,7 +709,11 @@ def Deduplicatewire():
 	pass
 
 def Newfile():
-	pass
+	global components
+	global title
+	components = []
+	title = ""
+	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 
 def Label():
 	pass
