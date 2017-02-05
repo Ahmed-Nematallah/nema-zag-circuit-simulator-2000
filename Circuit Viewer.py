@@ -178,19 +178,15 @@ def render():
 	
 	#write node names on statusbar when hovering on them
 	foundsomething = False
-	#if x > 2:
-	#	x = 0
-	#for c in components:
-	#	if detectCollision(c, pygame.mouse.get_pos())[0]:
-	#		if c[0] == 0:
-	#			status = ("This is node " + str(nodes[components.index(c)]))
-				#else:
-				#	status = str(c[4])
-	#		foundsomething = True
+	#write node names on statusbar when hovering on them
+	for c in components:
+		if c[0] == 0:
+			if detectCollision(c, pygame.mouse.get_pos()):
+				status = ("this is node " +str(nodes[components.index(c)]))
+	#update statusbar with status
 	if not deletemode and not graphMode and not foundsomething: 
 			status = "good"
 			#gameDisplay.fill(backgroundColor)
-
 	#x+=1
 	#write component names on statusbar when hovering on them
 	
@@ -727,33 +723,33 @@ def detectCollision(component, Coordinates):
 	global componentOrientationRender
 	global status
 	mouserect  = pygame.draw.rect(gameDisplay, (255,255,255), (Coordinates[0]-9,Coordinates[1]-9,20,20), 1)
-	c = component
 	if(component[0] != 0):
-		compheight = compdict[component[0]].get_rect().size[0]
-		compwidth  = compdict[component[0]].get_rect().size[1]
+		compheight = compdict[c[0]].get_rect().size[0]
+		compwidth  = compdict[c[0]].get_rect().size[1]
 		#detect component collision
-		if (component[1] == 0 or component[1] == 2):
+		if (component[1] ==0 or component[1] ==2):
 			if component[0] != 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2]-compheight/2,c[3],compheight,compwidth), 1)
 				pygame.display.flip()
-			else:
+			if  component[0] == 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2]-compheight/2,c[3]-compwidth,compheight,compwidth), 1)
 				pygame.display.flip()
 		elif (component[1] ==1 or component[1] ==3):
 			if component[0] != 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2],c[3]-compheight/2,compwidth,compheight), 1)
 				pygame.display.flip()
-			else:
+			if  component[0] == 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2],c[3]-compheight/2,compwidth,compheight), 1)
 				pygame.display.flip()
-		return comprect.colliderect(mouserect), component[0]
+		return comprect.colliderect(mouserect),components[0]
 		#detect wire collision
-	else:
-		if component[1] == 1:
-			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
-		elif component[1] == 0:
+	if component[0] == 0:
+		if component[1] == 1 :
+			line =pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
+			return line.colliderect(mouserect)
+		elif component[1] == 0 :
 			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2], component[3] + component[5]], 2)
-		return line.colliderect(mouserect), component[0]
+			return line.colliderect(mouserect),components[0]
 
 	return False
 
