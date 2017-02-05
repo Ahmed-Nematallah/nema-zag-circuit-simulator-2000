@@ -830,7 +830,7 @@ def Startsimulation():
 	global status
 	global Analyze
 	Analyze = importlib.reload(Analyze)
-	Analyze.__main__()
+	result = Analyze.__main__()
 	status = "Simulation Done"
 
 def kill():

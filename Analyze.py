@@ -505,6 +505,7 @@ def performAnalysis():
 	global sweepit
 	global admittanceMatrix
 	global currentMatrix
+	result = ""
 	formAdmittanceMatrix()
 	admittanceMatrix = np.array(admittanceMatrix)
 	currentMatrix = np.array(currentMatrix)
@@ -618,6 +619,7 @@ def performAnalysis():
 	for i in range(len(solutionMatrix)):
 		# print(voltageMatrixLabels[i] + " = " + str(solutionMatrix[i]))
 		print(voltageMatrixLabels[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]")
+		result += voltageMatrixLabels[i] + " = " + str(rect2pol(solutionMatrix[i])[0]) + "[" + str(rect2pol(solutionMatrix[i])[1]) + "]\n"
 	if len(toGraph) > 0:
 		a = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[0]
 		b = rect2pol(solutionMatrix[nodeList.index(toGraph[0]) - 1])[1]
@@ -629,6 +631,8 @@ def performAnalysis():
 			magList[sweepit] = rect2pol(solutionMatrix[nodeList.index(simulationParameters[6].lower()) - 1])[0]
 			phaList[sweepit] = rect2pol(solutionMatrix[nodeList.index(simulationParameters[6].lower()) - 1])[1]
 			sweepit += 1
+
+	return result
 
 def __main__():
 	global netlist
@@ -643,6 +647,7 @@ def __main__():
 	f = open("circuit.net", 'r')
 	netlist = f.read()
 	analyzeFile()
+	result = ""
 	if (simulationParameters[1].lower() == "op"):
 		if(simulationDomain == "DC"):
 			voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
@@ -650,7 +655,8 @@ def __main__():
 			currentMatrix = [0 for i in range(nodeCount)]
 			voltageSources = 0
 			print("Results for DC :")
-			performAnalysis()
+			result += "Results for DC :\n"
+			result += performAnalysis()
 		elif (simulationDomain == "AC"):
 			for i in simulationFrequencies:
 				voltageMatrixLabels = ["V(" + nodeListNatural[i + 1] + ")" for i in range(nodeCount)]
@@ -659,7 +665,8 @@ def __main__():
 				voltageSources = 0
 				simulationFrequency = i
 				print("Results for frequency " + str(simulationFrequency) + " :")
-				performAnalysis()
+				result += "Results for frequency " + str(simulationFrequency) + " :\n"
+				result += performAnalysis()
 	elif (simulationParameters[1].lower() == "sweep"):
 		if (simulationDomain == "AC"):
 			if (simulationParameters[2].lower() == "freq"):
@@ -677,5 +684,7 @@ def __main__():
 							voltageSources = 0
 							performAnalysis()
 						displaymagphase(np.arange(a, b, (b-a)/100), magList, np.arange(a, b, (b-a)/100), phaList)
+
+	return result
 
 # __main__()
