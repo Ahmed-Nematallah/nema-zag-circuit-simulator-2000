@@ -462,20 +462,20 @@ def askForValue(text):
 
 def generateNetlist():
 	"""Generate netlist for simulation."""
-	nodes = [0 for i in components]
+	# nodes = [0 for i in components]
 	connections = [[] for i in components]
 	netlist = ""
-	for i in range(len(components)):
-		if not(components[i][0] == 0):
-			nodes[i] = -1
+	# for i in range(len(components)):
+	# 	if not(components[i][0] == 0):
+	# 		nodes[i] = -1
 
-	for i in range(len(nodes)):
-		if nodes[i] == 0:
-			nodes[i] = i
-			connnod = findConnectedNodes(i, nodes)
-			if not(connnod is None):
-				for j in connnod:
-					nodes[j] = i
+	# for i in range(len(nodes)):
+	# 	if nodes[i] == 0:
+	# 		nodes[i] = i
+	# 		connnod = findConnectedNodes(i, nodes)
+	# 		if not(connnod is None):
+	# 			for j in connnod:
+	# 				nodes[j] = i
 
 	for i in range(len(components)):
 		if (((components[i][0] >= 1) & (components[i][0] <= 6)) | (components[i][0] == 8)):
@@ -706,6 +706,29 @@ def Changetitle():
 	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 
 def Deduplicatewire():
+	global nodes
+	# DEDUP CODE
+
+	# Remove zero length wires
+	for c in components:
+		if c[0] == 0 & c[5] == 0:
+			components.remove(c)
+	
+	# Update nodes
+	
+	nodes = [0 for i in components]
+	
+	for i in range(len(components)):
+		if not(components[i][0] == 0):
+			nodes[i] = -1
+
+	for i in range(len(nodes)):
+		if nodes[i] == 0:
+			nodes[i] = i
+			connnod = findConnectedNodes(i, nodes)
+			if not(connnod is None):
+				for j in connnod:
+					nodes[j] = i
 	pass
 
 def Newfile():
@@ -749,7 +772,8 @@ title = ""
 loadFile("myfirstcir.cir")
 
 initalize()
-
+nodes = [0 for i in components]
+Deduplicatewire()
 # main loop
 while not killApp:
 	time.sleep(0.025)
@@ -835,6 +859,8 @@ while not killApp:
 					components.remove(c)
 				elif gridCoordinates == [c[2], c[3]]:
 					components.remove(c)
+			
+			Deduplicatewire()
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 	# when mouse up
