@@ -168,7 +168,7 @@ def render():
 	for c in components:
 		if c[0] == 0:
 			if detectCollision(c, pygame.mouse.get_pos()):
-				Writeonstatusbar("N" +str(nodes[components.index(c)]))
+				status = ("this is node " +str(nodes[components.index(c)]))
 	Writeonstatusbar(status)	
 	# Display node names on wires
 	nodenames=[]
@@ -857,7 +857,7 @@ loadFile("myfirstcir.cir")
 
 initalize()
 nodes = [0 for i in components]
-#Deduplicatewire()
+Deduplicatewire()
 # main loop
 while not killApp:
 	#time.sleep(0.025)
