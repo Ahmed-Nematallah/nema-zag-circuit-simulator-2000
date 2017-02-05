@@ -1018,6 +1018,8 @@ while not killApp:
 				if colDetector[0] & (colDetector[1] == 0):
 					toGraph[0] = toGraph[1]
 					toGraph[1] = "N" + str(nodes[components.index(c)])
+					if (toGraph[0] == "N0"):
+						toGraph[0] = toGraph[1]
 					break
 
 	if deletemode | graphMode:
