@@ -121,8 +121,6 @@ def initalize():
 	global currentComponent
 	global Windowsize 
 	global status
-	global componentrects
-	componentrects = []
 	# load component icons
 	resistoricon = pygame.image.load('Resources/res.png')
 	resistoricon = pygame.transform.rotate(resistoricon, 90)
@@ -164,10 +162,14 @@ def render():
 	global currentComponent
 	global componentOrientationRender
 	global status
-	global componentrects
 	gameDisplay.fill(backgroundColor)
+	
 	#update statusbar with status
-	Writeonstatusbar(status)
+	for c in components:
+		if c[0] == 0:
+			if detectCollision(c, pygame.mouse.get_pos()):
+				Writeonstatusbar("N" +str(nodes[components.index(c)]))
+	Writeonstatusbar(status)	
 	# Display node names on wires
 	nodenames=[]
 	for c in components:
@@ -175,7 +177,8 @@ def render():
 			text = "N" + str(nodes[components.index(c)])
 			if not text in nodenames:
 				nodenames.append(text)
-				writeonscreen(text,(255, 0, 255),[c[2],c[3]])
+				writeonscreen(text,(194, 87, 26),[c[2],c[3]])
+	nodenames=[]
 	# Displaying buttons
 	# Parameters:           surface,      color,       x,   y,   length, height, width,    text,      text_color
 	resistorButton.create_button(   gameDisplay, (160,160,160), 0 , 0   , 200    ,    40 ,    0, "Resistor", (0,0,0))
@@ -244,7 +247,7 @@ def render():
 					compheight = compdict[c[0]].get_rect().size[0]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 90)
-					componentrects.append(gameDisplay.blit(compimage, (c[2], c[3] - (compheight / 2) + 1)))
+					gameDisplay.blit(compimage, (c[2], c[3] - (compheight / 2) + 1))
 					writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
 					if (c[0] in [1, 2, 3, 5, 6, 8]):
 						writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] + 30])
@@ -256,7 +259,7 @@ def render():
 					compheight = compdict[c[0]].get_rect().size[0]
 					compwidth = compdict[c[0]].get_rect().size[1]
 					compimage = compdict[c[0]]
-					componentrects.append(gameDisplay.blit(compimage, (c[2] - (compheight / 2) + 1, c[3])))
+					gameDisplay.blit(compimage, (c[2] - (compheight / 2) + 1, c[3]))
 					writeonscreen(c[4], (0, 255, 0), [c[2] - 30, c[3]])
 					if (c[0] in [1, 2, 3, 5, 6, 8]):
 						writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2] , c[3] + (compwidth/2)])
@@ -264,8 +267,8 @@ def render():
 					compheight = compdict[c[0]].get_rect().size[0]
 					compwidth = compdict[c[0]].get_rect().size[1]
 					compimage = compdict[c[0]]
-					componentrects.append(gameDisplay.blit(compimage, (c[2] - (compheight / 2) , c[3]-compwidth)))
-					writeonscreen(c[4], (0, 255, 0), [c[2] - 30, c[3]])
+					gameDisplay.blit(compimage, (c[2] - (compheight / 2) , c[3]-compwidth))
+					writeonscreen(c[4], (0, 255, 0), [c[2] , c[3]])
 			elif c[1] == 2:
 				if c[0] == 0:
 					pygame.draw.line(gameDisplay, (0, 0, 255), [c[2], c[3]], [c[2], c[3] + c[5]], 2)
@@ -286,8 +289,11 @@ def render():
 					compwidth = compdict[c[0]].get_rect().size[1]
 					compimage = compdict[c[0]]
 					compimage = pygame.transform.rotate(compimage, 270)
-					componentrects.append(gameDisplay.blit(compimage, (c[2], c[3] - (compheight / 2) + 1)))
-					writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
+					gameDisplay.blit(compimage, (c[2], c[3] - (compheight / 2) + 1))
+					if c[0] != 9 :
+						writeonscreen(c[4], (0, 255, 0), [c[2], c[3] - 30])
+					if c[0] == 9 :
+						writeonscreen(c[4], (0, 255, 0), [c[2], c[3] ])
 					if (c[0] in [1, 2, 3, 5, 6, 8]):
 						writeonscreen("value " + str(c[5]), (0, 255, 0), [c[2], c[3] - (compwidth)/2])
 				# pygame.draw.rect(gameDisplay, (0,255,0), [c[2],c[3],100,20])
@@ -713,23 +719,12 @@ def detectCollision(component, Coordinates):
 		return comprect.colliderect(mouserect)
 		#detect wire collision
 	if component[0] == 0:
-		if c[1] == 1 or c[1] == 3:
-			line =pygame.draw.line(gameDisplay, (255, 255, 255), [c[2], c[3]], [c[2] + c[5], c[3]], 2)
+		if component[1] == 1 :
+			line =pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
 			return line.colliderect(mouserect)
-		elif c[1] == 0 or c[1] == 2:
-			line = pygame.draw.line(gameDisplay, (255, 255, 255), [c[2], c[3]], [c[2], c[3] + c[5]], 2)
+		elif component[1] == 0 :
+			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2], component[3] + component[5]], 2)
 			return line.colliderect(mouserect)
-		
-		#pygame.Rect.colliderect()
-
-	#elif (component[0] == 0) :
-		# compheight = compdict[c[0]].get_rect().size[0]
-		# compwidth = compdict[c[0]].get_rect().size[1]
-	#	if ((Coordinates[0] > c[2]) & (Coordinates[0] < (c[2] + compwidth)) &
-	#	 (Coordinates[1] > c[3] - compheight / 2) & (Coordinates[1] < (c[3] + compheight / 2))):
-	#		return True
-	#	else:
-	#		return False
 
 	return False
 
@@ -841,6 +836,7 @@ def kill():
 
 # clock = 0
 # gameDisplay = None
+global status
 killApp = False
 drawingLine = False
 drawingComponenet = False
@@ -861,10 +857,10 @@ loadFile("myfirstcir.cir")
 
 initalize()
 nodes = [0 for i in components]
-Deduplicatewire()
+#Deduplicatewire()
 # main loop
 while not killApp:
-	time.sleep(0.025)
+	#time.sleep(0.025)
 	returnedEvent, eventParameter = checkEvents()
 	if (returnedEvent == eventType.Quit):
 		killApp = True
