@@ -168,19 +168,20 @@ def render():
 	
 	#write node names on statusbar when hovering on them
 	foundsomething = False
-	if x > 2:
-		x = 0
-		for c in components:
-			if detectCollision(c, pygame.mouse.get_pos())[0]:
-				if c[0] == 0:
-					status = ("This is node " + str(nodes[components.index(c)]))
-				else:
-					status = str(c[4])
-			foundsomething = True
-		if not deletemode and not graphMode and not foundsomething: 
+	#if x > 2:
+	#	x = 0
+	#for c in components:
+	#	if detectCollision(c, pygame.mouse.get_pos())[0]:
+	#		if c[0] == 0:
+	#			status = ("This is node " + str(nodes[components.index(c)]))
+				#else:
+				#	status = str(c[4])
+	#		foundsomething = True
+	if not deletemode and not graphMode and not foundsomething: 
 			status = "good"
-			gameDisplay.fill(backgroundColor)
-	x+=1
+			#gameDisplay.fill(backgroundColor)
+
+	#x+=1
 	#write component names on statusbar when hovering on them
 	
 	#update statusbar with status
@@ -188,7 +189,7 @@ def render():
 	# Display node names on wires
 	nodenames=[]
 	for c in components:
-		if c[0] == 0:
+		if c[0] == 0 and (len(nodes) > 0):
 			text = "N" + str(nodes[components.index(c)])
 			if not text in nodenames:
 				nodenames.append(text)
@@ -641,6 +642,11 @@ def generateNetlist():
 	print(nodes)
 	print(connections)
 	print(netlist)
+	figure1 = plt.figure(1)
+	fig = figure1.add_subplot(111)
+	fig.text(0.5, 0, netlist, fontsize=15)
+	fig.axis([0, 10, 0, 10])
+	plt.show()
 	f = open("circuit.net", 'w+')
 	f.write(netlist)
 	f.close()
@@ -882,7 +888,7 @@ loadFile("myfirstcir.cir")
 
 initalize()
 nodes = [0 for i in components]
-Deduplicatewire()
+#Deduplicatewire()
 # main loop
 while not killApp:
 	time.sleep(0.05)
@@ -1023,14 +1029,17 @@ while not killApp:
 				print(components)
 		if deletemode:
 			#pygame.draw.rect(gameDisplay, (0,0,0), (pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1],2,2), 0)
+			foundsomething = False
 			for c in components:
 				if detectCollision(c, pygame.mouse.get_pos())[0]:
 					components.remove(c)
-					break
-				
+					foundsomething = True
+			if foundsomething == False:
+				deletemode = False
 				#elif gridCoordinates == [c[2], c[3]]:
 					#components.remove(c)
 		if graphMode:
+			foundsomething = False
 			for c in components:
 				colDetector = detectCollision(c, pygame.mouse.get_pos())
 				if colDetector[0] & (colDetector[1] == 0):
@@ -1038,7 +1047,10 @@ while not killApp:
 					toGraph[1] = "N" + str(nodes[components.index(c)])
 					if (toGraph[0] == "N0"):
 						toGraph[0] = toGraph[1]
+					foundsomething = True
 					break
+			if foundsomething == False:
+				graphMode = False
 
 	if deletemode | graphMode:
 		drawingComponenet = False

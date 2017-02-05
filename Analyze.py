@@ -251,14 +251,14 @@ def displaymagphase(array1, array2, array3, array4):
 	up.plot(array1, array2)
 	up.set_ylim(min(array2), max(array2))
 	up.set_ylabel('Magnitude')
-	up.set_xlabel('Frequenct')
+	up.set_xlabel('Frequency')
 	up.set_title('Magnitude')
 	down = figure1.add_subplot(212)
 	down.plot(array3, array4)
 	down.set_ylim(min(array4), max(array4))
 	down.set_ylabel('Phase')
 	down.set_xlabel('Frequency')
-	down.set_title('Phase')
+	#down.set_title('Phase')
 	plt.show()
 
 def formAdmittanceMatrix():
