@@ -79,16 +79,6 @@ def Writeonstatusbar(text):
 	writeonscreen(text,(0,0,0),[0,Windowsize[1]-20])
 	pass
 
-def displayonwindow(title,text):
-	figure1 = plt.figure(1)
-	fig = figure1.add_subplot(111)
-	fig.set_title(title)
-	fig.text(0.5, 0, text, fontsize=15)
-	fig.axis([0, 10, 0, 10])
-	cur_axes = plt.gca()
-	cur_axes.axes.get_xaxis().set_visible(False)
-	cur_axes.axes.get_yaxis().set_visible(False)
-	plt.show()
 # create Buttons
 buttonnamelist = ["Resistor", "Capacitor", "Inductor", "Diode", "Voltage source", "Current source", "Ground", "conductance", "OPAMP"]
 buttonlist = []
@@ -175,22 +165,22 @@ def render():
 	global status
 	global x
 	gameDisplay.fill(backgroundColor)
+	
 	#write node names on statusbar when hovering on them
 	foundsomething = False
-	#write node names on statusbar when hovering on them
-	for c in components:
-		if c[0] == 0:
-			if detectCollision(c, pygame.mouse.get_pos()):
-				status = ("N " +str(nodes[components.index(c)]))
-				print(status)
-				foundsomething = True
-	#update statusbar with status
-	if not deletemode and not graphMode : 
-		gameDisplay.fill(backgroundColor)
-		if not foundsomething:
-			pass
-			#status = "good"
-	#x+=1
+	if x > 2:
+		x = 0
+		for c in components:
+			if detectCollision(c, pygame.mouse.get_pos())[0]:
+				if c[0] == 0:
+					status = ("This is node " + str(nodes[components.index(c)]))
+				else:
+					status = str(c[4])
+			foundsomething = True
+		if not deletemode and not graphMode and not foundsomething: 
+			status = "good"
+			gameDisplay.fill(backgroundColor)
+	x+=1
 	#write component names on statusbar when hovering on them
 	
 	#update statusbar with status
@@ -198,7 +188,7 @@ def render():
 	# Display node names on wires
 	nodenames=[]
 	for c in components:
-		if c[0] == 0 and (len(nodes) > 0):
+		if c[0] == 0:
 			text = "N" + str(nodes[components.index(c)])
 			if not text in nodenames:
 				nodenames.append(text)
@@ -651,7 +641,6 @@ def generateNetlist():
 	print(nodes)
 	print(connections)
 	print(netlist)
-	displayonwindow("Netlist",netlist)
 	f = open("circuit.net", 'w+')
 	f.write(netlist)
 	f.close()
@@ -726,33 +715,33 @@ def detectCollision(component, Coordinates):
 	global componentOrientationRender
 	global status
 	mouserect  = pygame.draw.rect(gameDisplay, (255,255,255), (Coordinates[0]-9,Coordinates[1]-9,20,20), 1)
+	c = component
 	if(component[0] != 0):
-		compheight = compdict[c[0]].get_rect().size[0]
-		compwidth  = compdict[c[0]].get_rect().size[1]
+		compheight = compdict[component[0]].get_rect().size[0]
+		compwidth  = compdict[component[0]].get_rect().size[1]
 		#detect component collision
-		if (component[1] ==0 or component[1] ==2):
+		if (component[1] == 0 or component[1] == 2):
 			if component[0] != 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2]-compheight/2,c[3],compheight,compwidth), 1)
 				pygame.display.flip()
-			if  component[0] == 9:
+			else:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2]-compheight/2,c[3]-compwidth,compheight,compwidth), 1)
 				pygame.display.flip()
 		elif (component[1] ==1 or component[1] ==3):
 			if component[0] != 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2],c[3]-compheight/2,compwidth,compheight), 1)
 				pygame.display.flip()
-			if  component[0] == 9:
+			else:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2],c[3]-compheight/2,compwidth,compheight), 1)
 				pygame.display.flip()
-		return comprect.colliderect(mouserect),components[0]
+		return comprect.colliderect(mouserect), component[0]
 		#detect wire collision
-	if component[0] == 0:
-		if component[1] == 1 :
-			line =pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
-			return line.colliderect(mouserect),components[0]
-		elif component[1] == 0 :
+	else:
+		if component[1] == 1:
+			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
+		elif component[1] == 0:
 			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2], component[3] + component[5]], 2)
-			return line.colliderect(mouserect),components[0]
+		return line.colliderect(mouserect), component[0]
 
 	return False
 
@@ -857,7 +846,7 @@ def Startsimulation():
 	Analyze = importlib.reload(Analyze)
 	result = Analyze.__main__()
 	if not(simType == "Sweep"):
-		displayonwindow("Analysis result",result)
+		displayonwindow("Simulation Results", result)
 	status = "Simulation Done"
 
 def kill():
@@ -865,6 +854,17 @@ def kill():
 	saveFile("myfirstcir.cir")
 	pygame.quit()
 	quit()
+
+def displayonwindow(title,text):
+	figure1 = plt.figure(1)
+	fig = figure1.add_subplot(111)
+	fig.set_title(title)
+	fig.text(0.5, 0, text, fontsize=15)
+	fig.axis([0, 10, 0, 10])
+	cur_axes = plt.gca()
+	cur_axes.axes.get_xaxis().set_visible(False)
+	cur_axes.axes.get_yaxis().set_visible(False)
+	plt.show()
 
 # variables
 
@@ -972,8 +972,7 @@ while not killApp:
 			if graphMode:
 				status = "Graph mode"
 			else:
-				pass
-				#status = "Good"
+				status = "Good"
 		if (eventParameter == "change"):
 			Changetitle()
 		if (eventParameter == "new"):
@@ -992,8 +991,7 @@ while not killApp:
 			if deletemode:
 				status = "Delete mode"
 			else:
-				pass
-				#status = "Good"
+				status = "Good"
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 	# when mouse up
@@ -1038,17 +1036,14 @@ while not killApp:
 				print(components)
 		if deletemode:
 			#pygame.draw.rect(gameDisplay, (0,0,0), (pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1],2,2), 0)
-			foundsomething = False
 			for c in components:
 				if detectCollision(c, pygame.mouse.get_pos())[0]:
 					components.remove(c)
-					foundsomething = True
-			if foundsomething == False:
-				deletemode = False
+					break
+				
 				#elif gridCoordinates == [c[2], c[3]]:
 					#components.remove(c)
 		if graphMode:
-			foundsomething = False
 			for c in components:
 				colDetector = detectCollision(c, pygame.mouse.get_pos())
 				if colDetector[0] & (colDetector[1] == 0):
@@ -1056,10 +1051,7 @@ while not killApp:
 					toGraph[1] = "N" + str(nodes[components.index(c)])
 					if (toGraph[0] == "N0"):
 						toGraph[0] = toGraph[1]
-					foundsomething = True
 					break
-			if foundsomething == False:
-				graphMode = False
 
 	if deletemode | graphMode:
 		drawingComponenet = False
