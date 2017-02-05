@@ -169,6 +169,8 @@ def render():
 		if c[0] == 0:
 			if detectCollision(c, pygame.mouse.get_pos())[0]:
 				status = ("This is node " + str(nodes[components.index(c)]))
+	if (not graphMode) and (not deletemode):
+		gameDisplay.fill(backgroundColor)
 	#update statusbar with status
 	Writeonstatusbar(status)	
 	# Display node names on wires
@@ -1020,12 +1022,18 @@ while not killApp:
 				print(components)
 		if deletemode:
 			#pygame.draw.rect(gameDisplay, (0,0,0), (pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1],2,2), 0)
+			deleteflag = False
 			for c in components:
 				if detectCollision(c, pygame.mouse.get_pos())[0]:
 					components.remove(c)
+					deleteflag = True
+					break
+			if deleteflag == False:
+				deletemode = False 
 				#elif gridCoordinates == [c[2], c[3]]:
 					#components.remove(c)
 		if graphMode:
+			graphflag = False
 			for c in components:
 				colDetector = detectCollision(c, pygame.mouse.get_pos())
 				if colDetector[0] & (colDetector[1] == 0):
@@ -1033,7 +1041,10 @@ while not killApp:
 					toGraph[1] = "N" + str(nodes[components.index(c)])
 					if (toGraph[0] == "N0"):
 						toGraph[0] = toGraph[1]
+					graphflag = True
 					break
+			if graphflag == False:
+				graphMode = False
 
 	if deletemode | graphMode:
 		drawingComponenet = False
