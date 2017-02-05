@@ -79,6 +79,16 @@ def Writeonstatusbar(text):
 	writeonscreen(text,(0,0,0),[0,Windowsize[1]-20])
 	pass
 
+def displayonwindow(title,text):
+	figure1 = plt.figure(1)
+	fig = figure1.add_subplot(111)
+	fig.set_title(title)
+	fig.text(0.5, 0, text, fontsize=15)
+	fig.axis([0, 10, 0, 10])
+	cur_axes = plt.gca()
+	cur_axes.axes.get_xaxis().set_visible(False)
+	cur_axes.axes.get_yaxis().set_visible(False)
+	plt.show()
 # create Buttons
 buttonnamelist = ["Resistor", "Capacitor", "Inductor", "Diode", "Voltage source", "Current source", "Ground", "conductance", "OPAMP"]
 buttonlist = []
@@ -642,11 +652,7 @@ def generateNetlist():
 	print(nodes)
 	print(connections)
 	print(netlist)
-	figure1 = plt.figure(1)
-	fig = figure1.add_subplot(111)
-	fig.text(0.5, 0, netlist, fontsize=15)
-	fig.axis([0, 10, 0, 10])
-	plt.show()
+	displayonwindow("Netlist",netlist)
 	f = open("circuit.net", 'w+')
 	f.write(netlist)
 	f.close()
