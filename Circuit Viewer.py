@@ -157,25 +157,30 @@ def initalize():
 	status ="Good"
 	# res =pygame.image.load(fileobj, namehint="")
 
+x = 0
 def render():
 	"""Render the scene."""
 	global currentComponent
 	global componentOrientationRender
 	global status
+	global x
 	gameDisplay.fill(backgroundColor)
 	
 	#write node names on statusbar when hovering on them
 	foundsomething = False
-	for c in components:
-		if detectCollision(c, pygame.mouse.get_pos())[0]:
-			if c[0] == 0:
-				status = ("This is node " + str(nodes[components.index(c)]))
-			else:
-				status = str(c[4])
-		foundsomething = True
-	if not deletemode and not graphMode and not foundsomething: 
-		status = "good"
-		gameDisplay.fill(backgroundColor)
+	if x > 2:
+		x = 0
+		for c in components:
+			if detectCollision(c, pygame.mouse.get_pos())[0]:
+				if c[0] == 0:
+					status = ("This is node " + str(nodes[components.index(c)]))
+				else:
+					status = str(c[4])
+			foundsomething = True
+		if not deletemode and not graphMode and not foundsomething: 
+			status = "good"
+			gameDisplay.fill(backgroundColor)
+	x+=1
 	#write component names on statusbar when hovering on them
 	
 	#update statusbar with status
