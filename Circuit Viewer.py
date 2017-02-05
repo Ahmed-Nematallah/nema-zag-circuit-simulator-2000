@@ -996,11 +996,11 @@ while not killApp:
 				for c in components:
 					if c[4][0] == typedict[currentComponent]:
 						compcount += 1
-				drawingComponenet = False
 				events = pygame.event.get()
 				val = "0"
 				if (currentComponent in [1, 2, 3, 5, 6, 8]):
 					val = askForValue('type value here: ')
+				drawingComponenet = False
 				components.append([currentComponent, componentOrientationRender * 3 ,gridCoordinates[0], gridCoordinates[1],
 									(typedict[currentComponent] + str(compcount)), float(getComponentValue(val).real)])
 				print("saved")
