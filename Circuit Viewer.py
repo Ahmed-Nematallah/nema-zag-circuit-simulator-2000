@@ -161,10 +161,10 @@ def render():
 	nodenames=[]
 	for c in components:
 		if c[0] == 0:
-			text = str(nodes[components.index(c)])+"N"
+			text = "N" + str(nodes[components.index(c)])
 			if not text in nodenames:
 				nodenames.append(text)
-				writeonscreen(text,(0,0,255),[c[2],c[3]])
+				writeonscreen(text,(255, 0, 255),[c[2],c[3]])
 	# Displaying buttons
 	# Parameters:           surface,      color,       x,   y,   length, height, width,    text,      text_color
 	resistorButton.create_button(   gameDisplay, (160,160,160), 0 , 0   , 200    ,    40 ,    0, "Resistor", (0,0,0))
@@ -473,20 +473,21 @@ def askForValue(text):
 
 def generateNetlist():
 	"""Generate netlist for simulation."""
-	# nodes = [0 for i in components]
+	global nodes
+	nodes = [0 for i in components]
 	connections = [[] for i in components]
 	netlist = ""
-	# for i in range(len(components)):
-	# 	if not(components[i][0] == 0):
-	# 		nodes[i] = -1
+	for i in range(len(components)):
+		if not(components[i][0] == 0):
+			nodes[i] = -1
 
-	# for i in range(len(nodes)):
-	# 	if nodes[i] == 0:
-	# 		nodes[i] = i
-	# 		connnod = findConnectedNodes(i, nodes)
-	# 		if not(connnod is None):
-	# 			for j in connnod:
-	# 				nodes[j] = i
+	for i in range(len(nodes)):
+		if nodes[i] == 0:
+			nodes[i] = i
+			connnod = findConnectedNodes(i, nodes)
+			if not(connnod is None):
+				for j in connnod:
+					nodes[j] = i
 
 	for i in range(len(components)):
 		if (((components[i][0] >= 1) & (components[i][0] <= 6)) | (components[i][0] == 8)):
@@ -728,6 +729,7 @@ def Deduplicatewire():
 	# Update nodes
 	
 	nodes = [0 for i in components]
+	grounds = [0 for i in components]
 	
 	for i in range(len(components)):
 		if not(components[i][0] == 0):
@@ -740,7 +742,26 @@ def Deduplicatewire():
 			if not(connnod is None):
 				for j in connnod:
 					nodes[j] = i
-	pass
+
+	for i in range(len(components)):
+		if (components[i][0] == 7):
+			for j in range(len(components)):
+				if (components[j][0] == 0):
+					if(findCollisionWirePoint(components[j], [components[i][2], components[i][3]])):
+						grounds[i] = nodes[j]
+
+	short_to = -1
+	for i in range(len(components)):
+		if (components[i][0] == 7):
+			if(short_to == -1):
+				short_to = grounds[i]
+			short_from = grounds[i]
+			for j in range(len(nodes)):
+				if (nodes[j] == short_from):
+					nodes[j] = short_to
+			for j in range(len(grounds)):
+				if(grounds[j] == short_from):
+					grounds[j] = short_to
 
 def Newfile():
 	global components
