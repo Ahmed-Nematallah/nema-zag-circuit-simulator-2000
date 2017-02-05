@@ -630,6 +630,7 @@ def generateNetlist():
 	print(nodes)
 	print(connections)
 	print(netlist)
+	displayonwindow("Netlist",netlist)
 	f = open("circuit.net", 'w+')
 	f.write(netlist)
 	f.close()
