@@ -104,7 +104,6 @@ changetitleButton = Buttons.Button()
 deleteButton = Buttons.Button()
 graphButton = Buttons.Button()
 newButton = Buttons.Button()
-labelButton = Buttons.Button()
 startsimButton = Buttons.Button()
 
 def initalize():
@@ -154,7 +153,7 @@ def initalize():
 	linethickness = 3
 	lineColor = (0, 255, 255)
 	backgroundColor = (150, 150, 150)
-	status ="good"
+	status ="Good"
 	# res =pygame.image.load(fileobj, namehint="")
 
 def render():
@@ -167,8 +166,8 @@ def render():
 	#write node names on statusbar when hovering on them
 	for c in components:
 		if c[0] == 0:
-			if detectCollision(c, pygame.mouse.get_pos()):
-				status = ("this is node " +str(nodes[components.index(c)]))
+			if detectCollision(c, pygame.mouse.get_pos())[0]:
+				status = ("This is node " + str(nodes[components.index(c)]))
 	#update statusbar with status
 	Writeonstatusbar(status)	
 	# Display node names on wires
@@ -201,8 +200,7 @@ def render():
 	deleteButton.create_button(     gameDisplay, (160,160,160), 200 , 120   , 200    ,  40 ,    0, "Delete", (0,0,0))
 	graphButton.create_button(      gameDisplay, (160,160,160), 400 , 120   , 200    ,  40 ,    0, "Graph", (0,0,0))
 	newButton.create_button(        gameDisplay, (160,160,160), 600 , 120   , 200    ,  40 ,    0, "New", (0,0,0))
-	labelButton.create_button(      gameDisplay, (160,160,160), 800 , 120   , 200    ,  40 ,    0, "Label", (0,0,0))
-	startsimButton.create_button(   gameDisplay, (160,160,160), 0 , 160   , 200    ,    40 ,    0, "Start simulation", (0,0,0))
+	startsimButton.create_button(   gameDisplay, (160,160,160), 800 , 120   , 200    ,    40 ,    0, "Start simulation", (0,0,0))
 	# Render components/wires currently being edited
 	if drawingLine:
 		if abs(initialCoordinates[0] - gridCoordinates[0]) >= abs(initialCoordinates[1] - gridCoordinates[1]):
@@ -376,19 +374,17 @@ def checkEvents():
 			if netlistButton.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "n"
 			if ACButton.pressed(pygame.mouse.get_pos()):
-				return eventType.Key_Down, "1"
+				return eventType.Key_Down, "ACButton"
 			if DCButton.pressed(pygame.mouse.get_pos()):
-				return eventType.Key_Down, "2"
+				return eventType.Key_Down, "DCButton"
 			if sweepButton.pressed(pygame.mouse.get_pos()):
-				return eventType.Key_Down, "3"
+				return eventType.Key_Down, "SweepButton"
 			if deleteButton.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "delete"
 			if graphButton.pressed(pygame.mouse.get_pos()):
-				return eventType.Key_Down, "4"
+				return eventType.Key_Down, "GraphButton"
 			if newButton.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "new"
-			if labelButton.pressed(pygame.mouse.get_pos()):
-				return eventType.Key_Down, "label"
 			if startsimButton.pressed(pygame.mouse.get_pos()):
 				return eventType.Key_Down, "startsim"
 			if changetitleButton.pressed(pygame.mouse.get_pos()):
@@ -483,7 +479,7 @@ def saveFile(fileName):
 
 def askForValue(text):
 	finished = 0
-	txtbx = eztext.Input(maxlength=45, color=(0, 255, 0), prompt=text)
+	txtbx = eztext.Input(maxlength=50, color=(0, 255, 0), prompt=text)
 	while not finished:
 		# update txtbx
 		clock.tick(60)
@@ -494,6 +490,8 @@ def askForValue(text):
 		# blit txtbx on the sceen
 		txtbx.draw(gameDisplay)
 		pygame.display.flip()
+		render()
+	
 	return val
 
 def generateNetlist():
@@ -577,6 +575,10 @@ def generateNetlist():
 		netlist += ".DC OP\n"
 	elif (simType == "AC"):
 		netlist += ".AC OP\n"
+	elif (simType == "Sweep"):
+		netlist += ".AC SWEEP FREQ " + ACParameters[2] + " " + str(ACParameters[0]) + " " + \
+					str(ACParameters[1]) + " " + toGraph[1] + "\n"
+		netlist += ".GRAPH " + toGraph[0] + " " + toGraph[1] + "\n"
 
 	# Set ground to the ground node with .GND
 	if (short_to > -1):
@@ -703,29 +705,28 @@ def detectCollision(component, Coordinates):
 		compheight = compdict[c[0]].get_rect().size[0]
 		compwidth  = compdict[c[0]].get_rect().size[1]
 		#detect component collision
-		if (component[1] ==0 or component[1] ==2):
+		if (component[1] == 0 or component[1] == 2):
 			if component[0] != 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2]-compheight/2,c[3],compheight,compwidth), 1)
 				pygame.display.flip()
-			if  component[0] == 9:
+			else:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2]-compheight/2,c[3]-compwidth,compheight,compwidth), 1)
 				pygame.display.flip()
 		elif (component[1] ==1 or component[1] ==3):
 			if component[0] != 9:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2],c[3]-compheight/2,compwidth,compheight), 1)
 				pygame.display.flip()
-			if  component[0] == 9:
+			else:
 				comprect = pygame.draw.rect(gameDisplay, (255,255,255), (c[2],c[3]-compheight/2,compwidth,compheight), 1)
 				pygame.display.flip()
-		return comprect.colliderect(mouserect)
+		return comprect.colliderect(mouserect), component[0]
 		#detect wire collision
-	if component[0] == 0:
-		if component[1] == 1 :
-			line =pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
-			return line.colliderect(mouserect)
-		elif component[1] == 0 :
+	else:
+		if component[1] == 1:
+			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2] + component[5], component[3]], 2)
+		elif component[1] == 0:
 			line = pygame.draw.line(gameDisplay, (255, 255, 255), [component[2], component[3]], [component[2], component[3] + component[5]], 2)
-			return line.colliderect(mouserect)
+		return line.colliderect(mouserect), component[0]
 
 	return False
 
@@ -746,25 +747,30 @@ def DC_analysis():
 	"""Perform DC Analysis."""
 	global simType
 	global status
+	global ACParameters
 	print("DC analysis")
 	simType = "DC"
 	status = "DC analysis mode"
 
 def sweep_analysis():
 	"""Perform Sweep Analysis."""
+	global simType
+	global status
+	global ACParameters
 	print("sweep analysis")
-	pass
-
-def Graph():
-	print("Graph")
-	pass
+	ACParameters = []
+	simType = "Sweep"
+	status = "Sweep analysis mode"
+	ACParameters.append(float(getComponentValue(askForValue("Enter the start freuency : ")).real))
+	ACParameters.append(float(getComponentValue(askForValue("Enter the end freuency : ")).real))
+	ACParameters.append(askForValue("Enter the source to sweep freuency : "))
 
 def Changetitle():
 	global title
 	global status
 	title = askForValue("Enter the new title : ")
 	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
-	status = "title changed"
+	status = "Title changed"
 
 def Deduplicatewire():
 	global nodes
@@ -819,9 +825,6 @@ def Newfile():
 	title = ""
 	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 
-def Label():
-	pass
-
 def Startsimulation():
 	global status
 	Analyze.__main__()
@@ -852,6 +855,8 @@ ACParameters = []
 components = []
 joints =[]
 title = ""
+toGraph = ["N0", "N0"]
+graphMode = False
 # if(loadFile("myfirstcir.cir") == -1):
 # 	kill()
 loadFile("myfirstcir.cir")
@@ -919,43 +924,47 @@ while not killApp:
 		if (eventParameter == "s"):
 			#TODO
 			saveFile("myfirstcir.cir")
-			status = "saved"
+			status = "Saved"
 			pass
 		if (eventParameter == "n"):
 			generateNetlist()
-		if (eventParameter == "1"):
+		if (eventParameter == "ACButton"):
 			AC_analysis()
-		if (eventParameter == "2"):
+		if (eventParameter == "DCButton"):
 			DC_analysis()
-		if (eventParameter == "3"):
+		if (eventParameter == "SweepButton"):
 			sweep_analysis()
-		if (eventParameter == "4"):
-			Graph()
+		if (eventParameter == "GraphButton"):
+			graphMode = ~graphMode
+			deletemode = False
+			if graphMode:
+				status = "Graph mode"
+			else:
+				status = "Good"
 		if (eventParameter == "change"):
 			Changetitle()
 		if (eventParameter == "new"):
 			Newfile()
-		if (eventParameter == "label"):
-			Label()
 		if (eventParameter == "startsim"):
 			Startsimulation()
 		if (eventParameter == "delete"):
 			#for c in components:
-			#	if detectCollision(c, pygame.mouse.get_pos()):
+			#	if detectCollision(c, pygame.mouse.get_pos())[0]:
 			#		components.remove(c)
 			#	elif gridCoordinates == [c[2], c[3]]:
 			#		components.remove(c)
 			Deduplicatewire()
 			deletemode = not deletemode
-			if deletemode == True:
+			graphMode = False
+			if deletemode:
 				status = "Delete mode"
 			else:
-				status = ""
+				status = "Good"
 		elif (eventParameter == "q"):
 			componentOrientationRender = not componentOrientationRender
 	# when mouse up
 	elif (returnedEvent == eventType.Mouse_Up):
-		if deletemode == False:
+		if (deletemode == False) and (graphMode == False):
 			# start drawing lines
 			if ((drawingLine == False) & (drawingComponenet == False)):
 				initialCoordinates = copy.copy(gridCoordinates)
@@ -993,13 +1002,29 @@ while not killApp:
 									(typedict[currentComponent] + str(compcount)), float(getComponentValue(val).real)])
 				print("saved")
 				print(components)
-		if deletemode == True:
+		if deletemode:
 			#pygame.draw.rect(gameDisplay, (0,0,0), (pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1],2,2), 0)
 			for c in components:
-				if detectCollision(c, pygame.mouse.get_pos()):
+				if detectCollision(c, pygame.mouse.get_pos())[0]:
 					components.remove(c)
 				#elif gridCoordinates == [c[2], c[3]]:
 					#components.remove(c)
+		if graphMode:
+			for c in components:
+				colDetector = detectCollision(c, pygame.mouse.get_pos())
+				if colDetector[0] & (colDetector[1] == 0):
+					toGraph[0] = toGraph[1]
+					toGraph[1] = "N" + str(nodes[components.index(c)])
+					break
+
+	if deletemode | graphMode:
+		drawingComponenet = False
+		drawingLine = False
+		if deletemode:
+			status = "Delete mode"
+		else:
+			status = "Graph mode"
+		
 	render()
 	clock.tick(60)
 

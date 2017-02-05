@@ -264,6 +264,9 @@ def formAdmittanceMatrix():
 	global voltageSources
 	global admittanceMatrix
 	global simulationFrequency
+	global currentMatrix
+	admittanceMatrix = [[0 for j in range(nodeCount)] for i in range(nodeCount)]
+	currentMatrix = [0 for i in range(nodeCount)]
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
 		commandtext = list(filter(None, commandtext))
@@ -504,6 +507,7 @@ def performAnalysis():
 	global currentMatrix
 	formAdmittanceMatrix()
 	admittanceMatrix = np.array(admittanceMatrix)
+	admittanceMatrix2 = admittanceMatrix
 	currentMatrix = np.array(currentMatrix)
 	basecurrentMatrix = copy.deepcopy(currentMatrix)
 	voltageMatrix = [0 for i in currentMatrix]
@@ -511,6 +515,7 @@ def performAnalysis():
 	voltageAcrossOld = 0
 	conv = 100000
 	while conv > 10**-20:
+		admittanceMatrix = np.array(admittanceMatrix2)
 		nlJacobian = [[0 for j in i] for i in admittanceMatrix]
 		currentMatrix = copy.deepcopy(basecurrentMatrix)
 		# form currentMatrix & complete nlJacobian
@@ -669,4 +674,4 @@ def __main__():
 							performAnalysis()
 						displaymagphase(magList, range(100), phaList, range(100))
 
-# __main__()
+__main__()
