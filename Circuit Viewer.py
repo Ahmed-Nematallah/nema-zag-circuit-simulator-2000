@@ -895,7 +895,7 @@ loadFile("myfirstcir.cir")
 
 initalize()
 nodes = [0 for i in components]
-#Deduplicatewire()
+Deduplicatewire()
 # main loop
 while not killApp:
 	time.sleep(0.05)
