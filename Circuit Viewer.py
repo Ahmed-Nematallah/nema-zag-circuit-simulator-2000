@@ -74,7 +74,8 @@ def writeonscreen(text, color, pos):
 	screentext = font.render(text, True, color)
 	gameDisplay.blit(screentext, pos)
 
-def statusbar():
+def statusbar(text):
+    writeonscreen(text,(0,0,0),[0,Windowsize[1]-20])
     pass
 
 # create Buttons
@@ -108,6 +109,7 @@ startsimButton = Buttons.Button()
 
 def initalize():
 	"""Initialize SDL and other stuff."""
+	#some global var
 	global gameDisplay
 	global clock
 	global gridspace
@@ -117,6 +119,8 @@ def initalize():
 	global compdict
 	global typedict
 	global currentComponent
+	global Windowsize 
+	global status
 	# load component icons
 	resistoricon = pygame.image.load('Resources/res.png')
 	resistoricon = pygame.transform.rotate(resistoricon, 90)
@@ -137,15 +141,15 @@ def initalize():
 	# compdict = {"R":[0,-25,-5,50,10,1,0,-1,0,(255,150,60),"R"],"C":[0,-25,-8,50,16,1,0,-1,0,(200,150,200),"C"]
 	# ,"V":[0,-25,-10,50,20,1,0,-1,0,(255,0,0),"V"],"G":[0,-25,-10,50,20,1,0,1,0,(0,0,0),"G"]}
 
-	# create buttons
-
+	# initialize Display
+	Windowsize = (1000,720)
+	pygame.init()
+	clock = pygame.time.Clock()
+	gameDisplay = pygame.display.set_mode(Windowsize)
+	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 	# create component dictionary
 	compdict = {0:None, 1:resistoricon, 2:capacitoricon, 3:inductoricon, 4:diodeicon, 5:vsourceicon, 6:csourceicon, 7:gndicon, 8:resistoricon, 9:opampicon}
 	typedict = {1 : 'R', 2 : 'C', 3 : 'L', 4 : 'D', 5 : 'V', 6 : 'I', 7 : 'G', 8 : 'g', 9 : 'O'}
-	pygame.init()
-	clock = pygame.time.Clock()
-	gameDisplay = pygame.display.set_mode((1000, 720))
-	pygame.display.set_caption("cool circuit simulator 2000 😎 Now showing : " + title)
 	gridspace = 25
 	linethickness = 3
 	lineColor = (0, 255, 255)
@@ -157,6 +161,8 @@ def render():
 	global currentComponent
 	global componentOrientationRender
 	gameDisplay.fill(backgroundColor)
+	#update status
+	statusbar(status)
 	# Display node names on wires
 	nodenames=[]
 	for c in components:
