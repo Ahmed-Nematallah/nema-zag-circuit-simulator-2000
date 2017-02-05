@@ -620,20 +620,20 @@ def findCollisionWireWire(wire1, wire2):
 		if wire1[2] == wire2[2] and wire1[3]==wire2[3]:
 			return True, None
 		return True, [wire2[2], wire2[3]]
-	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & ~wire1[1]):
-		return True, [wire2[2] + wire2[5], wire2[3]]
-	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & wire1[1]):
+	if (findCollisionWirePoint(wire1, [wire2[2], wire2[3] + wire2[5]]) & ~wire2[1]):
 		return True, [wire2[2], wire2[3] + wire2[5]]
+	if (findCollisionWirePoint(wire1, [wire2[2] + wire2[5], wire2[3]]) & wire2[1]):
+		return True, [wire2[2] + wire2[5], wire2[3]]
 
 	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3]])):
 		if wire1[2] == wire2[2] and wire1[3]==wire2[3]:
 			return True, None
 		return True , [wire1[2], wire1[3]]
-	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & ~wire2[1]):
-		return True, [wire1[2] + wire1[5], wire1[3]]
-		#return True, [wire1[2] + wire1[5], wire1[3]]
-	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & wire2[1]):
+	if (findCollisionWirePoint(wire2, [wire1[2], wire1[3] + wire1[5]]) & ~wire1[1]):
 		return True, [wire1[2], wire1[3] + wire1[5]]
+		#return True, [wire1[2] + wire1[5], wire1[3]]
+	if (findCollisionWirePoint(wire2, [wire1[2] + wire1[5], wire1[3]]) & wire1[1]):
+		return True, [wire1[2] + wire1[5], wire1[3]]
 		#return True, [wire1[2], wire1[3] + wire1[5]]
 	return False, [0, 0]
 

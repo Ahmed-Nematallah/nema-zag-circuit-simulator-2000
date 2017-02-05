@@ -130,12 +130,11 @@ def pol2rect(magnitude, phase):
 # D D3 (N1;N4)
 # R R3 (N4;N0) 100"""
 netlist = """.DC OP
-.GND N5
-OPAMP3 O0 (N13;N9;N2) 
-R R0 (N2;N5) 1000.0
-V V0 (N9;N5) 10.0
-R R1 (N13;N5) 1000.0
-R R2 (N13;N2) 1000.0
+.GND N0
+OPAMP3 O0 (N3;N2;N1) 
+V V0 (N2;N0) 10.0
+R R1 (N3;N0) 1000.0
+R R2 (N3;N1) 1000.0
 """
 
 sweepit = 0
@@ -267,6 +266,7 @@ def formAdmittanceMatrix():
 	global simulationFrequency
 	for i in range(len(commands)):
 		commandtext = commands[i].split(' ')
+		commandtext = list(filter(None, commandtext))
 		if not(commands[i].startswith('.')):
 			nodes = getNodes(commandtext[2])
 		# nodesAndValues = re.findall(r"\(([A-Za-z0-9_,. ]*)\)", commands[i])
