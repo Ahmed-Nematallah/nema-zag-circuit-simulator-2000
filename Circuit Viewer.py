@@ -157,32 +157,18 @@ def initalize():
 	status ="Good"
 	# res =pygame.image.load(fileobj, namehint="")
 
-x = 0
 def render():
 	"""Render the scene."""
 	global currentComponent
 	global componentOrientationRender
 	global status
-	global x
 	gameDisplay.fill(backgroundColor)
 	
 	#write node names on statusbar when hovering on them
-	foundsomething = False
-	if x > 2:
-		x = 0
-		for c in components:
+	for c in components:
+		if c[0] == 0:
 			if detectCollision(c, pygame.mouse.get_pos())[0]:
-				if c[0] == 0:
-					status = ("This is node " + str(nodes[components.index(c)]))
-				else:
-					status = str(c[4])
-			foundsomething = True
-		if not deletemode and not graphMode and not foundsomething: 
-			status = "good"
-			gameDisplay.fill(backgroundColor)
-	x+=1
-	#write component names on statusbar when hovering on them
-	
+				status = ("This is node " + str(nodes[components.index(c)]))
 	#update statusbar with status
 	Writeonstatusbar(status)	
 	# Display node names on wires
@@ -251,6 +237,7 @@ def render():
 							if findCollisionWireWire(n,c)[0]:
 								if findCollisionWireWire(n,c)[1] != None:
 									joint = pygame.draw.rect(gameDisplay, (0,0,200), (findCollisionWireWire(n,c)[1][0]-3,findCollisionWireWire(n,c)[1][1]-3,8,8), 0)
+									joint.center=(findCollisionWireWire(n,c)[1][0],findCollisionWireWire(n,c)[1][1])
 
 			#rendering
 			if c[1] == 1:
@@ -715,10 +702,9 @@ def detectCollision(component, Coordinates):
 	global componentOrientationRender
 	global status
 	mouserect  = pygame.draw.rect(gameDisplay, (255,255,255), (Coordinates[0]-9,Coordinates[1]-9,20,20), 1)
-	c = component
 	if(component[0] != 0):
-		compheight = compdict[component[0]].get_rect().size[0]
-		compwidth  = compdict[component[0]].get_rect().size[1]
+		compheight = compdict[c[0]].get_rect().size[0]
+		compwidth  = compdict[c[0]].get_rect().size[1]
 		#detect component collision
 		if (component[1] == 0 or component[1] == 2):
 			if component[0] != 9:
@@ -874,7 +860,6 @@ global status
 killApp = False
 drawingLine = False
 drawingComponenet = False
-global deletemode
 deletemode = False
 initialCoordinates = [0, 0]
 componentOrientationRender = 0  # 0->H 1->v
@@ -887,7 +872,6 @@ components = []
 joints =[]
 title = ""
 toGraph = ["N0", "N0"]
-global graphMode
 graphMode = False
 # if(loadFile("myfirstcir.cir") == -1):
 # 	kill()
@@ -898,7 +882,7 @@ nodes = [0 for i in components]
 Deduplicatewire()
 # main loop
 while not killApp:
-	time.sleep(0.05)
+	#time.sleep(0.025)
 	returnedEvent, eventParameter = checkEvents()
 	if (returnedEvent == eventType.Quit):
 		killApp = True
@@ -1039,8 +1023,6 @@ while not killApp:
 			for c in components:
 				if detectCollision(c, pygame.mouse.get_pos())[0]:
 					components.remove(c)
-					break
-				
 				#elif gridCoordinates == [c[2], c[3]]:
 					#components.remove(c)
 		if graphMode:
